@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "pathogenesis",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": ["${mod_author}"],
+  "contact": {
+    "homepage": "${mod_url}",
+    "issues": "${mod_issues}",
+    "sources": "${mod_sources}"
+  },
+  "license": "${mod_license}",
+  "icon": "${mod_logo}",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.azure.pathogenesis.fabric.PathogenesisFabric"],
+    "client": ["com.azure.pathogenesis.fabric.client.PathogenesisFabricClient"]
+  },
+  "mixins": ["pathogenesis.mixins.json"],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": "*",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=${java_version}",
+    "azurelib": ">=${azurelib_version}",
+    "azurecortex": ">=${azurecortex_version}",
+    "ovomorphosis": ">=${ovomorphosis_version}"
+  }
+}

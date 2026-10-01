@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "": [
+      { "model": "pathogenesis:block/pathogen_growth", "weight": 3 },
+      { "model": "pathogenesis:block/pathogen_growth_fern", "weight": 1 }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "pathogenesis:block/sterilized_soil"
+    }
+  }
+}

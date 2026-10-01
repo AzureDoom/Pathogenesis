@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#pathogenesis:contaminated_soil",
+    "pathogenesis:sterilized_soil"
+  ]
+}

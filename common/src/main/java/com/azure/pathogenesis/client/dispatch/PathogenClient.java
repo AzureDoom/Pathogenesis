@@ -1,0 +1,28 @@
+package com.azure.pathogenesis.client.dispatch;
+
+import com.azure.pathogenesis.client.renderer.BloodbursterRenderer;
+import com.azure.pathogenesis.client.renderer.NeomorphRenderer;
+import com.azure.pathogenesis.client.renderer.NeophyteRenderer;
+import com.azure.pathogenesis.client.renderer.NoopRenderer;
+import com.azure.pathogenesis.registry.PathogenEntities;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+
+public final class PathogenClient {
+
+    @FunctionalInterface
+    public interface RendererSink {
+
+        <T extends Entity> void register(EntityType<? extends T> type, EntityRendererProvider<T> provider);
+    }
+
+    private PathogenClient() {}
+
+    public static void registerRenderers(RendererSink sink) {
+        sink.register(PathogenEntities.SPORE_CLOUD.get(), NoopRenderer::new);
+        sink.register(PathogenEntities.BLOODBURSTER.get(), BloodbursterRenderer::new);
+        sink.register(PathogenEntities.NEOPHYTE.get(), NeophyteRenderer::new);
+        sink.register(PathogenEntities.NEOMORPH.get(), NeomorphRenderer::new);
+    }
+}

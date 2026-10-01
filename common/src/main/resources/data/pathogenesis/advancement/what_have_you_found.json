@@ -1,0 +1,36 @@
+{
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_bars"
+    },
+    "title": {
+      "translate": "advancement.pathogenesis.what_have_you_found"
+    },
+    "description": {
+      "translate": "advancement.pathogenesis.what_have_you_found.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/block/black_concrete.png"
+  },
+  "criteria": {
+    "event": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "pathogenesis:pathogen_containment"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

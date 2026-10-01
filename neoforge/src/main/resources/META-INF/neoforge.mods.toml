@@ -1,0 +1,48 @@
+modLoader = "javafml"
+loaderVersion = "${loader_version_range}"
+license = "${mod_license}"
+# Only reenable if you have a issue tracker URL
+#issueTrackerURL="${mod_issues}"
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "${mod_name}"
+authors = "${mod_author}"
+description='''${mod_description}'''
+logoFile="${mod_logo}"
+[[mixins]]
+config = "${mod_id}.mixins.json"
+[[dependencies.${mod_id}]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "[${neo_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "minecraft"
+    type = "required"
+    versionRange = "${minecraft_version_range}"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "azurelib"
+    type = "required"
+    versionRange = "[${azurelib_version},)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "azurecortex"
+    type = "required"
+    versionRange = "[${azurecortex_version},)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "ovomorphosis"
+    type = "required"
+versionRange = "[${ovomorphosis_version},)"
+    ordering = "AFTER"
+    side = "BOTH"

@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "pathogenesis:bloodburster",
+    "pathogenesis:neophyte",
+    "pathogenesis:neomorph",
+    {
+      "id": "#ovomorphosis:aliens",
+      "required": false
+    }
+  ]
+}

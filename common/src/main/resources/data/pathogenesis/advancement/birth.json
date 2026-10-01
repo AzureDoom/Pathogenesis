@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "pathogenesis:bloodburster_spawn_egg"
+    },
+    "title": {
+      "translate": "advancement.pathogenesis.birth"
+    },
+    "description": {
+      "translate": "advancement.pathogenesis.birth.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "event": {
+      "trigger": "pathogenesis:event",
+      "conditions": {
+        "event": "bloodburster_witnessed"
+      }
+    }
+  },
+  "parent": "pathogenesis:its_inside_me"
+}

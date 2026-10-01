@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#ovomorphosis:spore_filters",
+      "required": false
+    }
+  ]
+}

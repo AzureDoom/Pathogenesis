@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#pathogenesis:alien_organisms",
+    "#minecraft:undead",
+    "minecraft:iron_golem",
+    "minecraft:snow_golem",
+    "minecraft:ender_dragon"
+  ]
+}

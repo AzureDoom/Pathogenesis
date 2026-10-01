@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "pathogenesis:sealed_pathogen_ampule"
+    },
+    "title": {
+      "translate": "advancement.pathogenesis.do_not_touch"
+    },
+    "description": {
+      "translate": "advancement.pathogenesis.do_not_touch.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "event": {
+      "trigger": "pathogenesis:event",
+      "conditions": {
+        "event": "rupture_witnessed"
+      }
+    }
+  },
+  "parent": "pathogenesis:what_have_you_found"
+}

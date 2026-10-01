@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "pathogenesis:pathogen_containment",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 190,
+    "separation": 120,
+    "salt": 918273645
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "variants": {
+    "containment=sealed,facing=north": {
+      "model": "pathogenesis:block/pathogen_source_sealed"
+    },
+    "containment=sealed,facing=east": {
+      "model": "pathogenesis:block/pathogen_source_sealed",
+      "y": 90
+    },
+    "containment=sealed,facing=south": {
+      "model": "pathogenesis:block/pathogen_source_sealed",
+      "y": 180
+    },
+    "containment=sealed,facing=west": {
+      "model": "pathogenesis:block/pathogen_source_sealed",
+      "y": 270
+    },
+    "containment=damaged,facing=north": {
+      "model": "pathogenesis:block/pathogen_source_damaged"
+    },
+    "containment=damaged,facing=east": {
+      "model": "pathogenesis:block/pathogen_source_damaged",
+      "y": 90
+    },
+    "containment=damaged,facing=south": {
+      "model": "pathogenesis:block/pathogen_source_damaged",
+      "y": 180
+    },
+    "containment=damaged,facing=west": {
+      "model": "pathogenesis:block/pathogen_source_damaged",
+      "y": 270
+    },
+    "containment=leaking,facing=north": {
+      "model": "pathogenesis:block/pathogen_source_leaking"
+    },
+    "containment=leaking,facing=east": {
+      "model": "pathogenesis:block/pathogen_source_leaking",
+      "y": 90
+    },
+    "containment=leaking,facing=south": {
+      "model": "pathogenesis:block/pathogen_source_leaking",
+      "y": 180
+    },
+    "containment=leaking,facing=west": {
+      "model": "pathogenesis:block/pathogen_source_leaking",
+      "y": 270
+    },
+    "containment=open,facing=north": {
+      "model": "pathogenesis:block/pathogen_source_open"
+    },
+    "containment=open,facing=east": {
+      "model": "pathogenesis:block/pathogen_source_open",
+      "y": 90
+    },
+    "containment=open,facing=south": {
+      "model": "pathogenesis:block/pathogen_source_open",
+      "y": 180
+    },
+    "containment=open,facing=west": {
+      "model": "pathogenesis:block/pathogen_source_open",
+      "y": 270
+    },
+    "containment=empty,facing=north": {
+      "model": "pathogenesis:block/pathogen_source_empty"
+    },
+    "containment=empty,facing=east": {
+      "model": "pathogenesis:block/pathogen_source_empty",
+      "y": 90
+    },
+    "containment=empty,facing=south": {
+      "model": "pathogenesis:block/pathogen_source_empty",
+      "y": 180
+    },
+    "containment=empty,facing=west": {
+      "model": "pathogenesis:block/pathogen_source_empty",
+      "y": 270
+    }
+  }
+}

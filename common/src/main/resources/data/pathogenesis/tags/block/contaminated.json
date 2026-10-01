@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "#pathogenesis:contaminated_soil",
+    "#pathogenesis:pathogen_growth",
+    "#pathogenesis:spore_plants",
+    "pathogenesis:contaminated_roots"
+  ]
+}

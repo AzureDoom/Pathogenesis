@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.azure.pathogenesis.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "pathogenesis.refmap.json",
+  "mixins": [
+    "BaseFireBlockMixin",
+    "FireBlockMixin",
+    "LivingEntityMixin",
+    "ServerLevelMixin",
+    "ServerPlayerMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

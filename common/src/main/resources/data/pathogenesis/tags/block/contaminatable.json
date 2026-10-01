@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#pathogenesis:contaminatable_soil",
+    "#pathogenesis:contaminatable_plants",
+    "minecraft:hanging_roots"
+  ]
+}

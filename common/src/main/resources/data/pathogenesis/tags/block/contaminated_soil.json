@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "pathogenesis:contaminated_dirt",
+    "pathogenesis:contaminated_grass",
+    "pathogenesis:contaminated_moss"
+  ]
+}

@@ -1,0 +1,135 @@
+package com.azure.pathogenesis.contamination;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+
+import java.util.UUID;
+
+public final class PathogenZone {
+
+    public static final int VERTICAL_REACH = 48;
+
+    private final UUID id;
+
+    private final BlockPos origin;
+
+    private final long createdTick;
+
+    private int radius = 4;
+
+    private int contamination;
+
+    private PathogenStage stage = PathogenStage.RELEASED;
+
+    private boolean sourceActive;
+
+    private long nextCensusTick;
+
+    private long lastProcessedTick;
+
+    public PathogenZone(UUID id, BlockPos origin, long createdTick) {
+        this.id = id;
+        this.origin = origin.immutable();
+        this.createdTick = createdTick;
+        this.nextCensusTick = createdTick + 600;
+    }
+
+    public UUID id() {
+        return id;
+    }
+
+    public BlockPos origin() {
+        return origin;
+    }
+
+    public long createdTick() {
+        return createdTick;
+    }
+
+    public int radius() {
+        return radius;
+    }
+
+    public int contamination() {
+        return contamination;
+    }
+
+    public PathogenStage stage() {
+        return stage;
+    }
+
+    public boolean isSourceActive() {
+        return sourceActive;
+    }
+
+    public void setSourceActive(boolean sourceActive) {
+        this.sourceActive = sourceActive;
+    }
+
+    public long nextCensusTick() {
+        return nextCensusTick;
+    }
+
+    public void setNextCensusTick(long tick) {
+        this.nextCensusTick = tick;
+    }
+
+    public long lastProcessedTick() {
+        return lastProcessedTick;
+    }
+
+    public void setLastProcessedTick(long tick) {
+        this.lastProcessedTick = tick;
+    }
+
+    public void addContamination(int amount, int maxRadius) {
+        this.contamination = Math.max(0, contamination + amount);
+        recompute(maxRadius);
+    }
+
+    public void reconcile(int actualCount, int maxRadius) {
+        this.contamination = actualCount;
+        recompute(maxRadius);
+    }
+
+    private void recompute(int maxRadius) {
+        this.radius = Mth.clamp(4 + (int) Math.sqrt(contamination * 6.0D), 4, maxRadius);
+        if (stage != PathogenStage.DORMANT) {
+            this.stage = PathogenStage.forContamination(contamination, radius, maxRadius);
+        }
+    }
+
+    public boolean couldContain(BlockPos pos, int maxRadius) {
+        var dx = pos.getX() - origin.getX();
+        var dz = pos.getZ() - origin.getZ();
+        return dx * dx + dz * dz <= maxRadius * maxRadius && Math.abs(pos.getY() - origin.getY()) <= VERTICAL_REACH;
+    }
+
+    public CompoundTag save() {
+        var tag = new CompoundTag();
+        tag.putUUID("Id", id);
+        tag.putLong("Origin", origin.asLong());
+        tag.putLong("Created", createdTick);
+        tag.putInt("Radius", radius);
+        tag.putInt("Contamination", contamination);
+        tag.putString("Stage", stage.id());
+        tag.putBoolean("SourceActive", sourceActive);
+        tag.putLong("NextCensus", nextCensusTick);
+        return tag;
+    }
+
+    public static PathogenZone load(CompoundTag tag) {
+        var zone = new PathogenZone(
+            tag.getUUID("Id"),
+            BlockPos.of(tag.getLong("Origin")),
+            tag.getLong("Created")
+        );
+        zone.radius = Math.max(4, tag.getInt("Radius"));
+        zone.contamination = tag.getInt("Contamination");
+        zone.stage = PathogenStage.byId(tag.getString("Stage"));
+        zone.sourceActive = tag.getBoolean("SourceActive");
+        zone.nextCensusTick = tag.getLong("NextCensus");
+        return zone;
+    }
+}

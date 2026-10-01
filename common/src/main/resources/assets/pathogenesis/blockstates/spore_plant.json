@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "age=0,ready=false,triggered=false": {
+      "model": "pathogenesis:block/spore_plant_stage0"
+    },
+    "age=0,ready=false,triggered=true": {
+      "model": "pathogenesis:block/spore_plant_stage0"
+    },
+    "age=0,ready=true,triggered=false": {
+      "model": "pathogenesis:block/spore_plant_stage0"
+    },
+    "age=0,ready=true,triggered=true": {
+      "model": "pathogenesis:block/spore_plant_stage0"
+    },
+    "age=1,ready=false,triggered=false": {
+      "model": "pathogenesis:block/spore_plant_stage1"
+    },
+    "age=1,ready=false,triggered=true": {
+      "model": "pathogenesis:block/spore_plant_stage1"
+    },
+    "age=1,ready=true,triggered=false": {
+      "model": "pathogenesis:block/spore_plant_stage1"
+    },
+    "age=1,ready=true,triggered=true": {
+      "model": "pathogenesis:block/spore_plant_stage1"
+    },
+    "age=2,ready=false,triggered=false": {
+      "model": "pathogenesis:block/spore_plant_stage2"
+    },
+    "age=2,ready=false,triggered=true": {
+      "model": "pathogenesis:block/spore_plant_stage2"
+    },
+    "age=2,ready=true,triggered=false": {
+      "model": "pathogenesis:block/spore_plant_stage2"
+    },
+    "age=2,ready=true,triggered=true": {
+      "model": "pathogenesis:block/spore_plant_stage2"
+    },
+    "age=3,ready=false,triggered=false": {
+      "model": "pathogenesis:block/spore_plant_stage3"
+    },
+    "age=3,ready=false,triggered=true": {
+      "model": "pathogenesis:block/spore_plant_stage3_ready"
+    },
+    "age=3,ready=true,triggered=false": {
+      "model": "pathogenesis:block/spore_plant_stage3_ready"
+    },
+    "age=3,ready=true,triggered=true": {
+      "model": "pathogenesis:block/spore_plant_stage3_ready"
+    }
+  }
+}

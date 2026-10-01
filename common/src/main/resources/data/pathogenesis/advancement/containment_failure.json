@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "pathogenesis:contaminated_grass"
+    },
+    "title": {
+      "translate": "advancement.pathogenesis.containment_failure"
+    },
+    "description": {
+      "translate": "advancement.pathogenesis.containment_failure.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "event": {
+      "trigger": "pathogenesis:event",
+      "conditions": {
+        "event": "zone_established"
+      }
+    }
+  },
+  "parent": "pathogenesis:do_not_touch"
+}

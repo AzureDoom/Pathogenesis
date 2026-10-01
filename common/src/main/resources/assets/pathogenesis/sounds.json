@@ -1,0 +1,116 @@
+{
+  "block.contamination.ambient": {
+    "subtitle": "subtitles.pathogenesis.block.contamination.ambient",
+    "sounds": [
+      "pathogenesis:block/contamination/ambient"
+    ]
+  },
+  "block.spore_plant.rattle": {
+    "subtitle": "subtitles.pathogenesis.block.spore_plant.rattle",
+    "sounds": [
+      "pathogenesis:block/spore_plant/rattle"
+    ]
+  },
+  "block.spore_plant.release": {
+    "subtitle": "subtitles.pathogenesis.block.spore_plant.release",
+    "sounds": [
+      "pathogenesis:block/spore_plant/release"
+    ]
+  },
+  "block.pathogen_source.crack": {
+    "subtitle": "subtitles.pathogenesis.block.pathogen_source.crack",
+    "sounds": [
+      "pathogenesis:block/pathogen_source/crack"
+    ]
+  },
+  "block.pathogen_source.rupture": {
+    "subtitle": "subtitles.pathogenesis.block.pathogen_source.rupture",
+    "sounds": [
+      "pathogenesis:block/pathogen_source/rupture"
+    ]
+  },
+  "block.pathogen_source.leak": {
+    "subtitle": "subtitles.pathogenesis.block.pathogen_source.leak",
+    "sounds": [
+      "pathogenesis:block/pathogen_source/leak"
+    ]
+  },
+  "entity.host.cough": {
+    "subtitle": "subtitles.pathogenesis.entity.host.cough",
+    "sounds": [
+      "pathogenesis:entity/host/cough"
+    ]
+  },
+  "entity.host.heartbeat": {
+    "subtitle": "subtitles.pathogenesis.entity.host.heartbeat",
+    "sounds": [
+      "pathogenesis:entity/host/heartbeat"
+    ]
+  },
+  "entity.host.bloodburst": {
+    "subtitle": "subtitles.pathogenesis.entity.host.bloodburst",
+    "sounds": [
+      "pathogenesis:entity/host/bloodburst"
+    ]
+  },
+  "entity.bloodburster.ambient": {
+    "subtitle": "subtitles.pathogenesis.entity.bloodburster.ambient",
+    "sounds": [
+      "pathogenesis:entity/bloodburster/ambient"
+    ]
+  },
+  "entity.bloodburster.hurt": {
+    "subtitle": "subtitles.pathogenesis.entity.bloodburster.hurt",
+    "sounds": [
+      "pathogenesis:entity/bloodburster/hurt"
+    ]
+  },
+  "entity.bloodburster.death": {
+    "subtitle": "subtitles.pathogenesis.entity.bloodburster.death",
+    "sounds": [
+      "pathogenesis:entity/bloodburster/death"
+    ]
+  },
+  "entity.bloodburster.mature": {
+    "subtitle": "subtitles.pathogenesis.entity.bloodburster.mature",
+    "sounds": [
+      "pathogenesis:entity/bloodburster/mature"
+    ]
+  },
+  "entity.neomorph.ambient": {
+    "subtitle": "subtitles.pathogenesis.entity.neomorph.ambient",
+    "sounds": [
+      "pathogenesis:entity/neomorph/ambient"
+    ]
+  },
+  "entity.neomorph.hurt": {
+    "subtitle": "subtitles.pathogenesis.entity.neomorph.hurt",
+    "sounds": [
+      "pathogenesis:entity/neomorph/hurt"
+    ]
+  },
+  "entity.neomorph.death": {
+    "subtitle": "subtitles.pathogenesis.entity.neomorph.death",
+    "sounds": [
+      "pathogenesis:entity/neomorph/death"
+    ]
+  },
+  "entity.neomorph.attack": {
+    "subtitle": "subtitles.pathogenesis.entity.neomorph.attack",
+    "sounds": [
+      "pathogenesis:entity/neomorph/attack"
+    ]
+  },
+  "entity.neomorph.leap": {
+    "subtitle": "subtitles.pathogenesis.entity.neomorph.leap",
+    "sounds": [
+      "pathogenesis:entity/neomorph/leap"
+    ]
+  },
+  "entity.neomorph.screech": {
+    "subtitle": "subtitles.pathogenesis.entity.neomorph.screech",
+    "sounds": [
+      "pathogenesis:entity/neomorph/screech"
+    ]
+  }
+}

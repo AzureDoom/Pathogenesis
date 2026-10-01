@@ -1,0 +1,26 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:player",
+    "minecraft:villager",
+    "minecraft:wandering_trader",
+    "minecraft:pillager",
+    "minecraft:vindicator",
+    "minecraft:evoker",
+    "minecraft:witch",
+    "minecraft:cow",
+    "minecraft:mooshroom",
+    "minecraft:pig",
+    "minecraft:sheep",
+    "minecraft:goat",
+    "minecraft:horse",
+    "minecraft:donkey",
+    "minecraft:mule",
+    "minecraft:llama",
+    "minecraft:camel",
+    "minecraft:wolf",
+    "minecraft:fox",
+    "minecraft:polar_bear",
+    "minecraft:panda"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "pathogenesis:sterilized_soil"
+    },
+    "title": {
+      "translate": "advancement.pathogenesis.containment_restored"
+    },
+    "description": {
+      "translate": "advancement.pathogenesis.containment_restored.desc"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "event": {
+      "trigger": "pathogenesis:event",
+      "conditions": {
+        "event": "zone_eradicated"
+      }
+    }
+  },
+  "parent": "pathogenesis:cleanse_it_with_fire"
+}
