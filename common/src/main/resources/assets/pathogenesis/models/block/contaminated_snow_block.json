@@ -1,0 +1,6 @@
+{
+  "parent": "pathogenesis:block/tinted_cube_all",
+  "textures": {
+    "all": "minecraft:block/snow"
+  }
+}

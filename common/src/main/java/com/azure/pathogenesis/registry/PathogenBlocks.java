@@ -1,7 +1,9 @@
 package com.azure.pathogenesis.registry;
 
 import com.azure.pathogenesis.block.ContaminatedRootsBlock;
+import com.azure.pathogenesis.block.ContaminatedSnowLayerBlock;
 import com.azure.pathogenesis.block.ContaminatedSoilBlock;
+import com.azure.pathogenesis.block.ContaminatedWaterBlock;
 import com.azure.pathogenesis.block.PathogenFungusBlock;
 import com.azure.pathogenesis.block.PathogenGrowthBlock;
 import com.azure.pathogenesis.block.PathogenSourceBlock;
@@ -52,6 +54,29 @@ public final class PathogenBlocks {
         "contaminated_moss",
         () -> new ContaminatedSoilBlock(
             BlockBehaviour.Properties.ofFullCopy(Blocks.MOSS_BLOCK).mapColor(MapColor.COLOR_GRAY)
+        )
+    );
+
+    public static final Supplier<ContaminatedSnowLayerBlock> CONTAMINATED_SNOW = register(
+        "contaminated_snow",
+        () -> new ContaminatedSnowLayerBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SNOW).mapColor(MapColor.COLOR_LIGHT_GRAY)
+        )
+    );
+
+    /** Reuses the soil behaviour (contact exposure, spore disturbance, dust particles). */
+    public static final Supplier<ContaminatedSoilBlock> CONTAMINATED_SNOW_BLOCK = register(
+        "contaminated_snow_block",
+        () -> new ContaminatedSoilBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.SNOW_BLOCK).mapColor(MapColor.COLOR_LIGHT_GRAY)
+        )
+    );
+
+    public static final Supplier<ContaminatedWaterBlock> CONTAMINATED_WATER = register(
+        "contaminated_water",
+        () -> new ContaminatedWaterBlock(
+            PathogenFluids.CONTAMINATED_WATER.get(),
+            BlockBehaviour.Properties.ofFullCopy(Blocks.WATER).mapColor(MapColor.COLOR_BLACK)
         )
     );
 

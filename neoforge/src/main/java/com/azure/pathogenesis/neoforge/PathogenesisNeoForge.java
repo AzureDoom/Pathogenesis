@@ -22,6 +22,7 @@ public final class PathogenesisNeoForge {
 
     public PathogenesisNeoForge(IEventBus modBus) {
         Pathogenesis.init();
+        PathogenFluidTypes.FLUID_TYPES.register(modBus);
         NeoForgeRegistryHelper.attach(modBus);
         modBus.addListener(
             EntityAttributeCreationEvent.class,
@@ -48,6 +49,8 @@ public final class PathogenesisNeoForge {
                 event.accept(PathogenItems.CONTAMINATED_DIRT.get());
                 event.accept(PathogenItems.CONTAMINATED_GRASS.get());
                 event.accept(PathogenItems.CONTAMINATED_MOSS.get());
+                event.accept(PathogenItems.CONTAMINATED_SNOW.get());
+                event.accept(PathogenItems.CONTAMINATED_SNOW_BLOCK.get());
                 event.accept(PathogenItems.CONTAMINATED_ROOTS.get());
                 event.accept(PathogenItems.PATHOGEN_GROWTH.get());
                 event.accept(PathogenItems.PATHOGEN_FUNGUS.get());

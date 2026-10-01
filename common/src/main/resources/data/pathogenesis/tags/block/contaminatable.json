@@ -3,6 +3,9 @@
   "values": [
     "#pathogenesis:contaminatable_soil",
     "#pathogenesis:contaminatable_plants",
-    "minecraft:hanging_roots"
+    "minecraft:hanging_roots",
+    "minecraft:water",
+    "minecraft:snow",
+    "minecraft:snow_block"
   ]
 }

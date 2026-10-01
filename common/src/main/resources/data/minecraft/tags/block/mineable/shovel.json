@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "#pathogenesis:contaminated_soil",
-    "pathogenesis:sterilized_soil"
+    "pathogenesis:sterilized_soil",
+    "pathogenesis:contaminated_snow",
+    "pathogenesis:contaminated_snow_block"
   ]
 }

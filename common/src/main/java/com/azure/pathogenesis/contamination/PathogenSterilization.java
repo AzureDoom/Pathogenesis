@@ -1,7 +1,6 @@
 package com.azure.pathogenesis.contamination;
 
 import com.azure.pathogenesis.Pathogenesis;
-import com.azure.pathogenesis.registry.PathogenBlocks;
 import com.azure.pathogenesis.registry.PathogenTags;
 import com.azure.pathogenesis.registry.PathogenTriggers;
 import net.minecraft.core.BlockPos;
@@ -11,7 +10,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 public final class PathogenSterilization {
@@ -28,9 +26,10 @@ public final class PathogenSterilization {
         if (!state.is(PathogenTags.Blocks.STERILIZABLE)) {
             return false;
         }
-        var result = state.is(PathogenTags.Blocks.CONTAMINATED_SOIL)
-            ? PathogenBlocks.STERILIZED_SOIL.get().defaultBlockState()
-            : Blocks.AIR.defaultBlockState();
+        var result = ContaminationPalette.sterilizedForm(state);
+        if (result == null) {
+            return false;
+        }
         level.setBlock(pos, result, Block.UPDATE_ALL);
         var c = Vec3.atCenterOf(pos);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + 0.5D, c.z, 4, 0.3D, 0.2D, 0.3D, 0.01D);

@@ -4,10 +4,13 @@ import com.azure.pathogenesis.client.PathogenColors;
 import com.azure.pathogenesis.client.dispatch.PathogenClient;
 import com.azure.pathogenesis.client.sound.ContaminationAmbience;
 import com.azure.pathogenesis.registry.PathogenBlocks;
+import com.azure.pathogenesis.registry.PathogenFluids;
 import com.azure.pathogenesis.registry.PathogenItems;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.RenderType;
@@ -34,5 +37,18 @@ public final class PathogenesisFabricClient implements ClientModInitializer {
             PathogenItems.SEALED_PATHOGEN_AMPULE.get()
         );
         ClientTickEvents.END_CLIENT_TICK.register(ContaminationAmbience::tick);
+        var still = PathogenFluids.CONTAMINATED_WATER.get();
+        var flowing = PathogenFluids.FLOWING_CONTAMINATED_WATER.get();
+        FluidRenderHandlerRegistry.INSTANCE.register(
+            still,
+            flowing,
+            new SimpleFluidRenderHandler(
+                SimpleFluidRenderHandler.WATER_STILL,
+                SimpleFluidRenderHandler.WATER_FLOWING,
+                SimpleFluidRenderHandler.WATER_OVERLAY,
+                PathogenColors.CONTAMINATED_WATER
+            )
+        );
+        BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), still, flowing);
     }
 }

@@ -6,6 +6,7 @@ import com.azure.pathogenesis.contamination.PathogenZoneManager;
 import com.azure.pathogenesis.contamination.RuptureStrength;
 import com.azure.pathogenesis.registry.PathogenBlockEntities;
 import com.azure.pathogenesis.registry.PathogenSounds;
+import com.azure.pathogenesis.registry.PathogenTags;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -142,6 +143,9 @@ public class PathogenSourceBlock extends BaseEntityBlock {
         @NotNull BlockHitResult hit,
         @NotNull Projectile projectile
     ) {
+        if (level.isClientSide() || projectile.getType().is(PathogenTags.Entities.SOURCE_PROJECTILE_IMMUNE)) {
+            return;
+        }
         if (level instanceof ServerLevel serverLevel) {
             advance(serverLevel, hit.getBlockPos(), state);
         }

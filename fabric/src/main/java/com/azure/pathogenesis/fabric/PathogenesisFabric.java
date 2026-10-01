@@ -37,6 +37,8 @@ public final class PathogenesisFabric implements ModInitializer {
             entries.accept(PathogenItems.CONTAMINATED_DIRT.get());
             entries.accept(PathogenItems.CONTAMINATED_GRASS.get());
             entries.accept(PathogenItems.CONTAMINATED_MOSS.get());
+            entries.accept(PathogenItems.CONTAMINATED_SNOW.get());
+            entries.accept(PathogenItems.CONTAMINATED_SNOW_BLOCK.get());
             entries.accept(PathogenItems.CONTAMINATED_ROOTS.get());
             entries.accept(PathogenItems.PATHOGEN_GROWTH.get());
             entries.accept(PathogenItems.PATHOGEN_FUNGUS.get());

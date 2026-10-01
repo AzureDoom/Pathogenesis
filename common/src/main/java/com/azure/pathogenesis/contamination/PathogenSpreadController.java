@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 public final class PathogenSpreadController {
@@ -46,6 +47,15 @@ public final class PathogenSpreadController {
                 continue;
             }
             var state = level.getBlockState(candidate);
+
+            // Thin snow layers don't block motion, so the heightmap lands on the block underneath them.
+            // Target the snow first; the soil below gets its turn once the snow is contaminated.
+            var above = candidate.above();
+            var aboveState = level.getBlockState(above);
+            if (aboveState.is(Blocks.SNOW)) {
+                candidate = above;
+                state = aboveState;
+            }
 
             if (state.is(PathogenTags.Blocks.CONTAMINATED_SOIL)) {
                 if (PathogenFlora.tryGrow(level, zone, candidate, random)) {

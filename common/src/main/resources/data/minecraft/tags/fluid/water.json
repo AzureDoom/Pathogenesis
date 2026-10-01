@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "pathogenesis:contaminated_water",
+    "pathogenesis:flowing_contaminated_water"
+  ]
+}

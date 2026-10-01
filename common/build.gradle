@@ -37,12 +37,18 @@ dependencies {
     }
 }
 
-// Loader projects compile these sources/resources directly (MultiLoader-Template pattern).
 configurations {
-    commonJava { canBeResolved = false; canBeConsumed = true }
-    commonResources { canBeResolved = false; canBeConsumed = true }
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
 }
+
 artifacts {
-    commonJava sourceSets.main.java.sourceDirectories.singleFile
-    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+    commonJava(sourceSets.main.java.srcDirs.find { it.exists() })
+    commonResources(sourceSets.main.resources.srcDirs.find { it.exists() })
 }

@@ -52,6 +52,8 @@ public final class PathogenTags {
 
         public static final TagKey<EntityType<?>> ALIEN_ORGANISMS = tag("alien_organisms");
 
+        public static final TagKey<EntityType<?>> SOURCE_PROJECTILE_IMMUNE = tag("source_projectile_immune");
+
         private Entities() {}
 
         private static TagKey<EntityType<?>> tag(String name) {

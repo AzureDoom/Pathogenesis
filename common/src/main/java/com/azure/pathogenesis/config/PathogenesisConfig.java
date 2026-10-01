@@ -42,6 +42,16 @@ public class PathogenesisConfig {
         )
         @Configurable.Range(min = 1, max = 256)
         public int blockChecksPerZone = 12;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Allow the Pathogen to convert water source blocks into contaminated water.")
+        public boolean contaminateWater = true;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Allow the Pathogen to convert snow layers and snow blocks.")
+        public boolean contaminateSnow = true;
     }
 
     @Configurable

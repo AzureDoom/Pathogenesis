@@ -24,16 +24,16 @@ public final class PathogenApi {
         return level.getBlockState(pos).is(PathogenTags.Blocks.CONTAMINATED);
     }
 
-    public static int sterilizeArea(ServerLevel level, BlockPos center, int radius) {
-        return PathogenSterilization.sterilizeArea(level, center, radius);
+    public static void sterilizeArea(ServerLevel level, BlockPos center, int radius) {
+        PathogenSterilization.sterilizeArea(level, center, radius);
     }
 
-    public static boolean sterilize(ServerLevel level, BlockPos pos) {
-        return PathogenSterilization.sterilize(level, pos);
+    public static void sterilize(ServerLevel level, BlockPos pos) {
+        PathogenSterilization.sterilize(level, pos);
     }
 
-    public static PathogenZone rupture(ServerLevel level, BlockPos pos) {
-        return PathogenZoneManager.onRupture(level, pos, RuptureStrength.RUPTURE, false);
+    public static void rupture(ServerLevel level, BlockPos pos) {
+        PathogenZoneManager.onRupture(level, pos, RuptureStrength.RUPTURE, false);
     }
 
     @Nullable

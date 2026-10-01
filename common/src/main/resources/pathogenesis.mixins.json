@@ -6,6 +6,7 @@
   "refmap": "pathogenesis.refmap.json",
   "mixins": [
     "BaseFireBlockMixin",
+    "BottleItemMixin",
     "FireBlockMixin",
     "LivingEntityMixin",
     "ServerLevelMixin",

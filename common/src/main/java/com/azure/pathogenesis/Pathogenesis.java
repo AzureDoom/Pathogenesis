@@ -5,6 +5,7 @@ import com.azure.pathogenesis.config.PathogenesisConfig;
 import com.azure.pathogenesis.registry.PathogenBlockEntities;
 import com.azure.pathogenesis.registry.PathogenBlocks;
 import com.azure.pathogenesis.registry.PathogenEntities;
+import com.azure.pathogenesis.registry.PathogenFluids;
 import com.azure.pathogenesis.registry.PathogenItems;
 import com.azure.pathogenesis.registry.PathogenSounds;
 import com.azure.pathogenesis.registry.PathogenTriggers;
@@ -31,6 +32,7 @@ public final class Pathogenesis {
     public static void init() {
         config = AzureLibMod.registerConfig(PathogenesisConfig.class, ConfigFormats.json()).getConfigInstance();
         PathogenSounds.init();
+        PathogenFluids.init();
         PathogenBlocks.init();
         PathogenBlockEntities.init();
         PathogenEntities.init();
