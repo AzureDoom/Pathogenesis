@@ -78,13 +78,13 @@
   "subtitles.pathogenesis.entity.host.heartbeat": "Heartbeat races",
   "subtitles.pathogenesis.entity.host.bloodburst": "Flesh tears",
   "subtitles.pathogenesis.entity.bloodburster.ambient": "Bloodburster chitters",
-  "subtitles.pathogenesis.entity.bloodburster.hurt": "Bloodburster hurts",
+  "subtitles.pathogenesis.entity.bloodburster.hurt": "Bloodburster squeals",
   "subtitles.pathogenesis.entity.bloodburster.death": "Bloodburster dies",
   "subtitles.pathogenesis.entity.bloodburster.mature": "Bloodburster splits open",
-  "subtitles.pathogenesis.entity.neomorph.ambient": "Neomorph clicks",
+  "subtitles.pathogenesis.entity.neomorph.ambient": "Neomorph keens",
   "subtitles.pathogenesis.entity.neomorph.hurt": "Neomorph hurts",
   "subtitles.pathogenesis.entity.neomorph.death": "Neomorph dies",
   "subtitles.pathogenesis.entity.neomorph.attack": "Neomorph slashes",
-  "subtitles.pathogenesis.entity.neomorph.leap": "Neomorph pounces",
+  "subtitles.pathogenesis.entity.neomorph.leap": "Neomorph leaps",
   "subtitles.pathogenesis.entity.neomorph.screech": "Neomorph screeches"
 }

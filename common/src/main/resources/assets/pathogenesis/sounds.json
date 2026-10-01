@@ -54,61 +54,71 @@
   "entity.bloodburster.ambient": {
     "subtitle": "subtitles.pathogenesis.entity.bloodburster.ambient",
     "sounds": [
-      "pathogenesis:entity/bloodburster/ambient"
+      { "name": "minecraft:entity.silverfish.ambient", "type": "event", "pitch": 1.35, "volume": 0.8 },
+      { "name": "minecraft:entity.frog.ambient", "type": "event", "pitch": 1.7, "volume": 0.6, "weight": 1 }
     ]
   },
   "entity.bloodburster.hurt": {
     "subtitle": "subtitles.pathogenesis.entity.bloodburster.hurt",
     "sounds": [
-      "pathogenesis:entity/bloodburster/hurt"
+      { "name": "minecraft:entity.silverfish.hurt", "type": "event", "pitch": 1.4 },
+      { "name": "minecraft:entity.slime.squish_small", "type": "event", "pitch": 1.2 }
     ]
   },
   "entity.bloodburster.death": {
     "subtitle": "subtitles.pathogenesis.entity.bloodburster.death",
     "sounds": [
-      "pathogenesis:entity/bloodburster/death"
+      { "name": "minecraft:entity.silverfish.death", "type": "event", "pitch": 1.3 }
     ]
   },
   "entity.bloodburster.mature": {
     "subtitle": "subtitles.pathogenesis.entity.bloodburster.mature",
     "sounds": [
-      "pathogenesis:entity/bloodburster/mature"
+      { "name": "minecraft:entity.turtle.egg_break", "type": "event", "pitch": 0.6, "volume": 1.2 },
+      { "name": "minecraft:entity.slime.squish", "type": "event", "pitch": 0.55, "volume": 1.2 }
     ]
   },
+
   "entity.neomorph.ambient": {
     "subtitle": "subtitles.pathogenesis.entity.neomorph.ambient",
     "sounds": [
-      "pathogenesis:entity/neomorph/ambient"
+      { "name": "minecraft:entity.phantom.ambient", "type": "event", "pitch": 0.7, "volume": 0.7 },
+      { "name": "minecraft:entity.enderman.ambient", "type": "event", "pitch": 1.25, "volume": 0.7 }
     ]
   },
   "entity.neomorph.hurt": {
     "subtitle": "subtitles.pathogenesis.entity.neomorph.hurt",
     "sounds": [
-      "pathogenesis:entity/neomorph/hurt"
+      { "name": "minecraft:entity.phantom.hurt", "type": "event", "pitch": 0.75 },
+      { "name": "minecraft:entity.fox.hurt", "type": "event", "pitch": 0.6 }
     ]
   },
   "entity.neomorph.death": {
     "subtitle": "subtitles.pathogenesis.entity.neomorph.death",
     "sounds": [
-      "pathogenesis:entity/neomorph/death"
+      { "name": "minecraft:entity.phantom.death", "type": "event", "pitch": 0.65 },
+      { "name": "minecraft:entity.ravager.death", "type": "event", "pitch": 1.4 }
     ]
   },
   "entity.neomorph.attack": {
     "subtitle": "subtitles.pathogenesis.entity.neomorph.attack",
     "sounds": [
-      "pathogenesis:entity/neomorph/attack"
+      { "name": "minecraft:entity.fox.bite", "type": "event", "pitch": 0.7 },
+      { "name": "minecraft:entity.player.attack.sweep", "type": "event", "pitch": 1.3, "volume": 0.8 }
     ]
   },
   "entity.neomorph.leap": {
     "subtitle": "subtitles.pathogenesis.entity.neomorph.leap",
     "sounds": [
-      "pathogenesis:entity/neomorph/leap"
+      { "name": "minecraft:entity.goat.long_jump", "type": "event", "pitch": 0.8 },
+      { "name": "minecraft:entity.phantom.flap", "type": "event", "pitch": 0.6 }
     ]
   },
   "entity.neomorph.screech": {
     "subtitle": "subtitles.pathogenesis.entity.neomorph.screech",
     "sounds": [
-      "pathogenesis:entity/neomorph/screech"
+      { "name": "minecraft:entity.enderman.scream", "type": "event", "pitch": 0.8 },
+      { "name": "minecraft:entity.ghast.scream", "type": "event", "pitch": 0.6, "volume": 0.8 }
     ]
   }
 }
