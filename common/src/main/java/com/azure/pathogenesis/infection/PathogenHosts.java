@@ -87,6 +87,11 @@ public final class PathogenHosts {
             if (!host.isAlive()) {
                 continue;
             }
+            if (host instanceof Player player && (player.isCreative() || player.isSpectator())) {
+                it.remove();
+                CHANGED.set(true);
+                continue;
+            }
             state.lastKnownPos = host.blockPosition();
             state.dimension = level.dimension();
             state.isPlayer = host instanceof Player;
