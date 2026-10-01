@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:carved_pumpkin"
+    "#pathogenesis:alien_organisms"
   ]
 }
