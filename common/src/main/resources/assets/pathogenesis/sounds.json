@@ -1,9 +1,7 @@
 {
   "block.contamination.ambient": {
     "subtitle": "subtitles.pathogenesis.block.contamination.ambient",
-    "sounds": [
-      "pathogenesis:block/contamination/ambient"
-    ]
+    "sounds": [{ "name": "pathogenesis:block/contamination/ambient", "stream": true }]
   },
   "block.spore_plant.rattle": {
     "subtitle": "subtitles.pathogenesis.block.spore_plant.rattle",

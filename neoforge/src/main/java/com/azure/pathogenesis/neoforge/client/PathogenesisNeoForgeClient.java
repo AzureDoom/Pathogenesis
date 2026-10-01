@@ -3,11 +3,14 @@ package com.azure.pathogenesis.neoforge.client;
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.client.PathogenColors;
 import com.azure.pathogenesis.client.dispatch.PathogenClient;
+import com.azure.pathogenesis.client.sound.ContaminationAmbience;
 import com.azure.pathogenesis.registry.PathogenItems;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.BlockItem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 
@@ -39,5 +42,10 @@ public final class PathogenesisNeoForgeClient {
             (stack, tintIndex) -> PathogenColors.ampuleTint(tintIndex),
             PathogenItems.SEALED_PATHOGEN_AMPULE.get()
         );
+    }
+
+    @SubscribeEvent
+    public static void clientTick(ClientTickEvent.Post event) {
+        ContaminationAmbience.tick(Minecraft.getInstance());
     }
 }
