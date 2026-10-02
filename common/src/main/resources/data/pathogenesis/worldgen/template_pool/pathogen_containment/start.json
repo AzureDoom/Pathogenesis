@@ -5,7 +5,7 @@
       "weight": 1,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "pathogenesis:pathogen_containment/facility",
+        "location": "pathogenesis:pathogen_containment/dig_site",
         "processors": "minecraft:empty",
         "projection": "rigid"
       }

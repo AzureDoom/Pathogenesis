@@ -2,13 +2,7 @@ package com.azure.pathogenesis;
 
 import com.azure.pathogenesis.compat.OvomorphosisCompat;
 import com.azure.pathogenesis.config.PathogenesisConfig;
-import com.azure.pathogenesis.registry.PathogenBlockEntities;
-import com.azure.pathogenesis.registry.PathogenBlocks;
-import com.azure.pathogenesis.registry.PathogenEntities;
-import com.azure.pathogenesis.registry.PathogenFluids;
-import com.azure.pathogenesis.registry.PathogenItems;
-import com.azure.pathogenesis.registry.PathogenSounds;
-import com.azure.pathogenesis.registry.PathogenTriggers;
+import com.azure.pathogenesis.registry.*;
 import mod.azure.azurelib.AzureLibMod;
 import mod.azure.azurelib.common.config.format.ConfigFormats;
 import net.minecraft.resources.ResourceLocation;
@@ -39,6 +33,7 @@ public final class Pathogenesis {
         PathogenItems.init();
         PathogenTriggers.init();
         OvomorphosisCompat.init();
+        PathogenStructureTypes.init();
     }
 
     public static PathogenesisConfig getConfig() {
