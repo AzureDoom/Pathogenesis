@@ -33,7 +33,6 @@ public final class ContaminationPalette {
         }
         var config = Pathogenesis.getConfig().contaminationConfigs;
         if (state.is(Blocks.WATER)) {
-            // Only sources convert; flowing water is re-derived from whichever source feeds it.
             return config.contaminateWater && state.getFluidState().isSource()
                 ? PathogenBlocks.CONTAMINATED_WATER.get().defaultBlockState()
                 : null;
@@ -77,7 +76,6 @@ public final class ContaminationPalette {
     @Nullable
     public static BlockState sterilizedForm(BlockState state) {
         if (state.is(PathogenBlocks.CONTAMINATED_WATER.get())) {
-            // Flowing contaminated water recedes on its own once its source is cleansed.
             return state.getFluidState().isSource() ? Blocks.WATER.defaultBlockState() : null;
         }
         if (state.is(PathogenBlocks.CONTAMINATED_SNOW.get())) {

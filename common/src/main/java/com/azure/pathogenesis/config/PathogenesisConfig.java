@@ -134,7 +134,9 @@ public class PathogenesisConfig {
 
     @Configurable
     @Configurable.Synchronized
-    @Configurable.Comment("Base attribute values. Read when attributes are registered, so changes need a restart.")
+    @Configurable.Comment(
+        "Attribute values are read at startup (restart to apply). Attack timings apply to newly spawned mobs."
+    )
     public EntityConfigs entityConfigs = new EntityConfigs();
 
     public static class EntityConfigs {
@@ -180,6 +182,18 @@ public class PathogenesisConfig {
             @Configurable.Comment("Range at which it notices prey.")
             @Configurable.DecimalRange(min = 0.0D)
             public double bloodbursterHostileRange = 16.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between the attack telegraph and the hit. Applies to newly spawned mobs.")
+            @Configurable.Range(min = 1, max = 40)
+            public int bloodbursterAttackWindup = 4;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between attacks after a hit. A miss recovers in a third of this.")
+            @Configurable.Range(min = 1, max = 100)
+            public int bloodbursterAttackCooldown = 12;
         }
 
         @Configurable
@@ -223,6 +237,18 @@ public class PathogenesisConfig {
             @Configurable.Comment("Range at which it notices prey.")
             @Configurable.DecimalRange(min = 0.0D)
             public double neophyteHostileRange = 24.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between the attack telegraph and the hit. Applies to newly spawned mobs.")
+            @Configurable.Range(min = 1, max = 40)
+            public int neophyteAttackWindup = 5;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between attacks after a hit. A miss recovers in a third of this.")
+            @Configurable.Range(min = 1, max = 100)
+            public int neophyteAttackCooldown = 14;
         }
 
         @Configurable
@@ -271,6 +297,24 @@ public class PathogenesisConfig {
             @Configurable.Synchronized
             @Configurable.DecimalRange(min = 0.0D)
             public double neomorphAttackKnockback = 0.4D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between the attack telegraph and the hit. Applies to newly spawned mobs.")
+            @Configurable.Range(min = 1, max = 40)
+            public int neomorphAttackWindup = 4;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between attacks after a hit. A miss recovers in a third of this.")
+            @Configurable.Range(min = 1, max = 100)
+            public int neomorphAttackCooldown = 10;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between pounces.")
+            @Configurable.Range(min = 10, max = 400)
+            public int neomorphLeapCooldown = 60;
         }
     }
 }

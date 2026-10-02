@@ -6,6 +6,7 @@ import com.azure.azurecortex.api.blackboard.CommonBlackboardKeys;
 import com.azure.azurecortex.goap.PlanFailureReason;
 import com.azure.azurecortex.runtime.CooldownTracker;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.phys.Vec3;
 
 public class RushTargetAction<E extends PathfinderMob, G> extends PathogenAction<E, G> {
 
@@ -17,9 +18,9 @@ public class RushTargetAction<E extends PathfinderMob, G> extends PathogenAction
 
     private int ticks;
 
-    private int noProgress;
+    private int stillTicks;
 
-    private double lastDistanceSqr;
+    private Vec3 lastPos = Vec3.ZERO;
 
     public RushTargetAction(String name, int priority, double speed, int repathInterval, int stuckTicks) {
         super(name, priority);
@@ -31,8 +32,8 @@ public class RushTargetAction<E extends PathfinderMob, G> extends PathogenAction
     @Override
     public void start(E agent, Blackboard blackboard, CooldownTracker cooldowns) {
         ticks = 0;
-        noProgress = 0;
-        lastDistanceSqr = Double.MAX_VALUE;
+        stillTicks = 0;
+        lastPos = agent.position();
     }
 
     @Override
@@ -47,11 +48,14 @@ public class RushTargetAction<E extends PathfinderMob, G> extends PathogenAction
                 return CortexGlue.failed(PlanFailureReason.FAILED_NO_PATH, target.blockPosition());
             }
         }
-        var distanceSqr = agent.distanceToSqr(target);
-        if (distanceSqr < lastDistanceSqr - 0.25D) {
-            lastDistanceSqr = distanceSqr;
-            noProgress = 0;
-        } else if (++noProgress > stuckTicks) {
+
+        var contact = agent.getBbWidth() + target.getBbWidth() + 1.5D;
+        var position = agent.position();
+        var moved = position.distanceToSqr(lastPos);
+        lastPos = position;
+        if (agent.distanceToSqr(target) <= contact * contact || moved > 0.0025D) {
+            stillTicks = 0;
+        } else if (++stillTicks > stuckTicks) {
             return CortexGlue.failed(PlanFailureReason.FAILED_STUCK, agent.blockPosition());
         }
         return CortexGlue.running();

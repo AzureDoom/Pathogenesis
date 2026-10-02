@@ -8,14 +8,13 @@ import com.azure.azurecortex.api.blackboard.CommonBlackboardKeys;
 import com.azure.azurecortex.goap.PlanFailureReason;
 import com.azure.azurecortex.runtime.CooldownTracker;
 import com.azure.azurecortex.runtime.InterruptCategory;
+import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.entity.NeomorphEntity;
 import net.minecraft.world.phys.Vec3;
 
 public class LeapAttackAction implements Action<NeomorphEntity, NeomorphGoal> {
 
     public static final String COOLDOWN = "neomorph_leap_cd";
-
-    public static final int COOLDOWN_TICKS = 80;
 
     private static final int CROUCH_TICKS = 8;
 
@@ -82,7 +81,7 @@ public class LeapAttackAction implements Action<NeomorphEntity, NeomorphGoal> {
 
     @Override
     public void stop(NeomorphEntity agent, Blackboard blackboard, CooldownTracker cooldowns, ActionStatus reason) {
-        cooldowns.set(COOLDOWN, COOLDOWN_TICKS);
+        cooldowns.set(COOLDOWN, Pathogenesis.getConfig().entityConfigs.neomorphConfigs.neomorphLeapCooldown);
     }
 
     @Override

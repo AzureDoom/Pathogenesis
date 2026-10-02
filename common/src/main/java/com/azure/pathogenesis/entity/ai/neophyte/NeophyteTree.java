@@ -8,6 +8,8 @@ import com.azure.azurecortex.behavior.composite.PrioritySelector;
 import com.azure.azurecortex.behavior.decorator.Condition;
 import com.azure.azurecortex.behavior.leaf.ActionNode;
 import com.azure.azurecortex.navigation.astar.AStarPathfinder;
+import com.azure.pathogenesis.Pathogenesis;
+import com.azure.pathogenesis.config.PathogenesisConfig;
 import com.azure.pathogenesis.entity.NeophyteEntity;
 import com.azure.pathogenesis.entity.ai.common.DarkBiasedWanderAction;
 import com.azure.pathogenesis.entity.ai.common.MoveAwayAction;
@@ -22,6 +24,10 @@ public final class NeophyteTree {
     public static final String MELEE_COOLDOWN = "neophyte_melee_cd";
 
     private NeophyteTree() {}
+
+    private static PathogenesisConfig.EntityConfigs.NeophyteConfigs config() {
+        return Pathogenesis.getConfig().entityConfigs.neophyteConfigs;
+    }
 
     public static BehaviorNode<NeophyteEntity, NeophyteGoal> create() {
         var idle = new IdleAction<NeophyteEntity, NeophyteGoal>();
@@ -76,10 +82,10 @@ public final class NeophyteTree {
         var melee = new WindupMeleeAction<NeophyteEntity, NeophyteGoal>(
             "neophyte_slash",
             22,
-            8,
+            () -> config().neophyteAttackWindup,
             1.2D,
             MELEE_COOLDOWN,
-            24,
+            () -> config().neophyteAttackCooldown,
             NeophyteEntity::onSlash
         );
         var rush = new RushTargetAction<NeophyteEntity, NeophyteGoal>("neophyte_rush", 15, 1.3D, 8, 80);
@@ -87,7 +93,7 @@ public final class NeophyteTree {
         return new PathogenHuntNode<>(
             NeophyteGoal.HUNT,
             (agent, target, blackboard, cooldowns) -> {
-                if (melee.inReach(agent, target) && !cooldowns.isOnCooldown(MELEE_COOLDOWN)) {
+                if (melee.canStart(agent, target) && !cooldowns.isOnCooldown(MELEE_COOLDOWN)) {
                     return melee;
                 }
                 return rush;

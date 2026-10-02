@@ -48,8 +48,6 @@ public final class PathogenSpreadController {
             }
             var state = level.getBlockState(candidate);
 
-            // Thin snow layers don't block motion, so the heightmap lands on the block underneath them.
-            // Target the snow first; the soil below gets its turn once the snow is contaminated.
             var above = candidate.above();
             var aboveState = level.getBlockState(above);
             if (aboveState.is(Blocks.SNOW)) {
@@ -99,7 +97,7 @@ public final class PathogenSpreadController {
         if (zone.isSourceActive() && pos.distSqr(zone.origin()) <= 9.0D) {
             return true;
         }
-        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        var cursor = new BlockPos.MutableBlockPos();
         for (var offset : NEIGHBORS) {
             cursor.setWithOffset(pos, offset[0], offset[1], offset[2]);
             if (!level.isLoaded(cursor)) {

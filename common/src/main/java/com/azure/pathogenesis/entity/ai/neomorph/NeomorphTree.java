@@ -8,6 +8,8 @@ import com.azure.azurecortex.behavior.composite.PrioritySelector;
 import com.azure.azurecortex.behavior.decorator.Condition;
 import com.azure.azurecortex.behavior.leaf.ActionNode;
 import com.azure.azurecortex.navigation.astar.AStarPathfinder;
+import com.azure.pathogenesis.Pathogenesis;
+import com.azure.pathogenesis.config.PathogenesisConfig;
 import com.azure.pathogenesis.entity.NeomorphEntity;
 import com.azure.pathogenesis.entity.ai.common.DarkBiasedWanderAction;
 import com.azure.pathogenesis.entity.ai.common.MoveAwayAction;
@@ -21,6 +23,10 @@ public final class NeomorphTree {
     public static final String MELEE_COOLDOWN = "neomorph_melee_cd";
 
     private NeomorphTree() {}
+
+    private static PathogenesisConfig.EntityConfigs.NeomorphConfigs config() {
+        return Pathogenesis.getConfig().entityConfigs.neomorphConfigs;
+    }
 
     public static BehaviorNode<NeomorphEntity, NeomorphGoal> create() {
         var idle = new IdleAction<NeomorphEntity, NeomorphGoal>();
@@ -76,10 +82,10 @@ public final class NeomorphTree {
         var melee = new WindupMeleeAction<NeomorphEntity, NeomorphGoal>(
             "neomorph_slash",
             22,
-            6,
+            () -> config().neomorphAttackWindup,
             1.6D,
             MELEE_COOLDOWN,
-            18,
+            () -> config().neomorphAttackCooldown,
             NeomorphEntity::onSlash
         );
         var stalk = new StalkTargetAction(16);
@@ -89,7 +95,7 @@ public final class NeomorphTree {
             NeomorphGoal.HUNT,
             (agent, target, blackboard, cooldowns) -> {
                 double distSqr = agent.distanceToSqr(target);
-                if (melee.inReach(agent, target) && !cooldowns.isOnCooldown(MELEE_COOLDOWN)) {
+                if (melee.canStart(agent, target) && !cooldowns.isOnCooldown(MELEE_COOLDOWN)) {
                     return melee;
                 }
                 if (

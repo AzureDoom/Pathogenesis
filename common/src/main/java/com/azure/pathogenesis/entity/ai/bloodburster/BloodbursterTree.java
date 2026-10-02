@@ -6,6 +6,7 @@ import com.azure.azurecortex.api.blackboard.CommonBlackboardKeys;
 import com.azure.azurecortex.behavior.composite.PrioritySelector;
 import com.azure.azurecortex.behavior.decorator.Condition;
 import com.azure.azurecortex.behavior.leaf.ActionNode;
+import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.entity.BloodbursterEntity;
 import com.azure.pathogenesis.entity.ai.common.DarkBiasedWanderAction;
 import com.azure.pathogenesis.entity.ai.common.FleeThreatAction;
@@ -66,15 +67,15 @@ public final class BloodbursterTree {
         var bite = new WindupMeleeAction<BloodbursterEntity, BloodbursterGoal>(
             "bloodburster_bite",
             PathogenPriorities.MELEE,
-            5,
+            () -> Pathogenesis.getConfig().entityConfigs.bloodbursterConfigs.bloodbursterAttackWindup,
             0.6D,
             "bloodburster_bite_cd",
-            20,
+            () -> Pathogenesis.getConfig().entityConfigs.bloodbursterConfigs.bloodbursterAttackCooldown,
             (agent, target) -> agent.animations().playOnce("attack", 10)
         );
         return new PathogenHuntNode<>(
             BloodbursterGoal.FEED,
-            (agent, target, bb, cd) -> bite.inReach(agent, target) && !cd.isOnCooldown(bite.cooldownKey())
+            (agent, target, bb, cd) -> bite.canStart(agent, target) && !cd.isOnCooldown(bite.cooldownKey())
                 ? bite
                 : chase
         );
