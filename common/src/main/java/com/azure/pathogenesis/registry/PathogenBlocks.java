@@ -64,7 +64,6 @@ public final class PathogenBlocks {
         )
     );
 
-    /** Reuses the soil behaviour (contact exposure, spore disturbance, dust particles). */
     public static final Supplier<ContaminatedSoilBlock> CONTAMINATED_SNOW_BLOCK = register(
         "contaminated_snow_block",
         () -> new ContaminatedSoilBlock(
