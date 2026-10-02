@@ -76,7 +76,10 @@ public class NeophyteEntity extends Monster implements SoundListener {
         super(type, level);
         this.xpReward = 10;
         var sensor = new TargetSensor<NeophyteEntity>(
-            TargetSensor.nearestMatching(24.0D, this::isValidPrey),
+            TargetSensor.nearestMatching(
+                Pathogenesis.getConfig().entityConfigs.neophyteConfigs.neophyteHostileRange,
+                this::isValidPrey
+            ),
             10,
             TargetSensor.lineOfSight()
         );
@@ -87,13 +90,15 @@ public class NeophyteEntity extends Monster implements SoundListener {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
+        var config = Pathogenesis.getConfig().entityConfigs.neophyteConfigs;
         return Monster.createMonsterAttributes()
-            .add(Attributes.MAX_HEALTH, 22.0D)
-            .add(Attributes.MOVEMENT_SPEED, 0.33D)
-            .add(Attributes.ATTACK_DAMAGE, 4.0D)
-            .add(Attributes.ARMOR, 1.0D)
-            .add(Attributes.KNOCKBACK_RESISTANCE, 0.1D)
-            .add(Attributes.FOLLOW_RANGE, 32.0D)
+            .add(Attributes.MAX_HEALTH, config.neophyteHealth)
+            .add(Attributes.MOVEMENT_SPEED, config.neophyteMovementSpeed)
+            .add(Attributes.ATTACK_DAMAGE, config.neophyteAttackDamage)
+            .add(Attributes.ARMOR, config.neophyteArmor)
+            .add(Attributes.ARMOR_TOUGHNESS, config.neophyteArmorToughness)
+            .add(Attributes.KNOCKBACK_RESISTANCE, config.neophyteKnockbackRes)
+            .add(Attributes.FOLLOW_RANGE, config.neophyteHostileRange * 1.25D)
             .add(Attributes.STEP_HEIGHT, 1.0D)
             .add(Attributes.SAFE_FALL_DISTANCE, 5.0D);
     }

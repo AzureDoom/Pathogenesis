@@ -69,7 +69,10 @@ public class BloodbursterEntity extends PathfinderMob implements Enemy {
     public BloodbursterEntity(EntityType<? extends BloodbursterEntity> type, Level level) {
         super(type, level);
         var sensor = new TargetSensor<BloodbursterEntity>(
-            TargetSensor.nearestMatching(16.0D, this::isPrey),
+            TargetSensor.nearestMatching(
+                Pathogenesis.getConfig().entityConfigs.bloodbursterConfigs.bloodbursterHostileRange,
+                this::isPrey
+            ),
             10,
             TargetSensor.lineOfSight()
         );
@@ -85,11 +88,15 @@ public class BloodbursterEntity extends PathfinderMob implements Enemy {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
+        var config = Pathogenesis.getConfig().entityConfigs.bloodbursterConfigs;
         return Mob.createMobAttributes()
-            .add(Attributes.MAX_HEALTH, 8.0D)
-            .add(Attributes.MOVEMENT_SPEED, 0.32D)
-            .add(Attributes.ATTACK_DAMAGE, 2.0D)
-            .add(Attributes.FOLLOW_RANGE, 16.0D);
+            .add(Attributes.MAX_HEALTH, config.bloodbursterHealth)
+            .add(Attributes.ARMOR, config.bloodbursterArmor)
+            .add(Attributes.ARMOR_TOUGHNESS, config.bloodbursterArmorToughness)
+            .add(Attributes.KNOCKBACK_RESISTANCE, config.bloodbursterKnockbackRes)
+            .add(Attributes.MOVEMENT_SPEED, config.bloodbursterMovementSpeed)
+            .add(Attributes.ATTACK_DAMAGE, config.bloodbursterAttackDamage)
+            .add(Attributes.FOLLOW_RANGE, config.bloodbursterHostileRange * 1.25D);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.azure.azurecortex.api.blackboard.CommonBlackboardKeys;
 import com.azure.azurecortex.goap.EmergencyDetector;
 import com.azure.azurecortex.runtime.CortexRuntime;
 import com.azure.azurecortex.sensing.TargetSensor;
+import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.entity.ai.common.CortexGlue;
 import com.azure.pathogenesis.entity.ai.common.SoundListener;
 import com.azure.pathogenesis.entity.ai.neomorph.NeomorphGoal;
@@ -70,7 +71,10 @@ public class NeomorphEntity extends Monster implements SoundListener {
         super(type, level);
         this.xpReward = 20;
         var sensor = new TargetSensor<NeomorphEntity>(
-            TargetSensor.nearestMatching(32.0D, this::isValidPrey),
+            TargetSensor.nearestMatching(
+                Pathogenesis.getConfig().entityConfigs.neomorphConfigs.neomorphHostileRange,
+                this::isValidPrey
+            ),
             10,
             TargetSensor.lineOfSight()
         );
@@ -87,14 +91,16 @@ public class NeomorphEntity extends Monster implements SoundListener {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
+        var config = Pathogenesis.getConfig().entityConfigs.neomorphConfigs;
         return Monster.createMonsterAttributes()
-            .add(Attributes.MAX_HEALTH, 40.0D)
-            .add(Attributes.MOVEMENT_SPEED, 0.34D)
-            .add(Attributes.ATTACK_DAMAGE, 7.0D)
-            .add(Attributes.ATTACK_KNOCKBACK, 0.4D)
-            .add(Attributes.ARMOR, 2.0D)
-            .add(Attributes.KNOCKBACK_RESISTANCE, 0.3D)
-            .add(Attributes.FOLLOW_RANGE, 40.0D)
+            .add(Attributes.MAX_HEALTH, config.neomorphHealth)
+            .add(Attributes.MOVEMENT_SPEED, config.neomorphMovementSpeed)
+            .add(Attributes.ATTACK_DAMAGE, config.neomorphAttackDamage)
+            .add(Attributes.ATTACK_KNOCKBACK, config.neomorphAttackKnockback)
+            .add(Attributes.ARMOR, config.neomorphArmor)
+            .add(Attributes.ARMOR_TOUGHNESS, config.neomorphArmorToughness)
+            .add(Attributes.KNOCKBACK_RESISTANCE, config.neomorphKnockbackRes)
+            .add(Attributes.FOLLOW_RANGE, config.neomorphHostileRange * 1.25D)
             .add(Attributes.STEP_HEIGHT, 1.0D)
             .add(Attributes.SAFE_FALL_DISTANCE, 6.0D);
     }

@@ -131,4 +131,146 @@ public class PathogenesisConfig {
         @Configurable.Range(min = 20, max = 72000)
         public int sterilizedSoilDuration = 2400;
     }
+
+    @Configurable
+    @Configurable.Synchronized
+    @Configurable.Comment("Base attribute values. Read when attributes are registered, so changes need a restart.")
+    public EntityConfigs entityConfigs = new EntityConfigs();
+
+    public static class EntityConfigs {
+
+        @Configurable
+        @Configurable.Synchronized
+        public BloodbursterConfigs bloodbursterConfigs = new BloodbursterConfigs();
+
+        public static class BloodbursterConfigs {
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double bloodbursterHealth = 14.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double bloodbursterArmor = 0.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double bloodbursterArmorToughness = 0.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double bloodbursterKnockbackRes = 0.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double bloodbursterAttackDamage = 3.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double bloodbursterMovementSpeed = 0.32D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Range at which it notices prey.")
+            @Configurable.DecimalRange(min = 0.0D)
+            public double bloodbursterHostileRange = 16.0D;
+        }
+
+        @Configurable
+        @Configurable.Synchronized
+        public NeophyteConfigs neophyteConfigs = new NeophyteConfigs();
+
+        public static class NeophyteConfigs {
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neophyteHealth = 30.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neophyteArmor = 3.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neophyteArmorToughness = 0.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neophyteKnockbackRes = 0.15D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neophyteAttackDamage = 5.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neophyteMovementSpeed = 0.33D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Range at which it notices prey.")
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neophyteHostileRange = 24.0D;
+        }
+
+        @Configurable
+        @Configurable.Synchronized
+        public NeomorphConfigs neomorphConfigs = new NeomorphConfigs();
+
+        public static class NeomorphConfigs {
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neomorphHealth = 60.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neomorphArmor = 4.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neomorphArmorToughness = 0.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neomorphKnockbackRes = 0.4D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neomorphAttackDamage = 8.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neomorphMovementSpeed = 0.35D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Range at which it notices prey.")
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neomorphHostileRange = 32.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double neomorphAttackKnockback = 0.4D;
+        }
+    }
 }
