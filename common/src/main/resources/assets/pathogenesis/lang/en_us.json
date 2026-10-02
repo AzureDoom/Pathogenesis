@@ -125,5 +125,17 @@
   "subtitles.pathogenesis.entity.neomorph.death": "Neomorph dies",
   "subtitles.pathogenesis.entity.neomorph.attack": "Neomorph slashes",
   "subtitles.pathogenesis.entity.neomorph.leap": "Neomorph leaps",
-  "subtitles.pathogenesis.entity.neomorph.screech": "Neomorph screeches"
+  "subtitles.pathogenesis.entity.neomorph.screech": "Neomorph screeches",
+  "scanner.pathogenesis.infected": "Pathogen: %s (%s%%)",
+  "scanner.pathogenesis.infected_no_time": "Pathogen: %s",
+  "scanner.pathogenesis.stage.exposed": "Exposed",
+  "scanner.pathogenesis.stage.incubating": "Incubating",
+  "scanner.pathogenesis.stage.symptomatic": "Symptomatic",
+  "scanner.pathogenesis.stage.terminal": "Terminal",
+  "scanner.pathogenesis.exposure": "Pathogen exposure: %s (%s/200)",
+  "scanner.pathogenesis.exposure_no_value": "Pathogen exposure: %s",
+  "scanner.pathogenesis.exposure.low": "Low",
+  "scanner.pathogenesis.exposure.moderate": "Moderate",
+  "scanner.pathogenesis.exposure.high": "High",
+  "scanner.pathogenesis.exposure.extreme": "Extreme"
 }
