@@ -7,6 +7,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DispenserBlock;
 
 import java.util.function.Supplier;
 
@@ -14,10 +15,12 @@ public final class PathogenItems {
 
     public static final Supplier<PathogenAmpuleItem> SEALED_PATHOGEN_AMPULE = register(
         "sealed_pathogen_ampule",
-        () -> new PathogenAmpuleItem(
-            PathogenBlocks.PATHOGEN_SOURCE.get(),
-            new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)
-        )
+        () -> new PathogenAmpuleItem(new Item.Properties().stacksTo(4).rarity(Rarity.EPIC))
+    );
+
+    public static final Supplier<BlockItem> PATHOGEN_SOURCE = register(
+        "pathogen_source",
+        () -> new BlockItem(PathogenBlocks.PATHOGEN_SOURCE.get(), new Item.Properties().stacksTo(1).rarity(Rarity.EPIC))
     );
 
     public static final Supplier<BlockItem> CONTAMINATED_DIRT = block(
@@ -85,4 +88,8 @@ public final class PathogenItems {
     }
 
     public static void init() {}
+
+    public static void registerDispenserBehaviors() {
+        DispenserBlock.registerProjectileBehavior(SEALED_PATHOGEN_AMPULE.get());
+    }
 }

@@ -33,6 +33,8 @@ public class PathogenSourceBlockEntity extends BlockEntity {
 
     private int damageTimer = DAMAGE_DELAY;
 
+    private boolean openWarned;
+
     @Nullable
     private UUID zoneId;
 
@@ -49,6 +51,15 @@ public class PathogenSourceBlockEntity extends BlockEntity {
         return pathogen;
     }
 
+    public boolean warnOpenAttempt() {
+        if (openWarned) {
+            return false;
+        }
+        openWarned = true;
+        setChanged();
+        return true;
+    }
+
     public void beginLeak(ServerLevel level, RuptureStrength strength) {
         var zone = PathogenZoneManager.onRupture(level, worldPosition, strength, true);
         zoneId = zone.id();
@@ -63,6 +74,9 @@ public class PathogenSourceBlockEntity extends BlockEntity {
         var time = level.getGameTime();
         switch (containment) {
             case DAMAGED -> {
+                if (state.getValue(PathogenSourceBlock.FROZEN)) {
+                    return;
+                }
                 if (--source.damageTimer <= 0) {
                     PathogenSourceBlock.setContainment(level, pos, state, ContainmentState.LEAKING);
                     source.beginLeak(serverLevel, RuptureStrength.CRACK);
@@ -121,6 +135,7 @@ public class PathogenSourceBlockEntity extends BlockEntity {
         super.saveAdditional(tag, registries);
         tag.putInt("Pathogen", pathogen);
         tag.putInt("DamageTimer", damageTimer);
+        tag.putBoolean("OpenWarned", openWarned);
         if (zoneId != null) {
             tag.putUUID("Zone", zoneId);
         }
@@ -131,6 +146,7 @@ public class PathogenSourceBlockEntity extends BlockEntity {
         super.loadAdditional(tag, registries);
         pathogen = tag.contains("Pathogen") ? tag.getInt("Pathogen") : CAPACITY;
         damageTimer = tag.contains("DamageTimer") ? tag.getInt("DamageTimer") : DAMAGE_DELAY;
+        openWarned = tag.getBoolean("OpenWarned");
         zoneId = tag.hasUUID("Zone") ? tag.getUUID("Zone") : null;
     }
 }

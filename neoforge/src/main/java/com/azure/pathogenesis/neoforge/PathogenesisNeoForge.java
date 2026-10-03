@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -39,6 +40,10 @@ public final class PathogenesisNeoForge {
             RegisterCommandsEvent.class,
             event -> PathogenCommands.register(event.getDispatcher())
         );
+        modBus.addListener(
+            FMLCommonSetupEvent.class,
+            event -> event.enqueueWork(PathogenItems::registerDispenserBehaviors)
+        );
         modBus.addListener(BuildCreativeModeTabContentsEvent.class, event -> {
             if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
                 event.accept(PathogenItems.BLOODBURSTER_SPAWN_EGG.get());
@@ -56,6 +61,7 @@ public final class PathogenesisNeoForge {
                 event.accept(PathogenItems.PATHOGEN_FUNGUS.get());
                 event.accept(PathogenItems.SPORE_PLANT.get());
                 event.accept(PathogenItems.STERILIZED_SOIL.get());
+                event.accept(PathogenItems.PATHOGEN_SOURCE.get());
             }
             if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
                 event.accept(PathogenItems.SEALED_PATHOGEN_AMPULE.get());

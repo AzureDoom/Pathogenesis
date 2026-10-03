@@ -5,6 +5,7 @@ import com.azure.pathogenesis.entity.BloodbursterEntity;
 import com.azure.pathogenesis.entity.NeomorphEntity;
 import com.azure.pathogenesis.entity.NeophyteEntity;
 import com.azure.pathogenesis.entity.SporeCloudEntity;
+import com.azure.pathogenesis.entity.ThrownPathogenAmpule;
 import com.azure.pathogenesis.platform.Services;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -25,6 +26,15 @@ public final class PathogenEntities {
             .clientTrackingRange(8)
             .updateInterval(10)
             .build(Pathogenesis.id("spore_cloud").toString())
+    );
+
+    public static final Supplier<EntityType<ThrownPathogenAmpule>> THROWN_PATHOGEN_AMPULE = register(
+        "thrown_pathogen_ampule",
+        () -> EntityType.Builder.<ThrownPathogenAmpule>of(ThrownPathogenAmpule::new, MobCategory.MISC)
+            .sized(0.25F, 0.25F)
+            .clientTrackingRange(4)
+            .updateInterval(10)
+            .build(Pathogenesis.id("thrown_pathogen_ampule").toString())
     );
 
     public static final Supplier<EntityType<BloodbursterEntity>> BLOODBURSTER = register(

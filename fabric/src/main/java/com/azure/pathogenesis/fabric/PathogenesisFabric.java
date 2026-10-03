@@ -20,6 +20,7 @@ public final class PathogenesisFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         Pathogenesis.init();
+        PathogenItems.registerDispenserBehaviors();
         PathogenEntities.registerAttributes(FabricDefaultAttributeRegistry::register);
         PathogenBlocks.flammableFlora()
             .forEach(block -> FlammableBlockRegistry.getDefaultInstance().add(block.get(), 60, 100));
@@ -44,6 +45,7 @@ public final class PathogenesisFabric implements ModInitializer {
             entries.accept(PathogenItems.PATHOGEN_FUNGUS.get());
             entries.accept(PathogenItems.SPORE_PLANT.get());
             entries.accept(PathogenItems.STERILIZED_SOIL.get());
+            entries.accept(PathogenItems.PATHOGEN_SOURCE.get());
         });
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.INGREDIENTS)
             .register(entries -> entries.accept(PathogenItems.SEALED_PATHOGEN_AMPULE.get()));
