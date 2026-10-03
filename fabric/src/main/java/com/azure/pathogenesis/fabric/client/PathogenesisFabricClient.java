@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.item.BlockItem;
 
 public final class PathogenesisFabricClient implements ClientModInitializer {
@@ -21,6 +22,8 @@ public final class PathogenesisFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         PathogenClient.registerRenderers(EntityRendererRegistry::register);
+        PathogenClient.registerBlockEntityRenderers(BlockEntityRenderers::register);
+        PathogenClient.registerItemRenderers();
         PathogenBlocks.cutoutBlocks()
             .forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block.get(), RenderType.cutout()));
         BlockRenderLayerMap.INSTANCE.putBlock(PathogenBlocks.CONTAMINATED_GRASS.get(), RenderType.cutoutMipped());

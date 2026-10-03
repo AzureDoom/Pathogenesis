@@ -19,7 +19,7 @@ public final class PathogenEntities {
 
     public static final Supplier<EntityType<SporeCloudEntity>> SPORE_CLOUD = register(
         "spore_cloud",
-        () -> EntityType.Builder.<SporeCloudEntity>of(SporeCloudEntity::new, MobCategory.MISC)
+        () -> EntityType.Builder.of(SporeCloudEntity::new, MobCategory.MISC)
             .sized(2.0F, 1.2F)
             .fireImmune()
             .clientTrackingRange(8)

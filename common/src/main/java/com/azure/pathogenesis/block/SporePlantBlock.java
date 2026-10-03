@@ -1,6 +1,7 @@
 package com.azure.pathogenesis.block;
 
 import com.azure.pathogenesis.Pathogenesis;
+import com.azure.pathogenesis.blockentity.SporePlantBlockEntity;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
 import com.azure.pathogenesis.entity.SporeCloudEntity;
 import com.azure.pathogenesis.registry.PathogenSounds;
@@ -21,6 +22,9 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -30,11 +34,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 
-@SuppressWarnings("unused")
-public class SporePlantBlock extends BushBlock {
+public class SporePlantBlock extends BushBlock implements EntityBlock {
 
     public static final MapCodec<SporePlantBlock> CODEC = simpleCodec(SporePlantBlock::new);
 
@@ -45,14 +50,6 @@ public class SporePlantBlock extends BushBlock {
     public static final BooleanProperty TRIGGERED = BooleanProperty.create("triggered");
 
     public static final int MAX_AGE = 3;
-
-    private static final int RELEASE_DELAY_MIN = 10;
-
-    private static final int RELEASE_DELAY_MAX = 16;
-
-    private static final int RECHARGE_MIN = 1200;
-
-    private static final int RECHARGE_MAX = 3600;
 
     private static final VoxelShape[] SHAPES = {
         Block.box(5.0D, 0.0D, 5.0D, 11.0D, 5.0D, 11.0D),
@@ -69,6 +66,16 @@ public class SporePlantBlock extends BushBlock {
     @Override
     protected @NotNull MapCodec<? extends BushBlock> codec() {
         return CODEC;
+    }
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+        return new SporePlantBlockEntity(pos, state);
+    }
+
+    @Override
+    protected @NotNull RenderShape getRenderShape(BlockState state) {
+        return state.getValue(AGE) == MAX_AGE ? RenderShape.ENTITYBLOCK_ANIMATED : RenderShape.MODEL;
     }
 
     @Override
@@ -92,6 +99,9 @@ public class SporePlantBlock extends BushBlock {
         @NotNull BlockPos pos,
         @NotNull CollisionContext context
     ) {
+        if (state.getValue(AGE) == MAX_AGE) {
+            return SporePodLayout.shape(pos);
+        }
         var offset = state.getOffset(level, pos);
         return SHAPES[state.getValue(AGE)].move(offset.x, offset.y, offset.z);
     }
@@ -175,7 +185,7 @@ public class SporePlantBlock extends BushBlock {
         level.scheduleTick(
             pos,
             plant,
-            RELEASE_DELAY_MIN + level.random.nextInt(RELEASE_DELAY_MAX - RELEASE_DELAY_MIN + 1)
+            10 + level.random.nextInt(16 - 10 + 1)
         );
         return true;
     }
@@ -198,8 +208,12 @@ public class SporePlantBlock extends BushBlock {
     ) {
         if (state.getValue(TRIGGERED)) {
             release(level, pos);
+            if (level.getBlockEntity(pos) instanceof SporePlantBlockEntity plant) {
+                plant.playSpray();
+            }
+            level.blockEvent(pos, this, 1, 0);
             level.setBlock(pos, state.setValue(TRIGGERED, false).setValue(READY, false), Block.UPDATE_ALL);
-            level.scheduleTick(pos, this, RECHARGE_MIN + random.nextInt(RECHARGE_MAX - RECHARGE_MIN + 1));
+            level.scheduleTick(pos, this, 1200 + random.nextInt(3600 - 1200 + 1));
         } else if (state.getValue(AGE) == MAX_AGE && !state.getValue(READY)) {
             level.setBlock(pos, state.setValue(READY, true), Block.UPDATE_ALL);
         }
@@ -242,6 +256,36 @@ public class SporePlantBlock extends BushBlock {
     }
 
     @Override
+    protected boolean triggerEvent(
+        @NotNull BlockState state,
+        @NotNull Level level,
+        @NotNull BlockPos pos,
+        int id,
+        int param
+    ) {
+        if (id != 1) {
+            return super.triggerEvent(state, level, pos, id, param);
+        }
+        if (level.isClientSide()) {
+            var random = level.getRandom();
+            for (var emitter : emitters(level, pos)) {
+                for (var i = 0; i < 8; i++) {
+                    level.addParticle(
+                        SporeCloudEntity.SPORE_DUST,
+                        emitter.x + (random.nextDouble() - 0.5D) * 0.08D,
+                        emitter.y,
+                        emitter.z + (random.nextDouble() - 0.5D) * 0.08D,
+                        (random.nextDouble() - 0.5D) * 0.12D,
+                        0.08D + random.nextDouble() * 0.08D,
+                        (random.nextDouble() - 0.5D) * 0.12D
+                    );
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
     public void animateTick(
         BlockState state,
         @NotNull Level level,
@@ -249,28 +293,32 @@ public class SporePlantBlock extends BushBlock {
         @NotNull RandomSource random
     ) {
         if (state.getValue(TRIGGERED)) {
-            for (var i = 0; i < 3; i++) {
+            for (var emitter : emitters(level, pos)) {
                 level.addParticle(
                     SporeCloudEntity.SPORE_DUST,
-                    pos.getX() + 0.5D + (random.nextDouble() - 0.5D) * 0.6D,
-                    pos.getY() + 0.7D,
-                    pos.getZ() + 0.5D + (random.nextDouble() - 0.5D) * 0.6D,
+                    emitter.x + (random.nextDouble() - 0.5D) * 0.1D,
+                    emitter.y,
+                    emitter.z + (random.nextDouble() - 0.5D) * 0.1D,
                     0.0D,
                     0.03D,
                     0.0D
                 );
             }
         } else if (isPrimed(state) && random.nextInt(10) == 0) {
-            level.addParticle(
-                SporeCloudEntity.SPORE_DUST,
-                pos.getX() + 0.5D,
-                pos.getY() + 0.9D,
-                pos.getZ() + 0.5D,
-                0.0D,
-                0.005D,
-                0.0D
-            );
+            var emitters = emitters(level, pos);
+            var emitter = emitters.get(random.nextInt(emitters.size()));
+            level.addParticle(SporeCloudEntity.SPORE_DUST, emitter.x, emitter.y, emitter.z, 0.0D, 0.005D, 0.0D);
         }
+    }
+
+    private static List<Vec3> emitters(Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof SporePlantBlockEntity plant) {
+            var points = plant.emitterPositions();
+            if (!points.isEmpty()) {
+                return points;
+            }
+        }
+        return List.of(new Vec3(pos.getX() + 0.5D, pos.getY() + 0.8D, pos.getZ() + 0.5D));
     }
 
     public int getFlammability(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {

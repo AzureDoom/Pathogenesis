@@ -31,6 +31,8 @@ public final class PathogenesisNeoForgeClient {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         PathogenClient.registerRenderers(event::registerEntityRenderer);
+        PathogenClient.registerBlockEntityRenderers(event::registerBlockEntityRenderer);
+        PathogenClient.registerItemRenderers();
     }
 
     @SubscribeEvent

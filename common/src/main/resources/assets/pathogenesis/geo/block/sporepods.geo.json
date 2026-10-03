@@ -1,0 +1,78 @@
+{
+	"format_version": "1.21.110",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 16,
+				"texture_height": 16,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [-1, 0, 1]
+				},
+				{
+					"name": "gPod",
+					"parent": "root",
+					"pivot": [-1, 0, 1],
+					"rotation": [-90, -82.5, 80],
+					"cubes": [
+						{"origin": [-2, 0, 0], "size": [2, 2, 2], "uv": [0, 9]},
+						{"origin": [-1.5, 1.25, 0.5], "size": [1, 1, 1], "inflate": 0.1, "uv": [2, 1]},
+						{"origin": [-2, 0.5, 0], "size": [2, 1, 2], "inflate": 0.2, "uv": [0, 4]}
+					]
+				},
+				{
+					"name": "particle_1",
+					"parent": "gPod",
+					"pivot": [-1.5, 2.25, 1.5],
+					"cubes": [
+						{"origin": [-1.5, 2.25, 0.5], "size": [1, 1, 1], "uv": [10, 13]}
+					]
+				},
+				{
+					"name": "gPod2",
+					"parent": "root",
+					"pivot": [1, 0, 0],
+					"rotation": [80, 80, 90],
+					"cubes": [
+						{"origin": [0, 0, -1], "size": [2, 2, 2], "uv": [0, 9]},
+						{"origin": [0.5, 1.25, -0.5], "size": [1, 1, 1], "inflate": 0.1, "uv": [2, 1]},
+						{"origin": [0, 0.5, -1], "size": [2, 1, 2], "inflate": 0.2, "uv": [0, 4]}
+					]
+				},
+				{
+					"name": "particle_2",
+					"parent": "gPod2",
+					"pivot": [0.5, 2, 0.6],
+					"cubes": [
+						{"origin": [0.5, 2, -0.4], "size": [1, 1, 1], "uv": [12, 14]}
+					]
+				},
+				{
+					"name": "gPod3",
+					"parent": "root",
+					"pivot": [-1, 0, -1],
+					"rotation": [112.58848, -64.41955, -120.0844],
+					"cubes": [
+						{"origin": [-2, 0, -2], "size": [2, 2, 2], "uv": [0, 9], "mirror": true},
+						{"origin": [-1.5, 1.25, -1.5], "size": [1, 1, 1], "inflate": 0.1, "uv": [2, 1], "mirror": true},
+						{"origin": [-2, 0.5, -2], "size": [2, 1, 2], "inflate": 0.2, "uv": [0, 4], "mirror": true}
+					]
+				},
+				{
+					"name": "particle_3",
+					"parent": "gPod3",
+					"pivot": [-1.5, 2, -0.5],
+					"cubes": [
+						{"origin": [-1.5, 2, -1.5], "size": [1, 1, 1], "uv": [12, 14]}
+					]
+				}
+			]
+		}
+	]
+}

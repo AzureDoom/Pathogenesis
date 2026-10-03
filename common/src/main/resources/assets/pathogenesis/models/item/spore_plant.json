@@ -1,6 +1,4 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "minecraft:block/crimson_fungus"
-  }
+  "parent": "pathogenesis:block/spore_plant_stage3"
 }
+

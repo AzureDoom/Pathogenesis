@@ -1,0 +1,59 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"idle": {
+			"loop": "once"
+		},
+		"spray": {
+			"loop": "once",
+			"animation_length": 0.333333,
+			"bones": {
+				"gPod": {
+					"scale": {
+						"0.041667": {
+							"vector": [1, 1, 1]
+						},
+						"0.166667": {
+							"vector": [0.95, 0.95, 0.95],
+							"easing": "easeInOutSine"
+						},
+						"0.291667": {
+							"vector": [1, 1, 1],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"gPod2": {
+					"scale": {
+						"0.083333": {
+							"vector": [1, 1, 1]
+						},
+						"0.208333": {
+							"vector": [0.95, 0.95, 0.95],
+							"easing": "easeInOutSine"
+						},
+						"0.333333": {
+							"vector": [1, 1, 1],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"gPod3": {
+					"scale": {
+						"0": {
+							"vector": [1, 1, 1]
+						},
+						"0.125": {
+							"vector": [0.95, 0.95, 0.95],
+							"easing": "easeInOutSine"
+						},
+						"0.25": {
+							"vector": [1, 1, 1],
+							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
+		}
+	}
+}
