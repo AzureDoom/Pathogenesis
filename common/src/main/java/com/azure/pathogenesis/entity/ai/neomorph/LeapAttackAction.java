@@ -10,15 +10,10 @@ import com.azure.azurecortex.runtime.CooldownTracker;
 import com.azure.azurecortex.runtime.InterruptCategory;
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.entity.NeomorphEntity;
+import com.azure.pathogenesis.entity.ai.common.PathogenBlackboardKeys;
 import net.minecraft.world.phys.Vec3;
 
 public class LeapAttackAction implements Action<NeomorphEntity, NeomorphGoal> {
-
-    public static final String COOLDOWN = "neomorph_leap_cd";
-
-    private static final int CROUCH_TICKS = 8;
-
-    private static final int MAX_FLIGHT_TICKS = 30;
 
     private final int priority;
 
@@ -50,7 +45,7 @@ public class LeapAttackAction implements Action<NeomorphEntity, NeomorphGoal> {
                 return ActionOutcome.failed(PlanFailureReason.FAILED_TARGET_LOST, agent.blockPosition());
             }
             agent.getLookControl().setLookAt(target, 90.0F, 90.0F);
-            if (ticks < CROUCH_TICKS) {
+            if (ticks < 8) {
                 return ActionOutcome.running();
             }
             var delta = target.position().subtract(agent.position());
@@ -73,7 +68,7 @@ public class LeapAttackAction implements Action<NeomorphEntity, NeomorphGoal> {
             hit = true;
             agent.doHurtTarget(target);
         }
-        if (agent.onGround() && ticks > CROUCH_TICKS + 4 || ticks > CROUCH_TICKS + MAX_FLIGHT_TICKS) {
+        if (agent.onGround() && ticks > 12 || ticks > 38) {
             return ActionOutcome.success();
         }
         return ActionOutcome.running();
@@ -81,7 +76,10 @@ public class LeapAttackAction implements Action<NeomorphEntity, NeomorphGoal> {
 
     @Override
     public void stop(NeomorphEntity agent, Blackboard blackboard, CooldownTracker cooldowns, ActionStatus reason) {
-        cooldowns.set(COOLDOWN, Pathogenesis.getConfig().entityConfigs.neomorphConfigs.neomorphLeapCooldown);
+        cooldowns.set(
+            PathogenBlackboardKeys.COOLDOWN,
+            Pathogenesis.getConfig().entityConfigs.neomorphConfigs.neomorphLeapCooldown
+        );
     }
 
     @Override

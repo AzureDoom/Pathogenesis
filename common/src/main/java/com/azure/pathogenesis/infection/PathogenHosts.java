@@ -46,13 +46,6 @@ public final class PathogenHosts {
         }
     }
 
-    public static void removeIfEmpty(LivingEntity entity) {
-        var state = HOSTS.get(entity.getUUID());
-        if (state != null && state.isEmpty()) {
-            remove(entity);
-        }
-    }
-
     static Map<UUID, HostState> snapshotForSave() {
         return new HashMap<>(HOSTS);
     }

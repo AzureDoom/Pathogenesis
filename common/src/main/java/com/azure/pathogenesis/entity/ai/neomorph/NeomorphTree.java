@@ -11,11 +11,7 @@ import com.azure.azurecortex.navigation.astar.AStarPathfinder;
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.config.PathogenesisConfig;
 import com.azure.pathogenesis.entity.NeomorphEntity;
-import com.azure.pathogenesis.entity.ai.common.DarkBiasedWanderAction;
-import com.azure.pathogenesis.entity.ai.common.MoveAwayAction;
-import com.azure.pathogenesis.entity.ai.common.PathogenHuntNode;
-import com.azure.pathogenesis.entity.ai.common.RushTargetAction;
-import com.azure.pathogenesis.entity.ai.common.WindupMeleeAction;
+import com.azure.pathogenesis.entity.ai.common.*;
 import org.jetbrains.annotations.NotNull;
 
 public final class NeomorphTree {
@@ -100,7 +96,7 @@ public final class NeomorphTree {
                 }
                 if (
                     distSqr >= 9.0D && distSqr <= 64.0D && agent.onGround()
-                        && !cooldowns.isOnCooldown(LeapAttackAction.COOLDOWN) && agent.hasLineOfSight(target)
+                        && !cooldowns.isOnCooldown(PathogenBlackboardKeys.COOLDOWN) && agent.hasLineOfSight(target)
                 ) {
                     return leap;
                 }

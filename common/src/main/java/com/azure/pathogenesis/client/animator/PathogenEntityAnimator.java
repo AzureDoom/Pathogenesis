@@ -13,8 +13,8 @@ public class PathogenEntityAnimator<T extends Entity> extends AzEntityAnimator<T
 
     private final ResourceLocation animation;
 
-    public PathogenEntityAnimator(String name) {
-        this.animation = Pathogenesis.id("animations/entity/" + name + ".animation.json");
+    public PathogenEntityAnimator(String entityName) {
+        this.animation = Pathogenesis.id("animations/entity/" + entityName + ".animation.json");
     }
 
     @Override

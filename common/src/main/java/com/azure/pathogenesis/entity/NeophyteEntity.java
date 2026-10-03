@@ -200,6 +200,7 @@ public class NeophyteEntity extends Monster implements SoundListener {
         }
     }
 
+    @SuppressWarnings("unused")
     public void onSlash(LivingEntity target) {
         animations.playOnce(this, "attack", 12);
         playSound(PathogenSounds.NEOMORPH_ATTACK.get(), 0.8F, getVoicePitch());
@@ -279,11 +280,6 @@ public class NeophyteEntity extends Monster implements SoundListener {
 
     public void setOriginZone(@Nullable UUID zone) {
         this.originZone = zone;
-    }
-
-    @Nullable
-    public UUID originZone() {
-        return originZone;
     }
 
     @Override

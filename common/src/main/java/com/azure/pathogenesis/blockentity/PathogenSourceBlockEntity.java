@@ -23,14 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-/**
- * Holds the canister's remaining Pathogen and the zone it feeds. Ticks only while DAMAGED/LEAKING/OPEN.
- * <ul>
- * <li>DAMAGED: counts down, then begins leaking on its own.</li>
- * <li>LEAKING/OPEN: drains, pulses DIRECT exposure around itself, keeps the zone's {@code sourceActive} flag set.</li>
- * <li>Empty: becomes {@link ContainmentState#EMPTY}; the zone continues on its contaminated blocks alone.</li>
- * </ul>
- */
 public class PathogenSourceBlockEntity extends BlockEntity {
 
     public static final int CAPACITY = 2400;

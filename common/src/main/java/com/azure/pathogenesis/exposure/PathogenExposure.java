@@ -3,7 +3,6 @@ package com.azure.pathogenesis.exposure;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 
-@SuppressWarnings("unused")
 public final class PathogenExposure {
 
     public static final int MAX = 200;
@@ -51,14 +50,6 @@ public final class PathogenExposure {
 
     public int exposure() {
         return exposure;
-    }
-
-    public long lastExposureTick() {
-        return lastExposureTick;
-    }
-
-    public ExposureType lastType() {
-        return lastType;
     }
 
     public CompoundTag save() {

@@ -10,5 +10,9 @@ public final class PathogenBlackboardKeys {
         LivingEntity.class
     );
 
+    public static final String COOLDOWN = "neomorph_leap_cd";
+
+    public static final String RETREAT_COOLDOWN = "neomorph_retreat_cd";
+
     private PathogenBlackboardKeys() {}
 }

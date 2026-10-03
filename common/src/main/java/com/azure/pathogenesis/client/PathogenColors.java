@@ -23,7 +23,6 @@ public final class PathogenColors {
 
     public static final int CONTAMINATED_SNOW = 0xFF9C95A2;
 
-    /** Fluid tint for contaminated water (used by the platform fluid renderers, not BlockColors). */
     public static final int CONTAMINATED_WATER = 0xFF2E2A34;
 
     private PathogenColors() {}

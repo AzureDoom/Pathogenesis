@@ -7,8 +7,6 @@ import net.minecraft.world.phys.Vec3;
 
 public class DarkBiasedWanderAction<E extends PathfinderMob, G> extends RoamAction<E, G> {
 
-    private static final int SAMPLES = 4;
-
     private final int range;
 
     public DarkBiasedWanderAction(String name, int priority, double speed, int range, int maxDuration) {
@@ -20,7 +18,7 @@ public class DarkBiasedWanderAction<E extends PathfinderMob, G> extends RoamActi
     protected Vec3 findDestination(E agent) {
         Vec3 best = null;
         var bestLight = Integer.MAX_VALUE;
-        for (var i = 0; i < SAMPLES; i++) {
+        for (var i = 0; i < 4; i++) {
             var candidate = DefaultRandomPos.getPos(agent, range, 4);
             if (candidate == null) {
                 continue;

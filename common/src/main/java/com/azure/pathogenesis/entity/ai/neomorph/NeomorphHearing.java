@@ -15,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 public final class NeomorphHearing<E extends Mob & SoundListener> implements GameEventListener {
 
-    public static final int RADIUS = 20;
-
     private final E owner;
 
     private final PositionSource source;
@@ -33,7 +31,7 @@ public final class NeomorphHearing<E extends Mob & SoundListener> implements Gam
 
     @Override
     public int getListenerRadius() {
-        return RADIUS;
+        return 20;
     }
 
     @Override

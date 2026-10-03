@@ -11,18 +11,11 @@ import com.azure.azurecortex.goap.PlannedGoal;
 import com.azure.azurecortex.runtime.CooldownTracker;
 import com.azure.pathogenesis.entity.NeomorphEntity;
 import com.azure.pathogenesis.entity.ai.common.CortexGlue;
+import com.azure.pathogenesis.entity.ai.common.PathogenBlackboardKeys;
 
 public final class NeomorphGoalPlanner implements GoalPlanner<NeomorphEntity, NeomorphGoal> {
 
     public static final float RETREAT_HEALTH = 0.30F;
-
-    public static final String RETREAT_COOLDOWN = "neomorph_retreat_cd";
-
-    public static final int RETREAT_COOLDOWN_TICKS = 400;
-
-    private static final int INVESTIGATE_MAX_AGE = 160;
-
-    private static final int SOUND_MAX_AGE = 200;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -35,10 +28,12 @@ public final class NeomorphGoalPlanner implements GoalPlanner<NeomorphEntity, Ne
         var target = blackboard.get(CommonBlackboardKeys.TARGET);
 
         if (
-            CortexGlue.healthFraction(agent) <= RETREAT_HEALTH && !cooldowns.isOnCooldown(RETREAT_COOLDOWN)
+            CortexGlue.healthFraction(agent) <= RETREAT_HEALTH && !cooldowns.isOnCooldown(
+                PathogenBlackboardKeys.RETREAT_COOLDOWN
+            )
                 && (target != null || agent.getLastHurtByMob() != null)
         ) {
-            cooldowns.set(RETREAT_COOLDOWN, RETREAT_COOLDOWN_TICKS);
+            cooldowns.set(PathogenBlackboardKeys.RETREAT_COOLDOWN, 400);
             return PlannedGoal.of(
                 NeomorphGoal.RETREAT,
                 90.0F,
@@ -84,7 +79,7 @@ public final class NeomorphGoalPlanner implements GoalPlanner<NeomorphEntity, Ne
 
         var lastSeen = blackboard.get(CommonBlackboardKeys.LAST_SEEN_POS);
         var lastSeenTick = blackboard.get(CommonBlackboardKeys.LAST_SEEN_TICK);
-        if (lastSeen != null && lastSeenTick != null && tick - lastSeenTick <= INVESTIGATE_MAX_AGE) {
+        if (lastSeen != null && lastSeenTick != null && tick - lastSeenTick <= 160) {
             return PlannedGoal.of(
                 NeomorphGoal.INVESTIGATE,
                 30.0F,
@@ -100,7 +95,7 @@ public final class NeomorphGoalPlanner implements GoalPlanner<NeomorphEntity, Ne
         }
 
         var heard = agent.heardPos();
-        if (heard != null && tick - agent.heardTick() <= SOUND_MAX_AGE) {
+        if (heard != null && tick - agent.heardTick() <= 200) {
             return PlannedGoal.of(
                 NeomorphGoal.INVESTIGATE_SOUND,
                 25.0F,

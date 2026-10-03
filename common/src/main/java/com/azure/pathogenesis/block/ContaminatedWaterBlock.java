@@ -34,7 +34,6 @@ public class ContaminatedWaterBlock extends LiquidBlock {
         super.entityInside(state, level, pos, entity);
     }
 
-    /** Buckets and dispensers can't scoop the Pathogen up and carry it out of the zone. */
     @Override
     public @NotNull ItemStack pickupBlock(
         @Nullable Player player,

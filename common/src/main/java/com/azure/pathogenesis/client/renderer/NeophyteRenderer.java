@@ -1,7 +1,7 @@
 package com.azure.pathogenesis.client.renderer;
 
 import com.azure.pathogenesis.Pathogenesis;
-import com.azure.pathogenesis.client.animator.PathogenAnimator;
+import com.azure.pathogenesis.client.animator.PathogenEntityAnimator;
 import com.azure.pathogenesis.entity.NeophyteEntity;
 import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
@@ -17,7 +17,7 @@ public class NeophyteRenderer extends AzEntityRenderer<NeophyteEntity> {
     public NeophyteRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<NeophyteEntity>builder(GEO, TEX)
-                .setAnimatorProvider(() -> new PathogenAnimator<>("neophyte"))
+                .setAnimatorProvider(() -> new PathogenEntityAnimator<>("neophyte"))
                 .build(),
             context
         );

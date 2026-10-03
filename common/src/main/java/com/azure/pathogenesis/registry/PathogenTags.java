@@ -11,6 +11,7 @@ public final class PathogenTags {
 
     private PathogenTags() {}
 
+    @SuppressWarnings("unused")
     public static final class Blocks {
 
         public static final TagKey<Block> CONTAMINATABLE = tag("contaminatable");

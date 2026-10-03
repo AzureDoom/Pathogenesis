@@ -12,10 +12,6 @@ import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Snow layer the Pathogen has soaked into. Keeps vanilla stacking and melting (block light above 11 melts it). Exposure
- * uses entityInside rather than stepOn because thin layers have no collision to step on.
- */
 public class ContaminatedSnowLayerBlock extends SnowLayerBlock {
 
     public ContaminatedSnowLayerBlock(Properties properties) {

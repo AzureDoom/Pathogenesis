@@ -1,7 +1,7 @@
 package com.azure.pathogenesis.client.renderer;
 
 import com.azure.pathogenesis.Pathogenesis;
-import com.azure.pathogenesis.client.animator.PathogenAnimator;
+import com.azure.pathogenesis.client.animator.PathogenEntityAnimator;
 import com.azure.pathogenesis.entity.BloodbursterEntity;
 import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
@@ -17,7 +17,7 @@ public class BloodbursterRenderer extends AzEntityRenderer<BloodbursterEntity> {
     public BloodbursterRenderer(EntityRendererProvider.Context context) {
         super(
             AzEntityRendererConfig.<BloodbursterEntity>builder(GEO, TEX)
-                .setAnimatorProvider(() -> new PathogenAnimator<>("bloodburster"))
+                .setAnimatorProvider(() -> new PathogenEntityAnimator<>("bloodburster"))
                 .build(),
             context
         );

@@ -11,10 +11,6 @@ import com.azure.pathogenesis.entity.NeomorphEntity;
 
 public class StalkTargetAction implements Action<NeomorphEntity, NeomorphGoal> {
 
-    private static final double STALK_SPEED = 0.55D;
-
-    private static final double CLOSE_ENOUGH_SQR = 100.0D;
-
     private final int priority;
 
     private int repath;
@@ -35,13 +31,13 @@ public class StalkTargetAction implements Action<NeomorphEntity, NeomorphGoal> {
         if (target == null || !target.isAlive()) {
             return ActionOutcome.failed(PlanFailureReason.FAILED_TARGET_LOST, agent.blockPosition());
         }
-        if (agent.distanceToSqr(target) <= CLOSE_ENOUGH_SQR || !agent.shouldStalk(target)) {
+        if (agent.distanceToSqr(target) <= 100D || !agent.shouldStalk(target)) {
             return ActionOutcome.success();
         }
         agent.getLookControl().setLookAt(target, 10.0F, 10.0F);
         if (--repath <= 0) {
             repath = 20;
-            if (!agent.getNavigation().moveTo(target, STALK_SPEED)) {
+            if (!agent.getNavigation().moveTo(target, 0.55D)) {
                 return ActionOutcome.failed(PlanFailureReason.FAILED_NO_PATH, target.blockPosition());
             }
         }

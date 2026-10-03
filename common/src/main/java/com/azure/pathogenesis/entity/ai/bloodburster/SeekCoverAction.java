@@ -13,8 +13,6 @@ import net.minecraft.world.phys.Vec3;
 
 public class SeekCoverAction extends PathogenAction<BloodbursterEntity, BloodbursterGoal> {
 
-    private static final int SAMPLES = 10;
-
     private int ticks;
 
     public SeekCoverAction(int priority) {
@@ -31,7 +29,7 @@ public class SeekCoverAction extends PathogenAction<BloodbursterEntity, Bloodbur
     }
 
     private static Vec3 findCover(BloodbursterEntity agent) {
-        for (var i = 0; i < SAMPLES; i++) {
+        for (var i = 0; i < 10; i++) {
             var candidate = DefaultRandomPos.getPos(agent, 10, 4);
             if (candidate != null && BloodbursterEntity.isCovered(agent.level(), BlockPos.containing(candidate))) {
                 return candidate;

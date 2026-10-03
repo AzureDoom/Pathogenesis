@@ -42,16 +42,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 
-/**
- * The Pathogen Source: a containment canister. Nothing happens until a player, projectile or explosion breaches it,
- * every zone traces back to one of these events.
- * <ul>
- * <li>Hit (attack / projectile): SEALED → DAMAGED → LEAKING → OPEN.</li>
- * <li>DAMAGED left alone starts leaking by itself after a short delay (block entity timer).</li>
- * <li>Broken by hand: ruptures. Silk Touch on a SEALED source safely recovers a Sealed Pathogen Ampule.</li>
- * <li>Explosion: strongest rupture.</li>
- * </ul>
- */
 public class PathogenSourceBlock extends BaseEntityBlock {
 
     public static final MapCodec<PathogenSourceBlock> CODEC = simpleCodec(PathogenSourceBlock::new);

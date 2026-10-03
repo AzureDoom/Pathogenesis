@@ -46,7 +46,6 @@ public abstract class ContaminatedWaterFluid extends FlowingFluid {
         return PathogenFluids.CONTAMINATED_WATER.get();
     }
 
-    /** No bucket: {@code ContaminatedWaterBlock#pickupBlock} refuses pickup, so this is never handed out. */
     @Override
     public @NotNull Item getBucket() {
         return Items.AIR;
@@ -83,7 +82,7 @@ public abstract class ContaminatedWaterFluid extends FlowingFluid {
         return 100.0F;
     }
 
-    /** Mirrors water: only non-water fluids falling from above may replace it. */
+    @SuppressWarnings("deprecation")
     @Override
     protected boolean canBeReplacedWith(
         @NotNull FluidState state,
