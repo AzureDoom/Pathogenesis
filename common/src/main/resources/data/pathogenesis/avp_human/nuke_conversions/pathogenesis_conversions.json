@@ -1,0 +1,12 @@
+{
+  "conversions": [
+    {
+      "from": "#pathogenesis:contaminatable_soil",
+      "to": "pathogenesis:sterilized_soil"
+    },
+    {
+      "from": "#pathogenesis:contaminatable_plants",
+      "to": "minecraft:air"
+    }
+  ]
+}
