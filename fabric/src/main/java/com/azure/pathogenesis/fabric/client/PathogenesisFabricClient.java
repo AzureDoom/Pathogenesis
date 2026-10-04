@@ -5,7 +5,6 @@ import com.azure.pathogenesis.client.dispatch.PathogenClient;
 import com.azure.pathogenesis.client.sound.ContaminationAmbience;
 import com.azure.pathogenesis.registry.PathogenBlocks;
 import com.azure.pathogenesis.registry.PathogenFluids;
-import com.azure.pathogenesis.registry.PathogenItems;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -34,10 +33,6 @@ public final class PathogenesisFabricClient implements ClientModInitializer {
         ColorProviderRegistry.ITEM.register(
             (stack, tintIndex) -> PathogenColors.tint(((BlockItem) stack.getItem()).getBlock(), tintIndex),
             PathogenColors.tintedBlocks()
-        );
-        ColorProviderRegistry.ITEM.register(
-            (stack, tintIndex) -> PathogenColors.ampuleTint(tintIndex),
-            PathogenItems.SEALED_PATHOGEN_AMPULE.get()
         );
         ClientTickEvents.END_CLIENT_TICK.register(ContaminationAmbience::tick);
         var still = PathogenFluids.CONTAMINATED_WATER.get();

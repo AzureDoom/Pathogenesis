@@ -19,8 +19,6 @@ public final class PathogenColors {
 
     public static final int PATHOGEN_FUNGUS = 0xFF5A5660;
 
-    public static final int PATHOGEN_LIQUID = 0xFF141218;
-
     public static final int CONTAMINATED_SNOW = 0xFF9C95A2;
 
     public static final int CONTAMINATED_WATER = 0xFF2E2A34;
@@ -66,9 +64,5 @@ public final class PathogenColors {
             PathogenBlocks.PATHOGEN_FUNGUS.get(),
             PathogenBlocks.STERILIZED_SOIL.get()
         };
-    }
-
-    public static int ampuleTint(int tintIndex) {
-        return tintIndex == 0 ? PATHOGEN_LIQUID : -1;
     }
 }

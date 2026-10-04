@@ -1,23 +1,21 @@
 package com.azure.pathogenesis.client.renderer;
 
-import com.azure.pathogenesis.Pathogenesis;
+import com.azure.pathogenesis.client.PathogenResources;
 import com.azure.pathogenesis.client.animator.PathogenEntityAnimator;
 import com.azure.pathogenesis.entity.NeophyteEntity;
 import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 
 public class NeophyteRenderer extends AzEntityRenderer<NeophyteEntity> {
 
-    private static final ResourceLocation GEO = Pathogenesis.id("geo/entity/neophyte.geo.json");
-
-    private static final ResourceLocation TEX = Pathogenesis.id("textures/entity/neophyte.png");
-
     public NeophyteRenderer(EntityRendererProvider.Context context) {
         super(
-            AzEntityRendererConfig.<NeophyteEntity>builder(GEO, TEX)
-                .setAnimatorProvider(() -> new PathogenEntityAnimator<>("neophyte"))
+            AzEntityRendererConfig.<NeophyteEntity>builder(
+                PathogenResources.NEOPHYTE.geo(),
+                PathogenResources.NEOPHYTE.texture()
+            )
+                .setAnimatorProvider(PathogenEntityAnimator::new)
                 .build(),
             context
         );

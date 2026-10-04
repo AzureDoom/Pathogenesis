@@ -1,7 +1,7 @@
 package com.azure.pathogenesis.client.animator;
 
-import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.blockentity.SporePlantBlockEntity;
+import com.azure.pathogenesis.client.PathogenResources;
 import mod.azure.azurelib.common.animation.AzAnimatorConfig;
 import mod.azure.azurelib.common.animation.controller.AzAnimationController;
 import mod.azure.azurelib.common.animation.controller.AzAnimationControllerContainer;
@@ -10,8 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class SporePlantAnimator extends AzBlockAnimator<SporePlantBlockEntity> {
-
-    private static final ResourceLocation ANIMATION = Pathogenesis.id("animations/block/sporepods.animation.json");
 
     public SporePlantAnimator() {
         super(AzAnimatorConfig.defaultConfig());
@@ -24,6 +22,6 @@ public class SporePlantAnimator extends AzBlockAnimator<SporePlantBlockEntity> {
 
     @Override
     public @NotNull ResourceLocation getAnimationLocation(SporePlantBlockEntity blockEntity) {
-        return ANIMATION;
+        return PathogenResources.SPOREPODS.animation();
     }
 }

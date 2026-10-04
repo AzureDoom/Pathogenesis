@@ -6,7 +6,6 @@ import com.azure.pathogenesis.client.dispatch.PathogenClient;
 import com.azure.pathogenesis.client.sound.ContaminationAmbience;
 import com.azure.pathogenesis.neoforge.PathogenFluidTypes;
 import com.azure.pathogenesis.registry.PathogenFluids;
-import com.azure.pathogenesis.registry.PathogenItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -48,10 +47,6 @@ public final class PathogenesisNeoForgeClient {
         event.register(
             (stack, tintIndex) -> PathogenColors.tint(((BlockItem) stack.getItem()).getBlock(), tintIndex),
             PathogenColors.tintedBlocks()
-        );
-        event.register(
-            (stack, tintIndex) -> PathogenColors.ampuleTint(tintIndex),
-            PathogenItems.SEALED_PATHOGEN_AMPULE.get()
         );
     }
 
