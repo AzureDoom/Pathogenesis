@@ -261,12 +261,6 @@ public class PathogenesisConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("Chance per random tick that a primed spore plant self-sporulates in dry weather.")
-        @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
-        public double drySporulationChance = 0.08D;
-
-        @Configurable
-        @Configurable.Synchronized
         @Configurable.Comment("Spread speed multiplier for chilled zones. Contamination goes dormant, never away.")
         @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
         public double coldSpreadMultiplier = 0.25D;
@@ -328,9 +322,9 @@ public class PathogenesisConfig {
 
         @Configurable
         @Configurable.Synchronized
-        @Configurable.Comment("Chance per random tick that a primed spore plant fires during a thaw surge.")
+        @Configurable.Comment("Chance that probing a primed spore pod sets it off.")
         @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
-        public double thawSporulationChance = 0.35D;
+        public double samplerPodTriggerChance = 0.3D;
     }
 
     @Configurable
