@@ -24,6 +24,8 @@ public final class PathogenCreativeTabs {
 
     private static final ResourceKey<CreativeModeTab> SPAWN_EGGS = vanillaTab("spawn_eggs");
 
+    private static final ResourceKey<CreativeModeTab> TOOLS_AND_UTILITIES = vanillaTab("tools_and_utilities");
+
     static {
         tab(
             SPAWN_EGGS,
@@ -44,6 +46,10 @@ public final class PathogenCreativeTabs {
             item(PathogenItems.SPORE_PLANT),
             item(PathogenItems.STERILIZED_SOIL),
             item(PathogenItems.PATHOGEN_SOURCE)
+        );
+        tab(
+            TOOLS_AND_UTILITIES,
+            item(PathogenItems.PATHOGEN_SAMPLER)
         );
         tab(
             INGREDIENTS,

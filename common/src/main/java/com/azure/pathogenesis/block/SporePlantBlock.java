@@ -124,7 +124,7 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
 
     @Override
     protected boolean isRandomlyTicking(BlockState state) {
-        return !state.getValue(TRIGGERED);
+        return state.getValue(AGE) < MAX_AGE || !state.getValue(READY) && !state.getValue(TRIGGERED);
     }
 
     @Override
@@ -134,10 +134,6 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
         @NotNull BlockPos pos,
         @NotNull RandomSource random
     ) {
-        if (isPrimed(state)) {
-            trySpontaneousRelease(level, pos, state, random);
-            return;
-        }
         var rate = Pathogenesis.getConfig().floraConfigs.pathogenPlantGrowthRate
             * PathogenClimate.floraGrowthMultiplier(level, pos);
         if (rate <= 0.0D || random.nextDouble() > Math.min(1.0D, 0.25D * rate)) {
@@ -151,20 +147,6 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
             !state.getValue(READY) && !state.getValue(TRIGGERED) && !level.getBlockTicks().hasScheduledTick(pos, this)
         ) {
             level.setBlock(pos, state.setValue(READY, true), Block.UPDATE_ALL);
-        }
-    }
-
-    private static void trySpontaneousRelease(ServerLevel level, BlockPos pos, BlockState state, RandomSource random) {
-        var climate = Pathogenesis.getConfig().climateConfigs;
-        var chance = climate.drySporulationChance * PathogenClimate.dryness(level, pos);
-        if (climate.weatherEffectsEnabled && climate.thawSporulationChance > chance) {
-            var zone = PathogenZoneManager.findZone(level, pos);
-            if (zone != null && zone.isThawing(level.getGameTime())) {
-                chance = climate.thawSporulationChance;
-            }
-        }
-        if (chance > 0.0D && random.nextDouble() < chance) {
-            trigger(level, pos, state);
         }
     }
 

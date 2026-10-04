@@ -33,6 +33,8 @@ public final class PathogenTriggers {
 
     public static final String ZONE_ERADICATED = "zone_eradicated";
 
+    public static final String FIELD_SAMPLE = "field_sample";
+
     private PathogenTriggers() {}
 
     public static void trigger(ServerPlayer player, String event) {

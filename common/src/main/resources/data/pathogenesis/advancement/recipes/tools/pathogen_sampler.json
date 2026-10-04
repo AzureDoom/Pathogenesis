@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_contaminated_soil": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "pathogenesis:contaminated_dirt",
+              "pathogenesis:contaminated_grass",
+              "pathogenesis:contaminated_moss"
+            ]
+          }
+        ]
+      }
+    },
+    "has_ampule": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "pathogenesis:sealed_pathogen_ampule"
+          }
+        ]
+      }
+    },
+    "witnessed_rupture": {
+      "trigger": "pathogenesis:event",
+      "conditions": {
+        "event": "rupture_witnessed"
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "pathogenesis:pathogen_sampler"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_contaminated_soil",
+      "has_ampule",
+      "witnessed_rupture",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "pathogenesis:pathogen_sampler"
+    ]
+  }
+}

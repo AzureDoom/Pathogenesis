@@ -26,6 +26,7 @@ public final class Pathogenesis {
     public static void init() {
         config = AzureLibMod.registerConfig(PathogenesisConfig.class, ConfigFormats.json()).getConfigInstance();
         PathogenSounds.init();
+        PathogenDataComponents.init();
         PathogenFluids.init();
         PathogenBlocks.init();
         PathogenBlockEntities.init();

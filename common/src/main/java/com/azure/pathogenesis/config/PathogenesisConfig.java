@@ -294,6 +294,37 @@ public class PathogenesisConfig {
         @Configurable.Comment("Ticks of accelerated spread and sporulation after a chilled zone thaws.")
         @Configurable.Range(min = 0, max = 72000)
         public int thawSurgeTicks = 2400;
+    }
+
+    @Configurable
+    @Configurable.Synchronized
+    public SamplerConfigs samplerConfigs = new SamplerConfigs();
+
+    public static class SamplerConfigs {
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Pathogen Sampler durability. Read at startup (restart to apply).")
+        @Configurable.Range(min = 1, max = 4096)
+        public int samplerDurability = 64;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Ticks between samples.")
+        @Configurable.Range(min = 0, max = 200)
+        public int samplerCooldown = 20;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Contact exposure from sampling contaminated ground, water or flora. 0 disables.")
+        @Configurable.Range(min = 0, max = 60)
+        public int samplerContactExposure = 2;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Direct exposure from sampling a leaking or open source. 0 disables.")
+        @Configurable.Range(min = 0, max = 200)
+        public int samplerSourceExposure = 6;
 
         @Configurable
         @Configurable.Synchronized

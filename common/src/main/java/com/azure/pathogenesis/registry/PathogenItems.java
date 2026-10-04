@@ -1,6 +1,8 @@
 package com.azure.pathogenesis.registry;
 
+import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.item.PathogenAmpuleItem;
+import com.azure.pathogenesis.item.PathogenSamplerItem;
 import com.azure.pathogenesis.item.PathogenSourceItem;
 import com.azure.pathogenesis.platform.Services;
 import net.minecraft.core.registries.Registries;
@@ -17,6 +19,13 @@ public final class PathogenItems {
     public static final Supplier<PathogenAmpuleItem> SEALED_PATHOGEN_AMPULE = register(
         "sealed_pathogen_ampule",
         () -> new PathogenAmpuleItem(new Item.Properties().stacksTo(4).rarity(Rarity.EPIC))
+    );
+
+    public static final Supplier<PathogenSamplerItem> PATHOGEN_SAMPLER = register(
+        "pathogen_sampler",
+        () -> new PathogenSamplerItem(
+            new Item.Properties().durability(Pathogenesis.getConfig().samplerConfigs.samplerDurability)
+        )
     );
 
     public static final Supplier<PathogenSourceItem> PATHOGEN_SOURCE = register(

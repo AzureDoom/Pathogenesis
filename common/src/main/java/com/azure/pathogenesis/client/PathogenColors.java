@@ -1,6 +1,9 @@
 package com.azure.pathogenesis.client;
 
+import com.azure.pathogenesis.item.sampler.SampleResult;
 import com.azure.pathogenesis.registry.PathogenBlocks;
+import com.azure.pathogenesis.registry.PathogenDataComponents;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 public final class PathogenColors {
@@ -50,6 +53,17 @@ public final class PathogenColors {
             return PATHOGEN_FUNGUS;
         }
         return CONTAMINATED_SOIL;
+    }
+
+    /**
+     * Pathogen Sampler: layer 0 (body) is untinted, layer 1 (vial contents) shows the last reading.
+     */
+    public static int sampler(ItemStack stack, int tintIndex) {
+        if (tintIndex != 1) {
+            return -1;
+        }
+        var last = stack.get(PathogenDataComponents.SAMPLE_RESULT.get());
+        return (last == null ? SampleResult.CLEAN : last).vialColor;
     }
 
     public static Block[] tintedBlocks() {

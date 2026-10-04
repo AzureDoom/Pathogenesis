@@ -4,6 +4,7 @@ import com.azure.pathogenesis.blockentity.PathogenSourceBlockEntity;
 import com.azure.pathogenesis.contamination.ContainmentState;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
 import com.azure.pathogenesis.contamination.RuptureStrength;
+import com.azure.pathogenesis.item.PathogenSamplerItem;
 import com.azure.pathogenesis.registry.PathogenBlockEntities;
 import com.azure.pathogenesis.registry.PathogenItems;
 import com.azure.pathogenesis.registry.PathogenSounds;
@@ -147,6 +148,9 @@ public class PathogenSourceBlock extends BaseEntityBlock {
         @NotNull InteractionHand hand,
         @NotNull BlockHitResult hit
     ) {
+        if (stack.getItem() instanceof PathogenSamplerItem) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
         var containment = state.getValue(CONTAINMENT);
         var intact = containment == ContainmentState.SEALED || containment == ContainmentState.DAMAGED;
         if (stack.is(Items.POWDER_SNOW_BUCKET) && intact && !state.getValue(PACKED)) {
