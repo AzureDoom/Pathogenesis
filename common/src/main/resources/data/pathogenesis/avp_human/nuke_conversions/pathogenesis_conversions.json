@@ -5,8 +5,20 @@
       "to": "pathogenesis:sterilized_soil"
     },
     {
-      "from": "#pathogenesis:contaminatable_plants",
+      "from": "#pathogenesis:pathogen_growth",
       "to": "minecraft:air"
+    },
+    {
+      "from": "#pathogenesis:spore_plants",
+      "to": "minecraft:air"
+    },
+    {
+      "from": "pathogenesis:contaminated_roots",
+      "to": "minecraft:air"
+    },
+    {
+      "from": "pathogenesis:contaminated_water",
+      "to": "minecraft:water"
     }
   ]
 }
