@@ -1,5 +1,6 @@
 package com.azure.pathogenesis.block;
 
+import com.azure.pathogenesis.client.outbreak.ClientOutbreakState;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -47,7 +48,7 @@ public class PathogenFungusBlock extends PathogenGrowthBlock {
         @NotNull BlockPos pos,
         RandomSource random
     ) {
-        if (random.nextInt(12) == 0) {
+        if (ClientOutbreakState.roll(level, pos, 1.0F / 12.0F, random.nextFloat())) {
             level.addParticle(
                 PathogenZoneManager.PATHOGEN_DUST,
                 pos.getX() + 0.5D + (random.nextDouble() - 0.5D) * 0.5D,

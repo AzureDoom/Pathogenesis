@@ -1,10 +1,11 @@
 package com.azure.pathogenesis.contamination;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Locale;
 
 public enum PathogenStage {
 
-    DORMANT,
     RELEASED,
     CONTAMINATING,
     SPORULATING,
@@ -45,12 +46,18 @@ public enum PathogenStage {
         return name().toLowerCase(Locale.ROOT);
     }
 
-    public static PathogenStage byId(String id) {
+    @Nullable
+    public static PathogenStage byIdOrNull(String id) {
         for (var stage : values()) {
             if (stage.id().equals(id)) {
                 return stage;
             }
         }
-        return RELEASED;
+        return null;
+    }
+
+    public static PathogenStage byId(String id) {
+        var stage = byIdOrNull(id);
+        return stage == null ? RELEASED : stage;
     }
 }

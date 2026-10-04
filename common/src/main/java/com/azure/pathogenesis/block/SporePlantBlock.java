@@ -2,6 +2,7 @@ package com.azure.pathogenesis.block;
 
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.blockentity.SporePlantBlockEntity;
+import com.azure.pathogenesis.client.outbreak.ClientOutbreakState;
 import com.azure.pathogenesis.contamination.PathogenClimate;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
 import com.azure.pathogenesis.entity.SporeCloudEntity;
@@ -135,7 +136,8 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
         @NotNull RandomSource random
     ) {
         var rate = Pathogenesis.getConfig().floraConfigs.pathogenPlantGrowthRate
-            * PathogenClimate.floraGrowthMultiplier(level, pos);
+            * PathogenClimate.floraGrowthMultiplier(level, pos)
+            * PathogenZoneManager.floraActivity(level, pos);
         if (rate <= 0.0D || random.nextDouble() > Math.min(1.0D, 0.25D * rate)) {
             return;
         }
@@ -214,7 +216,9 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
         if (depth >= config.podCascadeMaxDepth) {
             return;
         }
-        var chance = config.podCascadeChance * PathogenClimate.sporeActivity(level, pos);
+        var chance = config.podCascadeChance
+            * PathogenClimate.sporeActivity(level, pos)
+            * PathogenZoneManager.floraActivity(level, pos);
         if (chance <= 0.0D || random.nextDouble() >= chance) {
             return;
         }
@@ -265,7 +269,8 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
             }
             level.blockEvent(pos, this, 1, 0);
             level.setBlock(pos, state.setValue(TRIGGERED, false).setValue(READY, false), Block.UPDATE_ALL);
-            var recharge = (1200 + random.nextInt(3600 - 1200 + 1)) * PathogenClimate.rechargeMultiplier(level, pos);
+            var recharge = (1200 + random.nextInt(3600 - 1200 + 1)) * PathogenClimate.rechargeMultiplier(level, pos)
+                / Math.max(0.1F, PathogenZoneManager.floraActivity(level, pos));
             level.scheduleTick(pos, this, Math.max(200, Math.round(recharge)));
             tryCascade(level, pos, random);
         } else if (state.getValue(AGE) == MAX_AGE && !state.getValue(READY)) {
@@ -358,7 +363,7 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
                     0.0D
                 );
             }
-        } else if (isPrimed(state) && random.nextInt(10) == 0) {
+        } else if (isPrimed(state) && ClientOutbreakState.roll(level, pos, 0.1F, random.nextFloat())) {
             var emitters = emitters(level, pos);
             var emitter = emitters.get(random.nextInt(emitters.size()));
             level.addParticle(SporeCloudEntity.SPORE_DUST, emitter.x, emitter.y, emitter.z, 0.0D, 0.005D, 0.0D);

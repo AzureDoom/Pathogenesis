@@ -1,9 +1,11 @@
 package com.azure.pathogenesis.neoforge;
 
 import com.azure.pathogenesis.Pathogenesis;
+import com.azure.pathogenesis.client.outbreak.ClientOutbreakState;
 import com.azure.pathogenesis.command.PathogenCommands;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
 import com.azure.pathogenesis.neoforge.platform.NeoForgeRegistryHelper;
+import com.azure.pathogenesis.network.OutbreakStatePayload;
 import com.azure.pathogenesis.registry.PathogenCreativeTabs;
 import com.azure.pathogenesis.registry.PathogenEntities;
 import com.azure.pathogenesis.registry.PathogenItems;
@@ -17,6 +19,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 @Mod(Pathogenesis.MOD_ID)
 public final class PathogenesisNeoForge {
@@ -39,6 +42,15 @@ public final class PathogenesisNeoForge {
         NeoForge.EVENT_BUS.addListener(
             RegisterCommandsEvent.class,
             event -> PathogenCommands.register(event.getDispatcher())
+        );
+        modBus.addListener(
+            RegisterPayloadHandlersEvent.class,
+            event -> event.registrar("1")
+                .playToClient(
+                    OutbreakStatePayload.TYPE,
+                    OutbreakStatePayload.STREAM_CODEC,
+                    (payload, context) -> ClientOutbreakState.accept(payload)
+                )
         );
         modBus.addListener(
             FMLCommonSetupEvent.class,

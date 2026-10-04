@@ -49,6 +49,7 @@ public final class PathogenZoneManager {
         var data = PathogenSavedData.get(level);
         var now = level.getGameTime();
         CarcassSites.tick(level, data, now);
+        OutbreakSync.tick(level, data.zoneList(), now);
         if (!config.contaminationConfigs.pathogenSpreadEnabled || data.zoneList().isEmpty()) {
             return;
         }
@@ -66,7 +67,7 @@ public final class PathogenZoneManager {
             if (PathogenClimate.updateZone(level, zone, now)) {
                 data.setDirty();
             }
-            if (updatePhase(zone)) {
+            if (updatePhase(level, zone)) {
                 data.setDirty();
             }
             var contamination = config.contaminationConfigs;
@@ -121,7 +122,7 @@ public final class PathogenZoneManager {
         }
         zone.reconcile(census.count(), census.flora(), Pathogenesis.getConfig().contaminationConfigs.pathogenMaxRadius);
         zone.setNextCensusTick(now + CENSUS_INTERVAL);
-        updatePhase(zone);
+        updatePhase(level, zone);
         data.setDirty();
 
         var eradicated = census.count() == 0
@@ -134,6 +135,7 @@ public final class PathogenZoneManager {
 
     private static void eradicate(ServerLevel level, PathogenSavedData data, PathogenZone zone) {
         data.remove(zone.id());
+        OutbreakSync.pushNearby(level, zone);
         PathogenTriggers.triggerNearby(
             level,
             Vec3.atCenterOf(zone.origin()),
@@ -153,7 +155,7 @@ public final class PathogenZoneManager {
         var zone = findOrCreateZone(level, pos);
         if (sourceRemains) {
             zone.setSourceActive(true);
-            updatePhase(zone);
+            updatePhase(level, zone);
         }
 
         contaminateSphere(level, zone, pos, strength.burstRadius, 0.65F);
@@ -215,7 +217,7 @@ public final class PathogenZoneManager {
         var zone = data.get(zoneId);
         if (zone != null && zone.isSourceActive()) {
             zone.setSourceActive(false);
-            updatePhase(zone);
+            updatePhase(level, zone);
             data.setDirty();
         }
     }
@@ -228,7 +230,7 @@ public final class PathogenZoneManager {
         return whole + (roll < budget - whole ? 1 : 0);
     }
 
-    private static boolean updatePhase(PathogenZone zone) {
+    private static boolean updatePhase(ServerLevel level, PathogenZone zone) {
         var previous = zone.updatePhase(Pathogenesis.getConfig().contaminationConfigs.ecologicalFloraThreshold);
         if (previous == null) {
             return false;
@@ -242,6 +244,7 @@ public final class PathogenZoneManager {
             zone.stage().id(),
             zone.flora()
         );
+        OutbreakCues.onPhaseChange(level, zone, previous);
         return true;
     }
 
@@ -262,12 +265,18 @@ public final class PathogenZoneManager {
         return zone == null ? null : zone.id();
     }
 
+    public static float floraActivity(ServerLevel level, BlockPos pos) {
+        var zone = findZone(level, pos);
+        return zone == null ? 1.0F : zone.phase().activity();
+    }
+
     public static List<PathogenZone> zones(ServerLevel level) {
         return PathogenSavedData.get(level).zoneList();
     }
 
     public static void clearTransientState() {
         STATES.clear();
+        OutbreakSync.clear();
     }
 
     private static final class LevelState {

@@ -31,6 +31,8 @@ public final class PathogenTriggers {
 
     public static final String ZONE_ESTABLISHED = "zone_established";
 
+    public static final String ZONE_ECOLOGICAL = "zone_ecological";
+
     public static final String ZONE_ERADICATED = "zone_eradicated";
 
     public static final String FIELD_SAMPLE = "field_sample";

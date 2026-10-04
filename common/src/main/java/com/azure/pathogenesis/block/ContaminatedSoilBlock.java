@@ -1,5 +1,6 @@
 package com.azure.pathogenesis.block;
 
+import com.azure.pathogenesis.client.outbreak.ClientOutbreakState;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
 import com.azure.pathogenesis.exposure.ExposureType;
 import com.azure.pathogenesis.exposure.PathogenExposureHelper;
@@ -41,7 +42,10 @@ public class ContaminatedSoilBlock extends Block {
         @NotNull BlockPos pos,
         RandomSource random
     ) {
-        if (random.nextInt(24) == 0 && level.getBlockState(pos.above()).isAir()) {
+        if (
+            ClientOutbreakState.roll(level, pos, 1.0F / 24.0F, random.nextFloat())
+                && level.getBlockState(pos.above()).isAir()
+        ) {
             level.addParticle(
                 PathogenZoneManager.PATHOGEN_DUST,
                 pos.getX() + random.nextDouble(),

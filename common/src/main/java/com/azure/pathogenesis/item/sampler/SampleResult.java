@@ -52,7 +52,7 @@ public enum SampleResult implements StringRepresentable {
             return CLEAN;
         }
         return switch (stage) {
-            case DORMANT, RELEASED -> TRACE;
+            case RELEASED -> TRACE;
             case CONTAMINATING -> ACTIVE;
             case SPORULATING -> SPORULATING;
             case ESTABLISHED -> ESTABLISHED;

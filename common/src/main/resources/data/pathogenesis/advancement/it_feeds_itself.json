@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "pathogenesis:spore_plant"
+    },
+    "title": {
+      "translate": "advancement.pathogenesis.it_feeds_itself"
+    },
+    "description": {
+      "translate": "advancement.pathogenesis.it_feeds_itself.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "event": {
+      "trigger": "pathogenesis:event",
+      "conditions": {
+        "event": "zone_ecological"
+      }
+    }
+  },
+  "parent": "pathogenesis:containment_failure"
+}

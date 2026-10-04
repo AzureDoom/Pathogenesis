@@ -7,23 +7,21 @@ import net.minecraft.sounds.SoundSource;
 
 public class ContaminationLoopSound extends AbstractTickableSoundInstance {
 
-    private static final float MAX_VOLUME = 0.6F;
-
-    private static final float FADE = 0.04F;
-
     public ContaminationLoopSound() {
         super(PathogenSounds.CONTAMINATION_AMBIENT.get(), SoundSource.AMBIENT, SoundInstance.createUnseededRandom());
         this.looping = true;
         this.delay = 0;
         this.volume = 0.01F;
+        this.pitch = ContaminationAmbience.pitch();
         this.relative = true;
         this.attenuation = Attenuation.NONE;
     }
 
     @Override
     public void tick() {
-        var goal = ContaminationAmbience.intensity() * MAX_VOLUME;
-        volume += (goal - volume) * FADE;
+        var goal = ContaminationAmbience.targetIntensity() * 0.6F;
+        volume += (goal - volume) * 0.04F;
+        pitch += (ContaminationAmbience.pitch() - pitch) * 0.02F;
         if (goal <= 0.0F && volume < 0.01F) {
             stop();
         }

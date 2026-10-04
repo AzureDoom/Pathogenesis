@@ -18,7 +18,8 @@ final class PathogenFlora {
             return false;
         }
         var rate = Pathogenesis.getConfig().floraConfigs.pathogenPlantGrowthRate
-            * PathogenClimate.zoneFloraActivity(zone, level.getGameTime());
+            * PathogenClimate.zoneFloraActivity(zone, level.getGameTime())
+            * zone.phase().activity();
         var above = soilPos.above();
         var aboveState = level.getBlockState(above);
 

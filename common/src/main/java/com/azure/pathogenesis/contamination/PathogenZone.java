@@ -1,5 +1,6 @@
 package com.azure.pathogenesis.contamination;
 
+import com.azure.pathogenesis.Pathogenesis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -186,9 +187,7 @@ public final class PathogenZone {
 
     private void recompute(int maxRadius) {
         this.radius = Mth.clamp(4 + (int) Math.sqrt(contamination * 6.0D), 4, maxRadius);
-        if (stage != PathogenStage.DORMANT) {
-            this.stage = PathogenStage.forContamination(contamination, radius, maxRadius);
-        }
+        this.stage = PathogenStage.forContamination(contamination, radius, maxRadius);
     }
 
     public boolean couldContain(BlockPos pos, int maxRadius) {
@@ -224,7 +223,14 @@ public final class PathogenZone {
         );
         zone.radius = Math.max(4, tag.getInt("Radius"));
         zone.contamination = tag.getInt("Contamination");
-        zone.stage = PathogenStage.byId(tag.getString("Stage"));
+        var stage = PathogenStage.byIdOrNull(tag.getString("Stage"));
+        zone.stage = stage != null
+            ? stage
+            : PathogenStage.forContamination(
+                zone.contamination,
+                zone.radius,
+                Pathogenesis.getConfig().contaminationConfigs.pathogenMaxRadius
+            );
         zone.sourceActive = tag.getBoolean("SourceActive");
         zone.nextCensusTick = tag.getLong("NextCensus");
         zone.chill = tag.getFloat("Chill");

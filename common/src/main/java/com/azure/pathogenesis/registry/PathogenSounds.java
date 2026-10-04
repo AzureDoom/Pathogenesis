@@ -21,6 +21,8 @@ public final class PathogenSounds {
 
     public static final Supplier<SoundEvent> PATHOGEN_LEAK = register("block.pathogen_source.leak");
 
+    public static final Supplier<SoundEvent> OUTBREAK_ECOLOGICAL = register("ambient.outbreak.ecological");
+
     public static final Supplier<SoundEvent> HOST_COUGH = register("entity.host.cough");
 
     public static final Supplier<SoundEvent> HOST_HEARTBEAT = register("entity.host.heartbeat");

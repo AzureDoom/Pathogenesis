@@ -3,6 +3,7 @@ package com.azure.pathogenesis.fabric;
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.command.PathogenCommands;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
+import com.azure.pathogenesis.network.OutbreakStatePayload;
 import com.azure.pathogenesis.registry.PathogenBlocks;
 import com.azure.pathogenesis.registry.PathogenCreativeTabs;
 import com.azure.pathogenesis.registry.PathogenEntities;
@@ -12,6 +13,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 
@@ -20,6 +22,7 @@ public final class PathogenesisFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         Pathogenesis.init();
+        PayloadTypeRegistry.playS2C().register(OutbreakStatePayload.TYPE, OutbreakStatePayload.STREAM_CODEC);
         PathogenItems.registerDispenserBehaviors();
         PathogenEntities.registerAttributes(FabricDefaultAttributeRegistry::register);
         PathogenBlocks.flammableFlora()

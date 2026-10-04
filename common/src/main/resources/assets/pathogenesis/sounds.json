@@ -33,6 +33,13 @@
       "pathogenesis:block/pathogen_source/leak"
     ]
   },
+  "ambient.outbreak.ecological": {
+    "subtitle": "subtitles.pathogenesis.ambient.outbreak.ecological",
+    "sounds": [
+      { "name": "minecraft:ambient/cave/cave13", "pitch": 0.5, "volume": 0.9 },
+      { "name": "minecraft:ambient/cave/cave18", "pitch": 0.5, "volume": 0.9 }
+    ]
+  },
   "entity.host.cough": {
     "subtitle": "subtitles.pathogenesis.entity.host.cough",
     "sounds": [
