@@ -13,6 +13,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -30,8 +31,6 @@ import java.util.UUID;
 public final class NeomorphInfections {
 
     public static final DustParticleOptions BLOOD = new DustParticleOptions(new Vector3f(0.45F, 0.02F, 0.02F), 1.0F);
-
-    private static final double WITNESS_RADIUS = 24.0D;
 
     private NeomorphInfections() {}
 
@@ -91,10 +90,17 @@ public final class NeomorphInfections {
     }
 
     static void tickInfection(ServerLevel level, LivingEntity entity, HostState state, NeomorphInfection infection) {
-        if (infection.tick()) {
+        if (infection.tick() && !infection.isTreating()) {
             onStageChanged(entity, infection.stage());
         }
+        if (infection.isCured()) {
+            cure(level, entity, state);
+            return;
+        }
         var random = entity.getRandom();
+        if (infection.isTreating()) {
+            tickTreatment(entity);
+        }
         switch (infection.stage()) {
             case EXPOSED -> {}
             case INCUBATING -> tickIncubating(level, entity, random);
@@ -103,9 +109,33 @@ public final class NeomorphInfections {
         }
     }
 
+    public static void cure(ServerLevel level, LivingEntity entity, HostState state) {
+        state.setInfection(null);
+        level.playSound(
+            null,
+            entity.blockPosition(),
+            SoundEvents.ZOMBIE_VILLAGER_CONVERTED,
+            SoundSource.PLAYERS,
+            0.8F,
+            1.2F
+        );
+    }
+
+    public static void purge(ServerLevel level, LivingEntity entity, HostState state) {
+        state.setInfection(null);
+        cough(level, entity, 1.0F);
+    }
+
     private static void onStageChanged(LivingEntity entity, NeomorphInfectionStage stage) {
         if (stage == NeomorphInfectionStage.INCUBATING && entity instanceof ServerPlayer player) {
             PathogenTriggers.trigger(player, PathogenTriggers.INFECTED);
+        }
+    }
+
+    private static void tickTreatment(LivingEntity entity) {
+        if (entity.tickCount % 60 == 0) {
+            entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0, false, false, true));
+            entity.addEffect(new MobEffectInstance(MobEffects.HUNGER, 80, 1, false, false, true));
         }
     }
 
@@ -199,7 +229,7 @@ public final class NeomorphInfections {
         PathogenTriggers.triggerNearby(
             level,
             entity.position(),
-            WITNESS_RADIUS,
+            24D,
             PathogenTriggers.BLOODBURSTER_WITNESSED
         );
 

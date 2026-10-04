@@ -2,7 +2,6 @@ package com.azure.pathogenesis.compat;
 
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.api.PathogenApi;
-import com.azure.pathogenesis.exposure.PathogenExposureEffects;
 import com.azure.pathogenesis.infection.PathogenHosts;
 import com.azure.pathogenesis.platform.Services;
 import mod.azure.ovomorphosis.api.scanner.InfectionScanners;
@@ -80,28 +79,22 @@ public final class OvomorphosisCompat {
             }
 
             var exposure = host.exposure();
-            if (exposure == null || exposure.exposure() < PathogenExposureEffects.LOW) {
+            if (exposure == null) {
                 return null;
             }
-            var value = exposure.exposure();
-            String band;
-            Severity severity;
-            if (value >= PathogenExposureEffects.EXTREME) {
-                band = "extreme";
-                severity = Severity.CRITICAL;
-            } else if (value >= PathogenExposureEffects.HIGH) {
-                band = "high";
-                severity = Severity.WARNING;
-            } else if (value >= PathogenExposureEffects.MODERATE) {
-                band = "moderate";
-                severity = Severity.NOTICE;
-            } else {
-                band = "low";
-                severity = Severity.NOTICE;
+            var tier = exposure.tier();
+            var severity = switch (tier) {
+                case NONE -> null;
+                case LOW, MODERATE -> Severity.NOTICE;
+                case HIGH -> Severity.WARNING;
+                case EXTREME -> Severity.CRITICAL;
+            };
+            if (severity == null) {
+                return null;
             }
-            var bandName = Component.translatable("scanner.pathogenesis.exposure." + band);
+            var bandName = Component.translatable("scanner.pathogenesis.exposure." + tier.id());
             var detail = detailed
-                ? Component.translatable("scanner.pathogenesis.exposure", bandName, value)
+                ? Component.translatable("scanner.pathogenesis.exposure", bandName, exposure.exposure())
                 : Component.translatable("scanner.pathogenesis.exposure_no_value", bandName);
             return new ScanReading(detail, severity);
         }

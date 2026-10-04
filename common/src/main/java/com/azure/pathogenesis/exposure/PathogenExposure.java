@@ -1,17 +1,10 @@
 package com.azure.pathogenesis.exposure;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 
 public final class PathogenExposure {
-
-    public static final int MAX = 200;
-
-    public static final int CONTACT_CEILING = 60;
-
-    private static final int DECAY_GRACE_TICKS = 600;
-
-    private static final int DECAY_INTERVAL_TICKS = 40;
 
     private int exposure;
 
@@ -19,10 +12,12 @@ public final class PathogenExposure {
 
     private long lastContactTick = -1000L;
 
+    private int lethalTicks = -1;
+
     private ExposureType lastType = ExposureType.ENVIRONMENTAL;
 
     public void add(int amount, ExposureType type, long gameTime) {
-        var ceiling = type == ExposureType.CONTACT || type == ExposureType.ENVIRONMENTAL ? CONTACT_CEILING : MAX;
+        var ceiling = type == ExposureType.CONTACT || type == ExposureType.ENVIRONMENTAL ? 60 : 200;
         if (exposure < ceiling) {
             exposure = Mth.clamp(exposure + amount, 0, ceiling);
         }
@@ -39,9 +34,46 @@ public final class PathogenExposure {
     }
 
     public void decay(long gameTime) {
-        if (exposure > 0 && gameTime - lastExposureTick > DECAY_GRACE_TICKS && gameTime % DECAY_INTERVAL_TICKS == 0) {
+        decay(gameTime, false);
+    }
+
+    public void decay(long gameTime, boolean washing) {
+        if (exposure <= 0) {
+            return;
+        }
+        if (washing) {
+            if (gameTime % 8 == 0) {
+                exposure--;
+            }
+            return;
+        }
+        if (gameTime - lastExposureTick > 600 && gameTime % 40 == 0) {
             exposure--;
         }
+    }
+
+    public void reduce(int amount) {
+        exposure = Math.max(0, exposure - amount);
+    }
+
+    public ExposureTier tier() {
+        return ExposureTier.of(exposure);
+    }
+
+    public int tickLethal() {
+        if (tier() != ExposureTier.EXTREME) {
+            lethalTicks = -1;
+            return -1;
+        }
+        if (lethalTicks < 0) {
+            lethalTicks = 300;
+        }
+        lethalTicks--;
+        if (lethalTicks <= 0) {
+            lethalTicks = -1;
+            return 0;
+        }
+        return lethalTicks;
     }
 
     public boolean isEmpty() {
@@ -57,14 +89,16 @@ public final class PathogenExposure {
         tag.putInt("Exposure", exposure);
         tag.putLong("Last", lastExposureTick);
         tag.putString("Type", lastType.id());
+        tag.putInt("Lethal", lethalTicks);
         return tag;
     }
 
     public static PathogenExposure load(CompoundTag tag) {
         var exposure = new PathogenExposure();
-        exposure.exposure = Mth.clamp(tag.getInt("Exposure"), 0, MAX);
+        exposure.exposure = Mth.clamp(tag.getInt("Exposure"), 0, 200);
         exposure.lastExposureTick = tag.getLong("Last");
         exposure.lastType = ExposureType.byId(tag.getString("Type"));
+        exposure.lethalTicks = tag.contains("Lethal", Tag.TAG_INT) ? tag.getInt("Lethal") : -1;
         return exposure;
     }
 }

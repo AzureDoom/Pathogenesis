@@ -1,6 +1,7 @@
 package com.azure.pathogenesis.infection;
 
 import com.azure.pathogenesis.exposure.PathogenExposureEffects;
+import com.azure.pathogenesis.exposure.PathogenExposureHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -91,11 +92,17 @@ public final class PathogenHosts {
 
             var exposure = state.exposure();
             if (exposure != null) {
-                exposure.decay(now);
+                exposure.decay(now, PathogenExposureHelper.isWashing(host));
                 if (exposure.isEmpty()) {
                     state.clearExposure();
-                } else if ((now + host.getId()) % 40 == 0) {
-                    PathogenExposureEffects.apply(host, exposure);
+                } else {
+                    PathogenExposureEffects.tickLethal(host, exposure);
+                    if (!host.isAlive()) {
+                        continue;
+                    }
+                    if ((now + host.getId()) % 40 == 0) {
+                        PathogenExposureEffects.apply(host, exposure);
+                    }
                 }
             }
             var infection = state.infection();

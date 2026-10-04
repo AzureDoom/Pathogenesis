@@ -1,7 +1,9 @@
 package com.azure.pathogenesis.exposure;
 
+import com.azure.pathogenesis.fluid.ContaminatedWaterFluid;
 import com.azure.pathogenesis.infection.PathogenHosts;
 import com.azure.pathogenesis.registry.PathogenTags;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -10,8 +12,6 @@ import net.minecraft.world.phys.Vec3;
 
 public final class PathogenExposureHelper {
 
-    private static final int CONTACT_DOSE = 1;
-
     private PathogenExposureHelper() {}
 
     public static boolean canBeExposed(LivingEntity entity) {
@@ -19,6 +19,16 @@ public final class PathogenExposureHelper {
             return false;
         }
         return !(entity instanceof Player player) || !(player.isCreative() || player.isSpectator());
+    }
+
+    public static boolean isWashing(LivingEntity entity) {
+        if (!entity.isInWaterOrRain()) {
+            return false;
+        }
+        var level = entity.level();
+        return !(level.getFluidState(entity.blockPosition()).getType() instanceof ContaminatedWaterFluid)
+            && !(level.getFluidState(BlockPos.containing(entity.getEyePosition()))
+                .getType() instanceof ContaminatedWaterFluid);
     }
 
     public static void expose(LivingEntity entity, int amount, ExposureType type) {
@@ -34,7 +44,7 @@ public final class PathogenExposureHelper {
         var exposure = PathogenHosts.getOrCreate(entity).getOrCreateExposure();
         var now = entity.level().getGameTime();
         if (exposure.tryContact(now)) {
-            exposure.add(CONTACT_DOSE, type, now);
+            exposure.add(1, type, now);
         }
     }
 
