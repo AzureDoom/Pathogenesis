@@ -44,7 +44,11 @@ public final class ContaminationAmbience {
                 for (var y = -3; y <= 1; y++) {
                     total++;
                     pos.set(center.getX() + x, center.getY() + y, center.getZ() + z);
-                    if (level.getBlockState(pos).is(PathogenTags.Blocks.CONTAMINATED)) {
+                    var state = level.getBlockState(pos);
+                    if (
+                        state.is(PathogenTags.Blocks.CONTAMINATED)
+                            && !state.is(PathogenTags.Blocks.DORMANT_CONTAMINATION)
+                    ) {
                         hits++;
                     }
                 }

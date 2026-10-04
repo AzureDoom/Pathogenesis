@@ -40,6 +40,7 @@ public final class PathogenCreativeTabs {
             item(PathogenItems.CONTAMINATED_MOSS),
             item(PathogenItems.CONTAMINATED_SNOW),
             item(PathogenItems.CONTAMINATED_SNOW_BLOCK),
+            item(PathogenItems.CONTAMINATED_ICE),
             item(PathogenItems.CONTAMINATED_ROOTS),
             item(PathogenItems.PATHOGEN_GROWTH),
             item(PathogenItems.PATHOGEN_FUNGUS),

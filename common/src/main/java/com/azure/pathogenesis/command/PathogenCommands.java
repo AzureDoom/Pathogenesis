@@ -86,7 +86,9 @@ public final class PathogenCommands {
                     zone.stage().id(),
                     zone.radius(),
                     zone.contamination(),
-                    zone.isSourceActive() ? "yes" : "no"
+                    zone.isSourceActive() ? "yes" : "no",
+                    zone.phase().id(),
+                    zone.flora() < 0 ? "?" : zone.flora()
                 ),
                 false
             );

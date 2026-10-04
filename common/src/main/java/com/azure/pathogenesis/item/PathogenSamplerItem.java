@@ -166,6 +166,9 @@ public class PathogenSamplerItem extends Item {
             case PLANT -> appendPlant(state, message);
             default -> {}
         }
+        if (state.is(PathogenTags.Blocks.DORMANT_CONTAMINATION)) {
+            append(message, Component.translatable("sampler.pathogenesis.frozen").withStyle(ChatFormatting.AQUA));
+        }
 
         if (zone != null) {
             appendZone(level, zone, message);
@@ -239,12 +242,13 @@ public class PathogenSamplerItem extends Item {
     }
 
     private static void appendZone(ServerLevel level, PathogenZone zone, MutableComponent message) {
-        append(
-            message,
-            zone.isSourceActive()
-                ? Component.translatable("sampler.pathogenesis.source_fed").withStyle(ChatFormatting.RED)
-                : Component.translatable("sampler.pathogenesis.source_spent").withStyle(ChatFormatting.GRAY)
-        );
+        var phase = zone.phase();
+        var phaseStyle = switch (phase) {
+            case SOURCE_FED -> ChatFormatting.RED;
+            case ECOLOGICAL -> ChatFormatting.DARK_RED;
+            case COLLAPSING -> ChatFormatting.GRAY;
+        };
+        append(message, Component.translatable("sampler.pathogenesis.phase." + phase.id()).withStyle(phaseStyle));
         if (zone.isThawing(level.getGameTime())) {
             append(
                 message,
@@ -302,7 +306,7 @@ public class PathogenSamplerItem extends Item {
             if (state.getValue(PathogenSourceBlock.CONTAINMENT).isLeaking()) {
                 expose(player, config.samplerSourceExposure, ExposureType.DIRECT);
             }
-        } else if (contaminated) {
+        } else if (contaminated && !state.is(PathogenTags.Blocks.DORMANT_CONTAMINATION)) {
             expose(player, config.samplerContactExposure, ExposureType.CONTACT);
         }
         if (

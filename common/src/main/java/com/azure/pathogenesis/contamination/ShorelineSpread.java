@@ -24,7 +24,8 @@ public final class ShorelineSpread {
         var now = level.getGameTime();
         var chance = config.shorelineSpreadChance
             * PathogenClimate.waterSpreadMultiplier(level, pos)
-            * PathogenClimate.zoneActivity(zone, now);
+            * PathogenClimate.zoneActivity(zone, now)
+            * (zone.isChilled() ? 1.0D : PathogenClimate.localSpreadMultiplier(level, pos));
         if (random.nextDouble() >= chance) {
             return;
         }

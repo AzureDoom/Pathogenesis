@@ -27,6 +27,8 @@ public final class PathogenesisFabricClient implements ClientModInitializer {
         PathogenBlocks.cutoutBlocks()
             .forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block.get(), RenderType.cutout()));
         BlockRenderLayerMap.INSTANCE.putBlock(PathogenBlocks.CONTAMINATED_GRASS.get(), RenderType.cutoutMipped());
+        PathogenBlocks.translucentBlocks()
+            .forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block.get(), RenderType.translucent()));
         ColorProviderRegistry.BLOCK.register(
             (state, level, pos, tintIndex) -> PathogenColors.tint(state.getBlock(), tintIndex),
             PathogenColors.tintedBlocks()

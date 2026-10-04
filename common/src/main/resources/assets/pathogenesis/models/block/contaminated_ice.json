@@ -1,0 +1,7 @@
+{
+  "parent": "pathogenesis:block/tinted_cube_all",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "all": "minecraft:block/ice"
+  }
+}

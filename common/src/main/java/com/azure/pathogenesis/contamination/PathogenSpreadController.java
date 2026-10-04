@@ -7,7 +7,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 public final class PathogenSpreadController {
@@ -39,6 +41,7 @@ public final class PathogenSpreadController {
         var config = Pathogenesis.getConfig();
         var random = level.random;
         var chance = 0.25D * config.contaminationConfigs.pathogenSpreadRate;
+        var dieBack = zone.phase().diesBack() ? config.contaminationConfigs.collapseDieBackChance : 0.0D;
         var changed = false;
 
         for (var i = 0; i < checks; i++) {
@@ -55,6 +58,13 @@ public final class PathogenSpreadController {
                 state = aboveState;
             }
 
+            if (dieBack > 0.0D && isActiveMaterial(state)) {
+                if (random.nextDouble() < dieBack && recede(level, zone, candidate, state)) {
+                    changed = true;
+                }
+                continue;
+            }
+
             if (state.is(PathogenTags.Blocks.CONTAMINATED_SOIL)) {
                 if (PathogenFlora.tryGrow(level, zone, candidate, random)) {
                     zone.addContamination(1, config.contaminationConfigs.pathogenMaxRadius);
@@ -69,6 +79,9 @@ public final class PathogenSpreadController {
             var candidateChance = state.is(Blocks.WATER)
                 ? chance * PathogenClimate.waterSpreadMultiplier(level, candidate)
                 : chance;
+            if (!zone.isChilled()) {
+                candidateChance *= PathogenClimate.localSpreadMultiplier(level, candidate);
+            }
             if (random.nextDouble() >= candidateChance) {
                 continue;
             }
@@ -79,6 +92,29 @@ public final class PathogenSpreadController {
             changed = true;
         }
         return changed;
+    }
+
+    private static boolean recede(ServerLevel level, PathogenZone zone, BlockPos pos, BlockState state) {
+        if (!isFrontier(level, pos)) {
+            return false;
+        }
+        var result = ContaminationPalette.recededForm(state);
+        if (result == null || !level.setBlock(pos, result, Block.UPDATE_ALL)) {
+            return false;
+        }
+        zone.addContamination(-1, Pathogenesis.getConfig().contaminationConfigs.pathogenMaxRadius);
+        return true;
+    }
+
+    private static boolean isFrontier(ServerLevel level, BlockPos pos) {
+        var cursor = new BlockPos.MutableBlockPos();
+        for (var offset : NEIGHBORS) {
+            cursor.setWithOffset(pos, offset[0], offset[1], offset[2]);
+            if (level.isLoaded(cursor) && ContaminationPalette.canContaminate(level.getBlockState(cursor))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static BlockPos pickCandidate(ServerLevel level, PathogenZone zone, RandomSource random) {
@@ -110,10 +146,14 @@ public final class PathogenSpreadController {
                 continue;
             }
             var neighbor = level.getBlockState(cursor);
-            if (neighbor.is(PathogenTags.Blocks.CONTAMINATED) || neighbor.is(PathogenBlocks.PATHOGEN_SOURCE.get())) {
+            if (isActiveMaterial(neighbor) || neighbor.is(PathogenBlocks.PATHOGEN_SOURCE.get())) {
                 return true;
             }
         }
         return false;
+    }
+
+    private static boolean isActiveMaterial(BlockState state) {
+        return state.is(PathogenTags.Blocks.CONTAMINATED) && !state.is(PathogenTags.Blocks.DORMANT_CONTAMINATION);
     }
 }

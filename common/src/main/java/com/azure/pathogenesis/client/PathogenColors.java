@@ -26,6 +26,8 @@ public final class PathogenColors {
 
     public static final int CONTAMINATED_WATER = 0xFF2E2A34;
 
+    public static final int CONTAMINATED_ICE = 0xFFB9B3C2;
+
     private PathogenColors() {}
 
     public static int tint(Block block, int tintIndex) {
@@ -36,6 +38,9 @@ public final class PathogenColors {
             block == PathogenBlocks.CONTAMINATED_SNOW.get() || block == PathogenBlocks.CONTAMINATED_SNOW_BLOCK.get()
         ) {
             return CONTAMINATED_SNOW;
+        }
+        if (block == PathogenBlocks.CONTAMINATED_ICE.get()) {
+            return CONTAMINATED_ICE;
         }
         if (block == PathogenBlocks.CONTAMINATED_MOSS.get()) {
             return CONTAMINATED_MOSS;
@@ -73,6 +78,7 @@ public final class PathogenColors {
             PathogenBlocks.CONTAMINATED_MOSS.get(),
             PathogenBlocks.CONTAMINATED_SNOW.get(),
             PathogenBlocks.CONTAMINATED_SNOW_BLOCK.get(),
+            PathogenBlocks.CONTAMINATED_ICE.get(),
             PathogenBlocks.CONTAMINATED_ROOTS.get(),
             PathogenBlocks.PATHOGEN_GROWTH.get(),
             PathogenBlocks.PATHOGEN_FUNGUS.get(),

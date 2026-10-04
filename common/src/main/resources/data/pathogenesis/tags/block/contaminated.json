@@ -7,6 +7,7 @@
     "pathogenesis:contaminated_roots",
     "pathogenesis:contaminated_water",
     "pathogenesis:contaminated_snow",
-    "pathogenesis:contaminated_snow_block"
+    "pathogenesis:contaminated_snow_block",
+    "pathogenesis:contaminated_ice"
   ]
 }

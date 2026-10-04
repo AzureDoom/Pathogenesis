@@ -16,14 +16,24 @@ public final class CarcassSite {
 
     private long expiresTick;
 
+    private long freshTick;
+
     @Nullable
     private UUID zoneId;
 
-    CarcassSite(BlockPos pos, CarcassKind kind, boolean bloody, long expiresTick, @Nullable UUID zoneId) {
+    CarcassSite(
+        BlockPos pos,
+        CarcassKind kind,
+        boolean bloody,
+        long expiresTick,
+        long freshTick,
+        @Nullable UUID zoneId
+    ) {
         this.pos = pos.immutable();
         this.kind = kind;
         this.bloody = bloody;
         this.expiresTick = expiresTick;
+        this.freshTick = freshTick;
         this.zoneId = zoneId;
     }
 
@@ -43,15 +53,24 @@ public final class CarcassSite {
         return expiresTick;
     }
 
+    public long freshTick() {
+        return freshTick;
+    }
+
+    public boolean isFresh(long now, long freshTicks) {
+        return now - freshTick <= freshTicks;
+    }
+
     @Nullable
     public UUID zoneId() {
         return zoneId;
     }
 
-    void merge(CarcassKind kind, boolean bloody, long expiresTick, @Nullable UUID zoneId) {
+    void merge(CarcassKind kind, boolean bloody, long expiresTick, long freshTick, @Nullable UUID zoneId) {
         this.kind = this.kind.strongest(kind);
         this.bloody |= bloody;
         this.expiresTick = Math.max(this.expiresTick, expiresTick);
+        this.freshTick = Math.max(this.freshTick, freshTick);
         if (this.zoneId == null) {
             this.zoneId = zoneId;
         }
@@ -63,6 +82,7 @@ public final class CarcassSite {
         tag.putString("Kind", kind.id());
         tag.putBoolean("Bloody", bloody);
         tag.putLong("Expires", expiresTick);
+        tag.putLong("Fresh", freshTick);
         if (zoneId != null) {
             tag.putUUID("Zone", zoneId);
         }
@@ -75,6 +95,7 @@ public final class CarcassSite {
             CarcassKind.byId(tag.getString("Kind")),
             tag.getBoolean("Bloody"),
             tag.getLong("Expires"),
+            tag.getLong("Fresh"),
             tag.hasUUID("Zone") ? tag.getUUID("Zone") : null
         );
     }

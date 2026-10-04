@@ -1,5 +1,6 @@
 package com.azure.pathogenesis.registry;
 
+import com.azure.pathogenesis.block.ContaminatedIceBlock;
 import com.azure.pathogenesis.block.ContaminatedRootsBlock;
 import com.azure.pathogenesis.block.ContaminatedSnowLayerBlock;
 import com.azure.pathogenesis.block.ContaminatedSoilBlock;
@@ -79,6 +80,13 @@ public final class PathogenBlocks {
         )
     );
 
+    public static final Supplier<ContaminatedIceBlock> CONTAMINATED_ICE = register(
+        "contaminated_ice",
+        () -> new ContaminatedIceBlock(
+            BlockBehaviour.Properties.ofFullCopy(Blocks.ICE).mapColor(MapColor.COLOR_LIGHT_GRAY)
+        )
+    );
+
     public static final Supplier<ContaminatedRootsBlock> CONTAMINATED_ROOTS = register(
         "contaminated_roots",
         () -> new ContaminatedRootsBlock(
@@ -146,6 +154,10 @@ public final class PathogenBlocks {
 
     public static List<Supplier<? extends Block>> cutoutBlocks() {
         return List.of(CONTAMINATED_ROOTS, PATHOGEN_GROWTH, PATHOGEN_FUNGUS, SPORE_PLANT, PATHOGEN_SOURCE);
+    }
+
+    public static List<Supplier<? extends Block>> translucentBlocks() {
+        return List.of(CONTAMINATED_ICE);
     }
 
     public static List<Supplier<? extends Block>> flammableFlora() {

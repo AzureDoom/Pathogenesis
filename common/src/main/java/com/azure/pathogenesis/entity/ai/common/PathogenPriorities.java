@@ -7,6 +7,8 @@ public final class PathogenPriorities {
 
     public static final int WANDER = 5;
 
+    public static final int INVESTIGATE_SCENT = 6;
+
     public static final int INVESTIGATE = 8;
 
     public static final int INVESTIGATE_SOUND = 9;

@@ -28,6 +28,8 @@ public final class PathogenTags {
 
         public static final TagKey<Block> CONTAMINATED = tag("contaminated");
 
+        public static final TagKey<Block> DORMANT_CONTAMINATION = tag("dormant_contamination");
+
         public static final TagKey<Block> STERILIZABLE = tag("sterilizable");
 
         public static final TagKey<Block> PATHOGEN_IMMUNE = tag("pathogen_immune");

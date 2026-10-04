@@ -29,6 +29,7 @@ import org.joml.Vector3f;
 
 import java.util.Comparator;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public final class CarcassSites {
 
@@ -38,14 +39,6 @@ public final class CarcassSites {
         ParticleTypes.BLOCK,
         Blocks.REDSTONE_BLOCK.defaultBlockState()
     );
-
-    private static final int AMBIENT_INTERVAL = 10;
-
-    private static final int LINGER_INTERVAL = 40;
-
-    private static final int UNLOADED_GRACE = 6000;
-
-    private static final double MERGE_DISTANCE_SQR = 4.0D;
 
     private CarcassSites() {}
 
@@ -128,11 +121,12 @@ public final class CarcassSites {
         var data = PathogenSavedData.get(level);
         var maxRadius = config.contaminationConfigs.pathogenMaxRadius;
         var duration = (long) Math.max(200, kind.duration * config.carcassConfigs.carcassDurationMultiplier);
-        var expires = level.getGameTime() + duration;
+        var now = level.getGameTime();
+        var expires = now + duration;
 
         var existing = findSite(data, pos);
         if (existing != null && existing.kind().strongest(kind) == existing.kind()) {
-            existing.merge(kind, bloody, expires, null);
+            existing.merge(kind, bloody, expires, now, null);
             data.setDirty();
             return;
         }
@@ -180,7 +174,7 @@ public final class CarcassSites {
 
         UUID zoneId = zone == null ? null : zone.id();
         if (existing != null) {
-            existing.merge(kind, bloody, expires, zoneId);
+            existing.merge(kind, bloody, expires, now, zoneId);
             data.setDirty();
             return;
         }
@@ -192,14 +186,14 @@ public final class CarcassSites {
         while (sites.size() >= cap) {
             sites.stream().min(Comparator.comparingLong(CarcassSite::expiresTick)).ifPresent(sites::remove);
         }
-        sites.add(new CarcassSite(pos, kind, bloody, expires, zoneId));
+        sites.add(new CarcassSite(pos, kind, bloody, expires, now, zoneId));
         data.setDirty();
     }
 
     @Nullable
     private static CarcassSite findSite(PathogenSavedData data, BlockPos pos) {
         for (var site : data.carcasses()) {
-            if (site.pos().distSqr(pos) <= MERGE_DISTANCE_SQR) {
+            if (site.pos().distSqr(pos) <= 4.0D) {
                 return site;
             }
         }
@@ -233,7 +227,7 @@ public final class CarcassSites {
                 continue;
             }
             if (!level.isLoaded(pos)) {
-                if (now > site.expiresTick() + UNLOADED_GRACE) {
+                if (now > site.expiresTick() + 6000) {
                     it.remove();
                     changed = true;
                 }
@@ -246,14 +240,14 @@ public final class CarcassSites {
                 continue;
             }
             var phase = now + (pos.asLong() & 0xFF);
-            if (phase % LINGER_INTERVAL == 0 && isCleansed(level, pos)) {
+            if (phase % 40 == 0 && isCleansed(level, pos)) {
                 var c = Vec3.atCenterOf(pos);
                 level.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y, c.z, 6, 0.3D, 0.2D, 0.3D, 0.01D);
                 it.remove();
                 changed = true;
                 continue;
             }
-            if (phase % AMBIENT_INTERVAL == 0) {
+            if (phase % 10 == 0) {
                 ambient(level, site, phase);
             }
         }
@@ -280,7 +274,7 @@ public final class CarcassSites {
         if (random.nextInt(14) == 0) {
             level.playSound(null, site.pos(), SoundEvents.SLIME_SQUISH_SMALL, SoundSource.NEUTRAL, 0.35F, 0.6F);
         }
-        if (site.kind().lingerExposure > 0 && phase % LINGER_INTERVAL == 0) {
+        if (site.kind().lingerExposure > 0 && phase % 40 == 0) {
             PathogenExposureHelper.exposeArea(
                 level,
                 c.add(0.0D, 0.5D, 0.0D),
@@ -316,6 +310,54 @@ public final class CarcassSites {
         if (zone != null) {
             zone.addContamination(1, Pathogenesis.getConfig().contaminationConfigs.pathogenMaxRadius);
         }
+    }
+
+    @Nullable
+    public static BlockPos findScent(
+        ServerLevel level,
+        BlockPos from,
+        double range,
+        double minDistance,
+        Predicate<BlockPos> ignore
+    ) {
+        var config = Pathogenesis.getConfig().carcassConfigs;
+        if (!config.carcassSitesEnabled || !config.predatorScentEnabled) {
+            return null;
+        }
+        var data = PathogenSavedData.get(level);
+        if (data.carcasses().isEmpty()) {
+            return null;
+        }
+        var now = level.getGameTime();
+        var maxSqr = range * range;
+        var minSqr = minDistance * minDistance;
+        BlockPos best = null;
+        var bestSqr = Double.MAX_VALUE;
+        for (var site : data.carcasses()) {
+            if (!site.kind().attractsPredators() || !site.isFresh(now, config.carcassScentFreshTicks)) {
+                continue;
+            }
+            var pos = site.pos();
+            var distSqr = pos.distSqr(from);
+            if (distSqr > maxSqr || distSqr < minSqr || distSqr >= bestSqr || !level.isLoaded(pos)) {
+                continue;
+            }
+            if (isCleansed(level, pos) || ignore.test(pos)) {
+                continue;
+            }
+            best = pos;
+            bestSqr = distSqr;
+        }
+        return best;
+    }
+
+    public static boolean hasSiteAt(ServerLevel level, BlockPos pos) {
+        for (var site : PathogenSavedData.get(level).carcasses()) {
+            if (site.pos().distSqr(pos) <= 4.0D) {
+                return !isCleansed(level, site.pos());
+            }
+        }
+        return false;
     }
 
     public static void clearNear(ServerLevel level, BlockPos center, int radius) {

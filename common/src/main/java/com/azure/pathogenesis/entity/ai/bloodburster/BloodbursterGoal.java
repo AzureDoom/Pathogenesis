@@ -6,6 +6,7 @@ public enum BloodbursterGoal implements Goal {
 
     NONE,
     WANDER,
+    INVESTIGATE_SCENT,
     SEEK_COVER,
     FEED,
     FLEE;
@@ -13,5 +14,9 @@ public enum BloodbursterGoal implements Goal {
     @Override
     public boolean isNone() {
         return this == NONE;
+    }
+
+    public boolean isPassive() {
+        return this == NONE || this == WANDER || this == INVESTIGATE_SCENT;
     }
 }

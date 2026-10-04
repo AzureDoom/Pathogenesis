@@ -13,6 +13,8 @@ public final class NeomorphInfection {
 
     private int treatmentRate;
 
+    private float progressCarry;
+
     private NeomorphInfectionStage stage = NeomorphInfectionStage.EXPOSED;
 
     public NeomorphInfection(int totalTicks, InfectionSite site) {
@@ -21,10 +23,18 @@ public final class NeomorphInfection {
     }
 
     boolean tick() {
+        return tick(1.0F);
+    }
+
+    boolean tick(float rate) {
         if (treatmentRate > 0) {
             ticks = Math.max(0, ticks - treatmentRate);
+            progressCarry = 0.0F;
         } else {
-            ticks++;
+            progressCarry += Math.max(0.0F, rate);
+            var whole = (int) progressCarry;
+            progressCarry -= whole;
+            ticks += whole;
         }
         var next = NeomorphInfectionStage.forProgress(progress());
         if (next != stage) {

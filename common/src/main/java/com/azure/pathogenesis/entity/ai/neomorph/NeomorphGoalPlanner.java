@@ -15,8 +15,6 @@ import com.azure.pathogenesis.entity.ai.common.PathogenBlackboardKeys;
 
 public final class NeomorphGoalPlanner implements GoalPlanner<NeomorphEntity, NeomorphGoal> {
 
-    public static final float RETREAT_HEALTH = 0.30F;
-
     @Override
     @SuppressWarnings("unchecked")
     public PlannedGoal<NeomorphEntity, NeomorphGoal> chooseGoal(
@@ -28,9 +26,10 @@ public final class NeomorphGoalPlanner implements GoalPlanner<NeomorphEntity, Ne
         var target = blackboard.get(CommonBlackboardKeys.TARGET);
 
         if (
-            CortexGlue.healthFraction(agent) <= RETREAT_HEALTH && !cooldowns.isOnCooldown(
-                PathogenBlackboardKeys.RETREAT_COOLDOWN
-            )
+            CortexGlue.healthFraction(agent) <= PathogenBlackboardKeys.RETREAT_HEALTH_NEOMORPH && !cooldowns
+                .isOnCooldown(
+                    PathogenBlackboardKeys.RETREAT_COOLDOWN
+                )
                 && (target != null || agent.getLastHurtByMob() != null)
         ) {
             cooldowns.set(PathogenBlackboardKeys.RETREAT_COOLDOWN, 400);
@@ -108,6 +107,27 @@ public final class NeomorphGoalPlanner implements GoalPlanner<NeomorphEntity, Ne
                 true,
                 "Heard something"
             );
+        }
+
+        var scent = agent.scent();
+        var scentPos = scent.target();
+        if (scentPos != null) {
+            if (tick - scent.acquiredTick() > 400) {
+                scent.clear();
+            } else {
+                return PlannedGoal.of(
+                    NeomorphGoal.INVESTIGATE_SCENT,
+                    20.0F,
+                    tick,
+                    20,
+                    400,
+                    null,
+                    scentPos,
+                    GoalUrgency.NORMAL,
+                    true,
+                    "Smells blood"
+                );
+            }
         }
 
         return PlannedGoal.of(NeomorphGoal.ROAM, 10.0F, tick, 40, 400, null, null, GoalUrgency.LOW, true, "Roaming");

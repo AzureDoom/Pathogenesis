@@ -49,6 +49,10 @@ public enum CarcassKind {
         this.growthChance = growthChance;
     }
 
+    public boolean attractsPredators() {
+        return this != MINOR;
+    }
+
     public boolean seedsZone() {
         return this == INFECTED || this == VIRULENT;
     }

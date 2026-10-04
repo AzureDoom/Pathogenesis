@@ -15,6 +15,10 @@ final class ZoneCensus {
 
     private static final Predicate<BlockState> IS_CONTAMINATED = state -> state.is(PathogenTags.Blocks.CONTAMINATED);
 
+    private static boolean isFlora(BlockState state) {
+        return state.is(PathogenTags.Blocks.PATHOGEN_GROWTH) || state.is(PathogenTags.Blocks.SPORE_PLANTS);
+    }
+
     final UUID zoneId;
 
     private final List<ChunkPos> chunks = new ArrayList<>();
@@ -28,6 +32,8 @@ final class ZoneCensus {
     private int sectionY;
 
     private int count;
+
+    private int flora;
 
     private boolean aborted;
 
@@ -71,8 +77,12 @@ final class ZoneCensus {
             for (var y = 0; y < 16; y++) {
                 for (var z = 0; z < 16; z++) {
                     for (var x = 0; x < 16; x++) {
-                        if (IS_CONTAMINATED.test(section.getBlockState(x, y, z))) {
+                        var state = section.getBlockState(x, y, z);
+                        if (IS_CONTAMINATED.test(state)) {
                             count++;
+                            if (isFlora(state)) {
+                                flora++;
+                            }
                         }
                     }
                 }
@@ -88,5 +98,9 @@ final class ZoneCensus {
 
     int count() {
         return count;
+    }
+
+    int flora() {
+        return flora;
     }
 }

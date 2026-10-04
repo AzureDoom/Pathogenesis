@@ -1,5 +1,6 @@
 package com.azure.pathogenesis.fluid;
 
+import com.azure.pathogenesis.block.ContaminatedIceBlock;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
 import com.azure.pathogenesis.contamination.ShorelineSpread;
 import com.azure.pathogenesis.registry.PathogenBlocks;
@@ -118,6 +119,9 @@ public abstract class ContaminatedWaterFluid extends FlowingFluid {
         @NotNull RandomSource random
     ) {
         if (state.isSource() && level instanceof ServerLevel serverLevel) {
+            if (ContaminatedIceBlock.tryFreeze(serverLevel, pos, random)) {
+                return;
+            }
             ShorelineSpread.randomTick(serverLevel, pos, random);
         }
     }

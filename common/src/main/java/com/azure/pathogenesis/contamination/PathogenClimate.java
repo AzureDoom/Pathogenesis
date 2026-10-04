@@ -4,14 +4,17 @@ import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.config.PathogenesisConfig;
 import com.azure.pathogenesis.registry.PathogenBlocks;
 import com.azure.pathogenesis.registry.PathogenSounds;
+import com.azure.pathogenesis.registry.PathogenTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
@@ -56,7 +59,32 @@ public final class PathogenClimate {
     private static boolean isFrost(BlockState state) {
         return state.is(BlockTags.SNOW) || state.is(BlockTags.ICE)
             || state.is(PathogenBlocks.CONTAMINATED_SNOW.get())
-            || state.is(PathogenBlocks.CONTAMINATED_SNOW_BLOCK.get());
+            || state.is(PathogenBlocks.CONTAMINATED_SNOW_BLOCK.get())
+            || state.is(PathogenBlocks.CONTAMINATED_ICE.get());
+    }
+
+    public static boolean canFreezeContaminatedWater(Level level, BlockPos pos) {
+        if (!enabled() || level.getBiome(pos).value().warmEnoughToRain(pos)) {
+            return false;
+        }
+        if (level.getBrightness(LightLayer.BLOCK, pos) >= 10) {
+            return false;
+        }
+        var above = pos.above();
+        if (!level.getBlockState(above).isAir() || !level.canSeeSky(above)) {
+            return false;
+        }
+        for (var direction : Direction.Plane.HORIZONTAL) {
+            var side = pos.relative(direction);
+            if (level.isLoaded(side) && !level.getFluidState(side).is(FluidTags.WATER)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isWarmEnoughToThaw(Level level, BlockPos pos) {
+        return enabled() && level.getBiome(pos).value().warmEnoughToRain(pos);
     }
 
     public static float dryness(Level level, BlockPos pos) {
@@ -102,6 +130,21 @@ public final class PathogenClimate {
 
     public static double floraGrowthMultiplier(Level level, BlockPos pos) {
         return isColdAt(level, pos) ? config().coldFloraMultiplier : 1.0D;
+    }
+
+    public static double localSpreadMultiplier(Level level, BlockPos pos) {
+        return enabled() && touchesDormantIce(level, pos) ? config().coldSpreadMultiplier : 1.0D;
+    }
+
+    private static boolean touchesDormantIce(Level level, BlockPos pos) {
+        var cursor = new BlockPos.MutableBlockPos();
+        for (var direction : Direction.values()) {
+            cursor.setWithOffset(pos, direction);
+            if (level.isLoaded(cursor) && level.getBlockState(cursor).is(PathogenTags.Blocks.DORMANT_CONTAMINATION)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static double waterSpreadMultiplier(Level level, BlockPos waterPos) {

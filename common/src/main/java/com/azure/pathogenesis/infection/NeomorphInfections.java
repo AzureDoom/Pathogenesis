@@ -3,6 +3,7 @@ package com.azure.pathogenesis.infection;
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.contamination.CarcassSites;
 import com.azure.pathogenesis.exposure.ExposureType;
+import com.azure.pathogenesis.exposure.PathogenExposure;
 import com.azure.pathogenesis.registry.PathogenDamageTypes;
 import com.azure.pathogenesis.registry.PathogenEntities;
 import com.azure.pathogenesis.registry.PathogenSounds;
@@ -90,8 +91,20 @@ public final class NeomorphInfections {
         return true;
     }
 
+    public static float progressionRate(@Nullable PathogenExposure exposure) {
+        if (exposure == null) {
+            return 1.0F;
+        }
+        var config = Pathogenesis.getConfig().lifecycleConfigs;
+        return switch (exposure.tier()) {
+            case HIGH -> (float) config.highExposureProgression;
+            case EXTREME -> (float) config.extremeExposureProgression;
+            default -> 1.0F;
+        };
+    }
+
     static void tickInfection(ServerLevel level, LivingEntity entity, HostState state, NeomorphInfection infection) {
-        if (infection.tick() && !infection.isTreating()) {
+        if (infection.tick(progressionRate(state.exposure())) && !infection.isTreating()) {
             onStageChanged(entity, infection.stage());
         }
         if (infection.isCured()) {

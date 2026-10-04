@@ -55,8 +55,8 @@ public final class PathogenZoneManager {
         var state = STATES.computeIfAbsent(level.dimension(), key -> new LevelState());
         var zones = data.zoneList();
 
-        var budget = Math.min(config.contaminationConfigs.zonesProcessedPerTick, zones.size());
-        for (var i = 0; i < budget; i++) {
+        var zoneBudget = Math.min(config.contaminationConfigs.zonesProcessedPerTick, zones.size());
+        for (var i = 0; i < zoneBudget; i++) {
             state.cursor = (state.cursor + 1) % zones.size();
             var zone = zones.get(state.cursor);
             if (now - zone.lastProcessedTick() < ZONE_PROCESS_INTERVAL || !level.isLoaded(zone.origin())) {
@@ -66,10 +66,17 @@ public final class PathogenZoneManager {
             if (PathogenClimate.updateZone(level, zone, now)) {
                 data.setDirty();
             }
-            var baseChecks = zone.isSourceActive()
-                ? config.contaminationConfigs.blockChecksPerZone * 2
-                : config.contaminationConfigs.blockChecksPerZone;
-            var checks = Math.max(1, (int) Math.round(baseChecks * PathogenClimate.zoneActivity(zone, now)));
+            if (updatePhase(zone)) {
+                data.setDirty();
+            }
+            var contamination = config.contaminationConfigs;
+            var budget = contamination.blockChecksPerZone
+                * zone.phase().spreadMultiplier(contamination)
+                * PathogenClimate.zoneActivity(zone, now);
+            var checks = rollChecks(budget, level.random.nextDouble());
+            if (checks <= 0) {
+                continue;
+            }
             var before = zone.stage();
             if (PathogenSpreadController.process(level, zone, checks)) {
                 data.setDirty();
@@ -112,8 +119,9 @@ public final class PathogenZoneManager {
             zone.setNextCensusTick(now + CENSUS_RETRY);
             return;
         }
-        zone.reconcile(census.count(), Pathogenesis.getConfig().contaminationConfigs.pathogenMaxRadius);
+        zone.reconcile(census.count(), census.flora(), Pathogenesis.getConfig().contaminationConfigs.pathogenMaxRadius);
         zone.setNextCensusTick(now + CENSUS_INTERVAL);
+        updatePhase(zone);
         data.setDirty();
 
         var eradicated = census.count() == 0
@@ -145,6 +153,7 @@ public final class PathogenZoneManager {
         var zone = findOrCreateZone(level, pos);
         if (sourceRemains) {
             zone.setSourceActive(true);
+            updatePhase(zone);
         }
 
         contaminateSphere(level, zone, pos, strength.burstRadius, 0.65F);
@@ -206,8 +215,34 @@ public final class PathogenZoneManager {
         var zone = data.get(zoneId);
         if (zone != null && zone.isSourceActive()) {
             zone.setSourceActive(false);
+            updatePhase(zone);
             data.setDirty();
         }
+    }
+
+    private static int rollChecks(double budget, double roll) {
+        if (budget <= 0.0D) {
+            return 0;
+        }
+        var whole = (int) Math.floor(budget);
+        return whole + (roll < budget - whole ? 1 : 0);
+    }
+
+    private static boolean updatePhase(PathogenZone zone) {
+        var previous = zone.updatePhase(Pathogenesis.getConfig().contaminationConfigs.ecologicalFloraThreshold);
+        if (previous == null) {
+            return false;
+        }
+        Pathogenesis.LOGGER.debug(
+            "Pathogen zone {} at {} shifted from {} to {} outbreak (stage={}, flora={})",
+            zone.id(),
+            zone.origin(),
+            previous.id(),
+            zone.phase().id(),
+            zone.stage().id(),
+            zone.flora()
+        );
+        return true;
     }
 
     @Nullable

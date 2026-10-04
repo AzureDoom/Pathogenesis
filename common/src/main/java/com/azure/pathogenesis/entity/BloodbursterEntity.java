@@ -11,6 +11,8 @@ import com.azure.pathogenesis.entity.ai.bloodburster.BloodbursterGoalPlanner;
 import com.azure.pathogenesis.entity.ai.bloodburster.BloodbursterTree;
 import com.azure.pathogenesis.entity.ai.common.CortexGlue;
 import com.azure.pathogenesis.entity.ai.common.PathogenBlackboardKeys;
+import com.azure.pathogenesis.entity.ai.common.ScentFollower;
+import com.azure.pathogenesis.entity.ai.common.ScentTracker;
 import com.azure.pathogenesis.entity.anim.PathogenAnimationDispatcher;
 import com.azure.pathogenesis.infection.NeomorphInfections;
 import com.azure.pathogenesis.registry.PathogenEntities;
@@ -45,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class BloodbursterEntity extends PathfinderMob implements Enemy {
+public class BloodbursterEntity extends PathfinderMob implements Enemy, ScentFollower {
 
     private static final EntityDataAccessor<Integer> GROWTH = SynchedEntityData.defineId(
         BloodbursterEntity.class,
@@ -59,6 +61,8 @@ public class BloodbursterEntity extends PathfinderMob implements Enemy {
     private final List<EmergencyDetector.EmergencyProbe<BloodbursterEntity>> probes;
 
     private final PathogenAnimationDispatcher animations = new PathogenAnimationDispatcher(this, 0.12D);
+
+    private final ScentTracker scent = new ScentTracker();
 
     private int ticksSinceFed = 600;
 
@@ -86,6 +90,12 @@ public class BloodbursterEntity extends PathfinderMob implements Enemy {
             10,
             (agent, blackboard) -> blackboard.set(PathogenBlackboardKeys.THREAT, agent.nearestThreat())
         );
+        this.runtime.addPeriodicHook("bloodburster_scent", 40, (agent, blackboard) -> {
+            var goal = blackboard.get(CommonBlackboardKeys.ACTIVE_GOAL_TYPE);
+            if ((goal == null || goal instanceof BloodbursterGoal g && g.isPassive()) && !agent.isExposed()) {
+                agent.scent.sniff(agent);
+            }
+        });
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -149,6 +159,11 @@ public class BloodbursterEntity extends PathfinderMob implements Enemy {
     }
 
     @Override
+    public ScentTracker scent() {
+        return scent;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (level().isClientSide() || !isAlive()) {
@@ -174,13 +189,14 @@ public class BloodbursterEntity extends PathfinderMob implements Enemy {
         if (!isNoAi()) {
             var blackboard = runtime.getBlackboard();
             var reactive = blackboard.get(PathogenBlackboardKeys.THREAT) != null
-                || isHungry() && blackboard.get(CommonBlackboardKeys.TARGET) != null;
+                || isHungry() && blackboard.get(CommonBlackboardKeys.TARGET) != null
+                || scent.consumeNew();
             CortexGlue.tickPlanner(
                 this,
                 runtime,
                 planner,
                 probes,
-                goal -> goal == BloodbursterGoal.NONE || goal == BloodbursterGoal.WANDER,
+                goal -> goal instanceof BloodbursterGoal g && g.isPassive(),
                 reactive
             );
             runtime.tick();

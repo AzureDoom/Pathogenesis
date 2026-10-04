@@ -14,10 +14,6 @@ import com.azure.pathogenesis.entity.ai.common.PathogenBlackboardKeys;
 
 public final class BloodbursterGoalPlanner implements GoalPlanner<BloodbursterEntity, BloodbursterGoal> {
 
-    private static final int MIN_COMMIT = 20;
-
-    private static final int MAX_COMMIT = 200;
-
     @Override
     @SuppressWarnings("unchecked")
     public PlannedGoal<BloodbursterEntity, BloodbursterGoal> chooseGoal(
@@ -62,8 +58,8 @@ public final class BloodbursterGoalPlanner implements GoalPlanner<BloodbursterEn
                     BloodbursterGoal.FEED,
                     score,
                     tick,
-                    MIN_COMMIT,
-                    MAX_COMMIT,
+                    20,
+                    200,
                     prey,
                     null,
                     GoalUrgency.NORMAL,
@@ -78,8 +74,8 @@ public final class BloodbursterGoalPlanner implements GoalPlanner<BloodbursterEn
                 BloodbursterGoal.SEEK_COVER,
                 30.0F,
                 tick,
-                MIN_COMMIT,
-                MAX_COMMIT,
+                20,
+                200,
                 null,
                 null,
                 GoalUrgency.NORMAL,
@@ -88,12 +84,33 @@ public final class BloodbursterGoalPlanner implements GoalPlanner<BloodbursterEn
             );
         }
 
+        var scent = agent.scent();
+        var scentPos = scent.target();
+        if (scentPos != null) {
+            if (tick - scent.acquiredTick() > 400) {
+                scent.clear();
+            } else {
+                return PlannedGoal.of(
+                    BloodbursterGoal.INVESTIGATE_SCENT,
+                    20.0F,
+                    tick,
+                    20,
+                    400,
+                    null,
+                    scentPos,
+                    GoalUrgency.NORMAL,
+                    true,
+                    "Smells blood"
+                );
+            }
+        }
+
         return PlannedGoal.of(
             BloodbursterGoal.WANDER,
             10.0F,
             tick,
-            MIN_COMMIT,
-            MAX_COMMIT,
+            20,
+            200,
             null,
             null,
             GoalUrgency.LOW,

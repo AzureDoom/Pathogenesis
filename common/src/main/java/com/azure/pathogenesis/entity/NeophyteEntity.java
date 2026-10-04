@@ -6,8 +6,7 @@ import com.azure.azurecortex.runtime.CortexRuntime;
 import com.azure.azurecortex.sensing.TargetSensor;
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.contamination.CarcassSites;
-import com.azure.pathogenesis.entity.ai.common.CortexGlue;
-import com.azure.pathogenesis.entity.ai.common.SoundListener;
+import com.azure.pathogenesis.entity.ai.common.*;
 import com.azure.pathogenesis.entity.ai.neomorph.NeomorphHearing;
 import com.azure.pathogenesis.entity.ai.neophyte.NeophyteGoal;
 import com.azure.pathogenesis.entity.ai.neophyte.NeophyteGoalPlanner;
@@ -46,7 +45,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
-public class NeophyteEntity extends Monster implements SoundListener {
+public class NeophyteEntity extends Monster implements SoundListener, ScentFollower {
 
     private static final EntityDataAccessor<Integer> GROWTH = SynchedEntityData.defineId(
         NeophyteEntity.class,
@@ -62,6 +61,8 @@ public class NeophyteEntity extends Monster implements SoundListener {
     private final DynamicGameEventListener<NeomorphHearing<NeophyteEntity>> hearing;
 
     private final AnimationDriver animations = new AnimationDriver("neophyte");
+
+    private final ScentTracker scent = new ScentTracker();
 
     @Nullable
     private UUID originZone;
@@ -86,8 +87,15 @@ public class NeophyteEntity extends Monster implements SoundListener {
         );
         this.runtime = new CortexRuntime<>(this, sensor, NeophyteTree.create());
         this.emergencyProbes = new ArrayList<>(EmergencyDetector.defaultProbes());
-        this.emergencyProbes.add(agent -> CortexGlue.healthFraction(agent) <= NeophyteGoalPlanner.RETREAT_HEALTH);
+        this.emergencyProbes.add(agent -> CortexGlue.healthFraction(agent) <= PathogenBlackboardKeys.RETREAT_HEALTH);
         this.hearing = new DynamicGameEventListener<>(new NeomorphHearing<>(this));
+        this.runtime.addPeriodicHook("neophyte_scent", 40, (agent, blackboard) -> {
+            if (
+                blackboard.get(CommonBlackboardKeys.ACTIVE_GOAL_TYPE) instanceof NeophyteGoal goal && goal.isPassive()
+            ) {
+                agent.scent.sniff(agent);
+            }
+        });
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -195,6 +203,11 @@ public class NeophyteEntity extends Monster implements SoundListener {
     }
 
     @Override
+    public ScentTracker scent() {
+        return scent;
+    }
+
+    @Override
     public void updateDynamicGameEventListener(@NotNull BiConsumer<DynamicGameEventListener<?>, ServerLevel> consumer) {
         if (level() instanceof ServerLevel serverLevel) {
             consumer.accept(hearing, serverLevel);
@@ -230,7 +243,7 @@ public class NeophyteEntity extends Monster implements SoundListener {
                 goalPlanner,
                 emergencyProbes,
                 goal -> goal instanceof NeophyteGoal g && g.isPassive(),
-                runtime.getBlackboard().has(CommonBlackboardKeys.TARGET)
+                runtime.getBlackboard().has(CommonBlackboardKeys.TARGET) || scent.consumeNew()
             );
             runtime.tick();
         }

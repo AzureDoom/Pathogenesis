@@ -68,11 +68,6 @@ public final class ContaminationPalette {
         return null;
     }
 
-    /**
-     * What a contaminated block becomes when sterilized, or {@code null} to leave it alone. Snow and water go back to
-     * their clean vanilla forms instead of being deleted, so fire or /pathogen sterilize never drains a lake or strips
-     * a snowfield.
-     */
     @Nullable
     public static BlockState sterilizedForm(BlockState state) {
         if (state.is(PathogenBlocks.CONTAMINATED_WATER.get())) {
@@ -85,9 +80,45 @@ public final class ContaminationPalette {
         if (state.is(PathogenBlocks.CONTAMINATED_SNOW_BLOCK.get())) {
             return Blocks.SNOW_BLOCK.defaultBlockState();
         }
+        if (state.is(PathogenBlocks.CONTAMINATED_ICE.get())) {
+            return Blocks.ICE.defaultBlockState();
+        }
         if (state.is(PathogenTags.Blocks.CONTAMINATED_SOIL)) {
             return PathogenBlocks.STERILIZED_SOIL.get().defaultBlockState();
         }
         return Blocks.AIR.defaultBlockState();
+    }
+
+    @Nullable
+    public static BlockState recededForm(BlockState state) {
+        if (state.is(PathogenBlocks.CONTAMINATED_WATER.get())) {
+            return state.getFluidState().isSource() ? Blocks.WATER.defaultBlockState() : null;
+        }
+        if (state.is(PathogenBlocks.CONTAMINATED_SNOW.get())) {
+            return Blocks.SNOW.defaultBlockState()
+                .setValue(SnowLayerBlock.LAYERS, state.getValue(SnowLayerBlock.LAYERS));
+        }
+        if (state.is(PathogenBlocks.CONTAMINATED_SNOW_BLOCK.get())) {
+            return Blocks.SNOW_BLOCK.defaultBlockState();
+        }
+        if (state.is(PathogenBlocks.CONTAMINATED_ICE.get())) {
+            return Blocks.ICE.defaultBlockState();
+        }
+        if (state.is(PathogenBlocks.CONTAMINATED_GRASS.get())) {
+            return Blocks.GRASS_BLOCK.defaultBlockState();
+        }
+        if (state.is(PathogenBlocks.CONTAMINATED_MOSS.get())) {
+            return Blocks.MOSS_BLOCK.defaultBlockState();
+        }
+        if (state.is(PathogenBlocks.CONTAMINATED_ROOTS.get())) {
+            return Blocks.HANGING_ROOTS.defaultBlockState();
+        }
+        if (state.is(PathogenTags.Blocks.CONTAMINATED_SOIL)) {
+            return Blocks.DIRT.defaultBlockState();
+        }
+        if (state.is(PathogenTags.Blocks.PATHOGEN_GROWTH) || state.is(PathogenTags.Blocks.SPORE_PLANTS)) {
+            return Blocks.AIR.defaultBlockState();
+        }
+        return null;
     }
 }

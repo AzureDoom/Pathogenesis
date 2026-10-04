@@ -61,6 +61,11 @@ public final class PathogenItems {
         PathogenBlocks.CONTAMINATED_SNOW_BLOCK
     );
 
+    public static final Supplier<BlockItem> CONTAMINATED_ICE = block(
+        "contaminated_ice",
+        PathogenBlocks.CONTAMINATED_ICE
+    );
+
     public static final Supplier<BlockItem> CONTAMINATED_ROOTS = block(
         "contaminated_roots",
         PathogenBlocks.CONTAMINATED_ROOTS

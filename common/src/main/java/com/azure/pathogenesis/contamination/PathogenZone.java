@@ -2,7 +2,9 @@ package com.azure.pathogenesis.contamination;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -39,6 +41,10 @@ public final class PathogenZone {
     private long chilledSince;
 
     private long thawUntil;
+
+    private int flora = -1;
+
+    private OutbreakPhase phase = OutbreakPhase.SOURCE_FED;
 
     public PathogenZone(UUID id, BlockPos origin, long createdTick) {
         this.id = id;
@@ -131,6 +137,36 @@ public final class PathogenZone {
         this.thawUntil = tick;
     }
 
+    public int flora() {
+        return flora;
+    }
+
+    public boolean isSelfSustaining(int floraThreshold) {
+        return stage.isEstablished() && (flora < 0 || flora >= floraThreshold);
+    }
+
+    public OutbreakPhase phase() {
+        return phase;
+    }
+
+    @Nullable
+    public OutbreakPhase updatePhase(int floraThreshold) {
+        OutbreakPhase next;
+        if (sourceActive) {
+            next = OutbreakPhase.SOURCE_FED;
+        } else if (isSelfSustaining(floraThreshold)) {
+            next = OutbreakPhase.ECOLOGICAL;
+        } else {
+            next = OutbreakPhase.COLLAPSING;
+        }
+        if (next == phase) {
+            return null;
+        }
+        var previous = phase;
+        phase = next;
+        return previous;
+    }
+
     public boolean isWithinRadius(BlockPos pos) {
         var dx = pos.getX() - origin.getX();
         var dz = pos.getZ() - origin.getZ();
@@ -142,8 +178,9 @@ public final class PathogenZone {
         recompute(maxRadius);
     }
 
-    public void reconcile(int actualCount, int maxRadius) {
+    public void reconcile(int actualCount, int floraCount, int maxRadius) {
         this.contamination = actualCount;
+        this.flora = floraCount;
         recompute(maxRadius);
     }
 
@@ -174,6 +211,8 @@ public final class PathogenZone {
         tag.putBoolean("Chilled", chilled);
         tag.putLong("ChilledSince", chilledSince);
         tag.putLong("ThawUntil", thawUntil);
+        tag.putInt("Flora", flora);
+        tag.putString("Phase", phase.id());
         return tag;
     }
 
@@ -192,6 +231,10 @@ public final class PathogenZone {
         zone.chilled = tag.getBoolean("Chilled");
         zone.chilledSince = tag.getLong("ChilledSince");
         zone.thawUntil = tag.getLong("ThawUntil");
+        zone.flora = tag.contains("Flora", Tag.TAG_INT) ? tag.getInt("Flora") : -1;
+        zone.phase = tag.contains("Phase", Tag.TAG_STRING)
+            ? OutbreakPhase.byId(tag.getString("Phase"))
+            : zone.sourceActive ? OutbreakPhase.SOURCE_FED : OutbreakPhase.COLLAPSING;
         return zone;
     }
 }

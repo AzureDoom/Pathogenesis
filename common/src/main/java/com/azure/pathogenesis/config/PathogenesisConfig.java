@@ -38,10 +38,48 @@ public class PathogenesisConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment(
-            "Spread budget: candidate block checks per processed zone. Doubled while the source still leaks."
+            "Spread budget: candidate block checks per processed zone, before the outbreak-phase multiplier."
         )
         @Configurable.Range(min = 1, max = 256)
         public int blockChecksPerZone = 12;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Spread budget multiplier while a leaking source still feeds the outbreak.")
+        @Configurable.DecimalRange(min = 0.0D, max = 10.0D)
+        public double sourceFedSpreadMultiplier = 2.0D;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment(
+            "Spread budget multiplier for an established, sourceless outbreak whose mature flora sustains it."
+        )
+        @Configurable.DecimalRange(min = 0.0D, max = 10.0D)
+        public double ecologicalSpreadMultiplier = 0.75D;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment(
+            "Spread budget multiplier for a sourceless outbreak that never established (or lost its flora)."
+        )
+        @Configurable.DecimalRange(min = 0.0D, max = 10.0D)
+        public double collapsingSpreadMultiplier = 0.25D;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment(
+            "Pathogen flora (growth, fungus, spore plants) an established zone needs to sustain itself without a source."
+        )
+        @Configurable.Range(min = 0, max = 4096)
+        public int ecologicalFloraThreshold = 16;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment(
+            "Chance per spread check that a collapsing outbreak loses a contaminated block on its frontier."
+        )
+        @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
+        public double collapseDieBackChance = 0.1D;
 
         @Configurable
         @Configurable.Synchronized
@@ -155,6 +193,18 @@ public class PathogenesisConfig {
         @Configurable.Synchronized
         @Configurable.Comment("If false, extreme direct exposure applies wither instead of killing.")
         public boolean extremeExposureKills = true;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Infection progression multiplier while the host carries HIGH exposure.")
+        @Configurable.DecimalRange(min = 1.0D, max = 4.0D)
+        public double highExposureProgression = 1.25D;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Infection progression multiplier while the host carries EXTREME exposure.")
+        @Configurable.DecimalRange(min = 1.0D, max = 4.0D)
+        public double extremeExposureProgression = 1.5D;
     }
 
     @Configurable
@@ -229,6 +279,31 @@ public class PathogenesisConfig {
             "Bloodbursters and Neophytes leave blood, remains and a contamination bump where they feed."
         )
         public boolean feedingEvidence = true;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment(
+            "Bloodbursters, Neophytes and Neomorphs occasionally wander over to sniff fresh feeding, infected or virulent sites."
+        )
+        public boolean predatorScentEnabled = true;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("How far away a predator can pick up the scent of a fresh carcass site.")
+        @Configurable.DecimalRange(min = 4.0D, max = 96.0D)
+        public double predatorScentRange = 32.0D;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Chance per sniff (every 2 seconds while idle) that a predator follows a scent.")
+        @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
+        public double predatorScentChance = 0.1D;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Ticks after the last fresh blood that a carcass site still draws predators.")
+        @Configurable.Range(min = 20, max = 72000)
+        public int carcassScentFreshTicks = 2400;
     }
 
     @Configurable
@@ -288,6 +363,19 @@ public class PathogenesisConfig {
         @Configurable.Comment("Ticks of accelerated spread and sporulation after a chilled zone thaws.")
         @Configurable.Range(min = 0, max = 72000)
         public int thawSurgeTicks = 2400;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment(
+            "Contaminated water freezes into dormant contaminated ice in cold biomes, and melts back when warmed."
+        )
+        public boolean contaminatedWaterFreezes = true;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Chance per contaminated-water-source random tick to freeze when conditions allow.")
+        @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
+        public double contaminatedWaterFreezeChance = 0.25D;
     }
 
     @Configurable

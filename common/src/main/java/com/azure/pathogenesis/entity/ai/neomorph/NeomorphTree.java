@@ -16,8 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 public final class NeomorphTree {
 
-    public static final String MELEE_COOLDOWN = "neomorph_melee_cd";
-
     private NeomorphTree() {}
 
     private static PathogenesisConfig.EntityConfigs.NeomorphConfigs config() {
@@ -28,6 +26,11 @@ public final class NeomorphTree {
         var idle = new IdleAction<NeomorphEntity, NeomorphGoal>();
         var roam = new DarkBiasedWanderAction<NeomorphEntity, NeomorphGoal>("neomorph_roam", 5, 0.9D, 24, 200);
         var listen = new InvestigateSoundAction<NeomorphEntity, NeomorphGoal>("neomorph_investigate_sound", 7);
+        var sniff = new InvestigateScentAction<NeomorphEntity, NeomorphGoal>(
+            "neomorph_investigate_scent",
+            PathogenPriorities.INVESTIGATE_SCENT,
+            0.95D
+        );
         var investigate = new InvestigateLastSeenTargetAction<NeomorphEntity, NeomorphGoal>(
             AStarPathfinder.INSTANCE,
             1.1D,
@@ -58,6 +61,10 @@ public final class NeomorphTree {
                 new ActionNode<>(roam, 5)
             ),
             new Condition<>(
+                (a, bb, cd) -> bb.get(CommonBlackboardKeys.ACTIVE_GOAL_TYPE) == NeomorphGoal.INVESTIGATE_SCENT,
+                new ActionNode<>(sniff, PathogenPriorities.INVESTIGATE_SCENT)
+            ),
+            new Condition<>(
                 (a, bb, cd) -> bb.get(CommonBlackboardKeys.ACTIVE_GOAL_TYPE) == NeomorphGoal.INVESTIGATE_SOUND,
                 new ActionNode<>(listen, 7)
             ),
@@ -80,7 +87,7 @@ public final class NeomorphTree {
             22,
             () -> config().neomorphAttackWindup,
             1.6D,
-            MELEE_COOLDOWN,
+            PathogenBlackboardKeys.NEOMORPH_MELEE_COOLDOWN,
             () -> config().neomorphAttackCooldown,
             NeomorphEntity::onSlash
         );
@@ -91,7 +98,11 @@ public final class NeomorphTree {
             NeomorphGoal.HUNT,
             (agent, target, blackboard, cooldowns) -> {
                 double distSqr = agent.distanceToSqr(target);
-                if (melee.canStart(agent, target) && !cooldowns.isOnCooldown(MELEE_COOLDOWN)) {
+                if (
+                    melee.canStart(agent, target) && !cooldowns.isOnCooldown(
+                        PathogenBlackboardKeys.NEOMORPH_MELEE_COOLDOWN
+                    )
+                ) {
                     return melee;
                 }
                 if (

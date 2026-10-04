@@ -12,8 +12,10 @@ import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.config.PathogenesisConfig;
 import com.azure.pathogenesis.entity.NeophyteEntity;
 import com.azure.pathogenesis.entity.ai.common.DarkBiasedWanderAction;
+import com.azure.pathogenesis.entity.ai.common.InvestigateScentAction;
 import com.azure.pathogenesis.entity.ai.common.MoveAwayAction;
 import com.azure.pathogenesis.entity.ai.common.PathogenHuntNode;
+import com.azure.pathogenesis.entity.ai.common.PathogenPriorities;
 import com.azure.pathogenesis.entity.ai.common.RushTargetAction;
 import com.azure.pathogenesis.entity.ai.common.WindupMeleeAction;
 import com.azure.pathogenesis.entity.ai.neomorph.InvestigateSoundAction;
@@ -33,6 +35,11 @@ public final class NeophyteTree {
         var idle = new IdleAction<NeophyteEntity, NeophyteGoal>();
         var roam = new DarkBiasedWanderAction<NeophyteEntity, NeophyteGoal>("neophyte_roam", 5, 0.9D, 16, 160);
         var listen = new InvestigateSoundAction<NeophyteEntity, NeophyteGoal>("neophyte_investigate_sound", 7);
+        var sniff = new InvestigateScentAction<NeophyteEntity, NeophyteGoal>(
+            "neophyte_investigate_scent",
+            PathogenPriorities.INVESTIGATE_SCENT,
+            1.0D
+        );
         var investigate = new InvestigateLastSeenTargetAction<NeophyteEntity, NeophyteGoal>(
             AStarPathfinder.INSTANCE,
             1.05D,
@@ -61,6 +68,10 @@ public final class NeophyteTree {
             new Condition<>(
                 (a, bb, cd) -> bb.get(CommonBlackboardKeys.ACTIVE_GOAL_TYPE) == NeophyteGoal.ROAM,
                 new ActionNode<>(roam, 5)
+            ),
+            new Condition<>(
+                (a, bb, cd) -> bb.get(CommonBlackboardKeys.ACTIVE_GOAL_TYPE) == NeophyteGoal.INVESTIGATE_SCENT,
+                new ActionNode<>(sniff, PathogenPriorities.INVESTIGATE_SCENT)
             ),
             new Condition<>(
                 (a, bb, cd) -> bb.get(CommonBlackboardKeys.ACTIVE_GOAL_TYPE) == NeophyteGoal.INVESTIGATE_SOUND,

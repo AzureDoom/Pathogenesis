@@ -8,6 +8,7 @@ public enum NeophyteGoal implements Goal {
     ROAM,
     INVESTIGATE,
     INVESTIGATE_SOUND,
+    INVESTIGATE_SCENT,
     HUNT,
     RETREAT;
 
@@ -17,6 +18,6 @@ public enum NeophyteGoal implements Goal {
     }
 
     public boolean isPassive() {
-        return this == NONE || this == ROAM || this == INVESTIGATE_SOUND;
+        return this == NONE || this == ROAM || this == INVESTIGATE_SOUND || this == INVESTIGATE_SCENT;
     }
 }
