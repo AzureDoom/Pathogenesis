@@ -142,7 +142,8 @@ public final class PathogenZoneManager {
             zone.radius() + 32.0D,
             PathogenTriggers.ZONE_ERADICATED
         );
-        Pathogenesis.LOGGER.debug("Pathogen zone {} at {} eradicated", zone.id(), zone.origin());
+        if (Pathogenesis.getConfig().debugLogging)
+            Pathogenesis.LOGGER.debug("Pathogen zone {} at {} eradicated", zone.id(), zone.origin());
     }
 
     public static PathogenZone onRupture(
@@ -235,15 +236,16 @@ public final class PathogenZoneManager {
         if (previous == null) {
             return false;
         }
-        Pathogenesis.LOGGER.debug(
-            "Pathogen zone {} at {} shifted from {} to {} outbreak (stage={}, flora={})",
-            zone.id(),
-            zone.origin(),
-            previous.id(),
-            zone.phase().id(),
-            zone.stage().id(),
-            zone.flora()
-        );
+        if (Pathogenesis.getConfig().debugLogging)
+            Pathogenesis.LOGGER.debug(
+                "Pathogen zone {} at {} shifted from {} to {} outbreak (stage={}, flora={})",
+                zone.id(),
+                zone.origin(),
+                previous.id(),
+                zone.phase().id(),
+                zone.stage().id(),
+                zone.flora()
+            );
         OutbreakCues.onPhaseChange(level, zone, previous);
         return true;
     }

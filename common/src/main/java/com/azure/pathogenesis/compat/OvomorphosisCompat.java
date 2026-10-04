@@ -28,9 +28,10 @@ public final class OvomorphosisCompat {
         loaded = Services.PLATFORM.isModLoaded(OVOMORPHOSIS_ID);
         if (loaded) {
             Scanner.register();
-            Pathogenesis.LOGGER.info(
-                "Ovomorphosis detected; alien tags, flame and infection scanner integration active"
-            );
+            if (Pathogenesis.getConfig().debugLogging)
+                Pathogenesis.LOGGER.info(
+                    "Ovomorphosis detected; alien tags, flame and infection scanner integration active"
+                );
         }
     }
 

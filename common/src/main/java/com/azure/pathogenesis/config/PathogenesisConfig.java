@@ -123,6 +123,12 @@ public class PathogenesisConfig {
     }
 
     @Configurable
+    @Configurable.Comment(
+        "Write Pathogenesis debug/info logging (zone phases, thaws, eradication). Off by default to keep large modpack/server logs clean."
+    )
+    public boolean debugLogging = false;
+
+    @Configurable
     @Configurable.Synchronized
     public FloraConfigs floraConfigs = new FloraConfigs();
 

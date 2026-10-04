@@ -232,6 +232,7 @@ public final class PathogenClimate {
             1.5F,
             0.6F
         );
-        Pathogenesis.LOGGER.debug("Pathogen zone {} at {} thawed", zone.id(), zone.origin());
+        if (Pathogenesis.getConfig().debugLogging)
+            Pathogenesis.LOGGER.debug("Pathogen zone {} at {} thawed", zone.id(), zone.origin());
     }
 }
