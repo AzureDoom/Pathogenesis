@@ -5,6 +5,7 @@ import com.azure.azurecortex.goap.EmergencyDetector;
 import com.azure.azurecortex.runtime.CortexRuntime;
 import com.azure.azurecortex.sensing.TargetSensor;
 import com.azure.pathogenesis.Pathogenesis;
+import com.azure.pathogenesis.contamination.CarcassSites;
 import com.azure.pathogenesis.entity.ai.common.CortexGlue;
 import com.azure.pathogenesis.entity.ai.common.SoundListener;
 import com.azure.pathogenesis.entity.ai.neomorph.NeomorphHearing;
@@ -274,6 +275,7 @@ public class NeophyteEntity extends Monster implements SoundListener {
             ticksSinceFed = 0;
             setGrowth(getGrowth() + 900);
             heal(4.0F);
+            CarcassSites.onFeeding(level, entity, originZone);
         }
         return super.killedEntity(level, entity);
     }

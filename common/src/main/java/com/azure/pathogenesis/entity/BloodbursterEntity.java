@@ -5,6 +5,7 @@ import com.azure.azurecortex.goap.EmergencyDetector;
 import com.azure.azurecortex.runtime.CortexRuntime;
 import com.azure.azurecortex.sensing.TargetSensor;
 import com.azure.pathogenesis.Pathogenesis;
+import com.azure.pathogenesis.contamination.CarcassSites;
 import com.azure.pathogenesis.entity.ai.bloodburster.BloodbursterGoal;
 import com.azure.pathogenesis.entity.ai.bloodburster.BloodbursterGoalPlanner;
 import com.azure.pathogenesis.entity.ai.bloodburster.BloodbursterTree;
@@ -262,6 +263,7 @@ public class BloodbursterEntity extends PathfinderMob implements Enemy {
             ticksSinceFed = 0;
             setGrowth(getGrowth() + 900);
             heal(2.0F);
+            CarcassSites.onFeeding(level, entity, originZone);
         }
         return super.killedEntity(level, entity);
     }

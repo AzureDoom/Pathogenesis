@@ -1,6 +1,7 @@
 package com.azure.pathogenesis.infection;
 
 import com.azure.pathogenesis.Pathogenesis;
+import com.azure.pathogenesis.contamination.CarcassSites;
 import com.azure.pathogenesis.exposure.ExposureType;
 import com.azure.pathogenesis.registry.PathogenDamageTypes;
 import com.azure.pathogenesis.registry.PathogenEntities;
@@ -226,6 +227,7 @@ public final class NeomorphInfections {
             0.2D
         );
         level.playSound(null, entity.blockPosition(), PathogenSounds.BLOODBURST.get(), SoundSource.HOSTILE, 1.3F, 1.0F);
+        CarcassSites.onBurst(level, entity, infection.site().zoneId());
         PathogenTriggers.triggerNearby(
             level,
             entity.position(),
@@ -246,11 +248,15 @@ public final class NeomorphInfections {
 
     public static void onHostDeath(LivingEntity entity) {
         var state = PathogenHosts.get(entity);
+        NeomorphInfection infection = state == null ? null : state.infection();
+        var bursting = infection != null && infection.stage().burstsOnDeath();
+        if (!bursting && entity.level() instanceof ServerLevel level) {
+            CarcassSites.onDeath(level, entity, state);
+        }
         if (state == null) {
             return;
         }
-        var infection = state.infection();
-        if (infection != null && infection.stage().burstsOnDeath() && entity.level() instanceof ServerLevel level) {
+        if (bursting && entity.level() instanceof ServerLevel level) {
             burst(level, entity, state, infection, false);
         }
         PathogenHosts.remove(entity);

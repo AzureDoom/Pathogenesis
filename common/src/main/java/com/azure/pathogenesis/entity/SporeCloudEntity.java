@@ -1,6 +1,7 @@
 package com.azure.pathogenesis.entity;
 
 import com.azure.pathogenesis.Pathogenesis;
+import com.azure.pathogenesis.contamination.PathogenClimate;
 import com.azure.pathogenesis.infection.NeomorphInfections;
 import com.azure.pathogenesis.registry.PathogenEntities;
 import net.minecraft.core.BlockPos;
@@ -43,6 +44,8 @@ public class SporeCloudEntity extends Entity {
 
     private int lifetime;
 
+    private float radiusScale = 1.0F;
+
     @Nullable
     private UUID zoneId;
 
@@ -56,6 +59,9 @@ public class SporeCloudEntity extends Entity {
         var cloud = new SporeCloudEntity(PathogenEntities.SPORE_CLOUD.get(), level);
         cloud.moveTo(pos.x, pos.y, pos.z, 0.0F, 0.0F);
         cloud.zoneId = zoneId;
+        var activity = PathogenClimate.sporeActivity(level, BlockPos.containing(pos));
+        cloud.radiusScale = Mth.clamp(activity, 0.4F, 1.75F);
+        cloud.lifetime = Math.max(20, Math.round(cloud.lifetime * cloud.radiusScale));
         cloud.setRadius(0.5F);
         level.addFreshEntity(cloud);
     }
@@ -87,7 +93,7 @@ public class SporeCloudEntity extends Entity {
             return;
         }
         var level = (ServerLevel) level();
-        var maxRadius = (float) Pathogenesis.getConfig().sporeConfigs.sporeInfectionRadius;
+        var maxRadius = (float) Pathogenesis.getConfig().sporeConfigs.sporeInfectionRadius * radiusScale;
         if (tickCount <= 20) {
             setRadius(Mth.lerp(tickCount / 20F, 0.5F, maxRadius));
         }
@@ -203,6 +209,7 @@ public class SporeCloudEntity extends Entity {
             lifetime = tag.getInt("Lifetime");
         }
         setRadius(tag.contains("Radius") ? tag.getFloat("Radius") : 0.5F);
+        radiusScale = tag.contains("RadiusScale") ? tag.getFloat("RadiusScale") : 1.0F;
         zoneId = tag.hasUUID("Zone") ? tag.getUUID("Zone") : null;
     }
 
@@ -211,6 +218,7 @@ public class SporeCloudEntity extends Entity {
         tag.putInt("Age", tickCount);
         tag.putInt("Lifetime", lifetime);
         tag.putFloat("Radius", getRadius());
+        tag.putFloat("RadiusScale", radiusScale);
         if (zoneId != null) {
             tag.putUUID("Zone", zoneId);
         }

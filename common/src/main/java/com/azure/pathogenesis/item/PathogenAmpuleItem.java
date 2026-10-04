@@ -1,7 +1,5 @@
 package com.azure.pathogenesis.item;
 
-import com.azure.pathogenesis.contamination.PathogenZoneManager;
-import com.azure.pathogenesis.contamination.RuptureStrength;
 import com.azure.pathogenesis.entity.ThrownPathogenAmpule;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -85,7 +83,8 @@ public class PathogenAmpuleItem extends Item implements ProjectileItem {
     @Override
     public void onDestroyed(@NotNull ItemEntity itemEntity) {
         if (itemEntity.level() instanceof ServerLevel level) {
-            PathogenZoneManager.onRupture(level, itemEntity.blockPosition(), RuptureStrength.RUPTURE, false);
+            var source = itemEntity instanceof AmpuleDamageTracker tracker ? tracker.pathogenesis$lastDamage() : null;
+            AmpuleHazards.onDestroyed(level, itemEntity, source);
         }
         super.onDestroyed(itemEntity);
     }
@@ -100,6 +99,10 @@ public class PathogenAmpuleItem extends Item implements ProjectileItem {
         tooltip.add(
             Component.translatable("item.pathogenesis.sealed_pathogen_ampule.tooltip")
                 .withStyle(ChatFormatting.DARK_RED)
+        );
+        tooltip.add(
+            Component.translatable("item.pathogenesis.sealed_pathogen_ampule.fragile")
+                .withStyle(ChatFormatting.GRAY)
         );
         super.appendHoverText(stack, context, tooltip, flag);
     }

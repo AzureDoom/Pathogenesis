@@ -1,10 +1,12 @@
 package com.azure.pathogenesis.fluid;
 
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
+import com.azure.pathogenesis.contamination.ShorelineSpread;
 import com.azure.pathogenesis.registry.PathogenBlocks;
 import com.azure.pathogenesis.registry.PathogenFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
@@ -26,14 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-/**
- * Water that the Pathogen has converted. Behaves like water for flow speed and physics (it is in
- * {@code #minecraft:water}), but never forms new sources, so contamination only advances when the spread controller
- * converts a real water source.
- * <p>
- * {@link Source} and {@link Flowing} are deliberately non-final: NeoForge subclasses them to supply a
- * {@code FluidType}. Always construct them through {@code Services.PLATFORM}.
- */
 public abstract class ContaminatedWaterFluid extends FlowingFluid {
 
     @Override
@@ -109,6 +103,23 @@ public abstract class ContaminatedWaterFluid extends FlowingFluid {
     @Override
     public @NotNull Optional<SoundEvent> getPickupSound() {
         return Optional.of(SoundEvents.BUCKET_FILL);
+    }
+
+    @Override
+    protected boolean isRandomlyTicking() {
+        return true;
+    }
+
+    @Override
+    protected void randomTick(
+        @NotNull Level level,
+        @NotNull BlockPos pos,
+        @NotNull FluidState state,
+        @NotNull RandomSource random
+    ) {
+        if (state.isSource() && level instanceof ServerLevel serverLevel) {
+            ShorelineSpread.randomTick(serverLevel, pos, random);
+        }
     }
 
     @Override

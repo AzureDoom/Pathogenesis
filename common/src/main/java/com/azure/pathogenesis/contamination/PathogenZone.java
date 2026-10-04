@@ -10,6 +10,8 @@ public final class PathogenZone {
 
     public static final int VERTICAL_REACH = 48;
 
+    public static final int EDGE_MARGIN = 8;
+
     private final UUID id;
 
     private final BlockPos origin;
@@ -27,6 +29,16 @@ public final class PathogenZone {
     private long nextCensusTick;
 
     private long lastProcessedTick;
+
+    private long nextClimateTick;
+
+    private float chill;
+
+    private boolean chilled;
+
+    private long chilledSince;
+
+    private long thawUntil;
 
     public PathogenZone(UUID id, BlockPos origin, long createdTick) {
         this.id = id;
@@ -83,6 +95,48 @@ public final class PathogenZone {
         this.lastProcessedTick = tick;
     }
 
+    public long nextClimateTick() {
+        return nextClimateTick;
+    }
+
+    public void setNextClimateTick(long tick) {
+        this.nextClimateTick = tick;
+    }
+
+    public float chill() {
+        return chill;
+    }
+
+    public boolean isChilled() {
+        return chilled;
+    }
+
+    public long chilledSince() {
+        return chilledSince;
+    }
+
+    public void setChill(float chill, boolean chilled, long now) {
+        if (chilled && !this.chilled) {
+            this.chilledSince = now;
+        }
+        this.chill = chill;
+        this.chilled = chilled;
+    }
+
+    public boolean isThawing(long now) {
+        return now < thawUntil;
+    }
+
+    public void setThawUntil(long tick) {
+        this.thawUntil = tick;
+    }
+
+    public boolean isWithinRadius(BlockPos pos) {
+        var dx = pos.getX() - origin.getX();
+        var dz = pos.getZ() - origin.getZ();
+        return dx * dx + dz * dz <= radius * radius && Math.abs(pos.getY() - origin.getY()) <= VERTICAL_REACH;
+    }
+
     public void addContamination(int amount, int maxRadius) {
         this.contamination = Math.max(0, contamination + amount);
         recompute(maxRadius);
@@ -116,6 +170,10 @@ public final class PathogenZone {
         tag.putString("Stage", stage.id());
         tag.putBoolean("SourceActive", sourceActive);
         tag.putLong("NextCensus", nextCensusTick);
+        tag.putFloat("Chill", chill);
+        tag.putBoolean("Chilled", chilled);
+        tag.putLong("ChilledSince", chilledSince);
+        tag.putLong("ThawUntil", thawUntil);
         return tag;
     }
 
@@ -130,6 +188,10 @@ public final class PathogenZone {
         zone.stage = PathogenStage.byId(tag.getString("Stage"));
         zone.sourceActive = tag.getBoolean("SourceActive");
         zone.nextCensusTick = tag.getLong("NextCensus");
+        zone.chill = tag.getFloat("Chill");
+        zone.chilled = tag.getBoolean("Chilled");
+        zone.chilledSince = tag.getLong("ChilledSince");
+        zone.thawUntil = tag.getLong("ThawUntil");
         return zone;
     }
 }

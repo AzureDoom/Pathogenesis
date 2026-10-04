@@ -63,7 +63,13 @@ public final class PathogenSpreadController {
                 continue;
             }
 
-            if (!ContaminationPalette.canContaminate(state) || random.nextDouble() >= chance) {
+            if (!ContaminationPalette.canContaminate(state)) {
+                continue;
+            }
+            var candidateChance = state.is(Blocks.WATER)
+                ? chance * PathogenClimate.waterSpreadMultiplier(level, candidate)
+                : chance;
+            if (random.nextDouble() >= candidateChance) {
                 continue;
             }
             if (!isConnected(level, zone, candidate) || !ContaminationPalette.contaminate(level, candidate, state)) {

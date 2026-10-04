@@ -10,6 +10,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ public final class PathogenSavedData extends SavedData {
     private final Map<UUID, PathogenZone> zones = new LinkedHashMap<>();
 
     private List<PathogenZone> snapshot = List.of();
+
+    private final List<CarcassSite> carcasses = new ArrayList<>();
 
     @SuppressWarnings("DataFlowIssue")
     public static PathogenSavedData get(ServerLevel level) {
@@ -37,6 +40,10 @@ public final class PathogenSavedData extends SavedData {
             data.zones.put(zone.id(), zone);
         }
         data.rebuildSnapshot();
+        var sites = tag.getList("Carcasses", Tag.TAG_COMPOUND);
+        for (var i = 0; i < sites.size(); i++) {
+            data.carcasses.add(CarcassSite.load(sites.getCompound(i)));
+        }
         return data;
     }
 
@@ -45,11 +52,18 @@ public final class PathogenSavedData extends SavedData {
         var list = new ListTag();
         zones.values().forEach(zone -> list.add(zone.save()));
         tag.put("Zones", list);
+        var sites = new ListTag();
+        carcasses.forEach(site -> sites.add(site.save()));
+        tag.put("Carcasses", sites);
         return tag;
     }
 
     public boolean isEmpty() {
-        return zones.isEmpty();
+        return zones.isEmpty() && carcasses.isEmpty();
+    }
+
+    List<CarcassSite> carcasses() {
+        return carcasses;
     }
 
     public List<PathogenZone> zoneList() {

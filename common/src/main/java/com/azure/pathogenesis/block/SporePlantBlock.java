@@ -2,11 +2,14 @@ package com.azure.pathogenesis.block;
 
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.blockentity.SporePlantBlockEntity;
+import com.azure.pathogenesis.contamination.PathogenClimate;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
 import com.azure.pathogenesis.entity.SporeCloudEntity;
 import com.azure.pathogenesis.registry.PathogenSounds;
 import com.azure.pathogenesis.registry.PathogenTags;
 import com.mojang.serialization.MapCodec;
+import it.unimi.dsi.fastutil.longs.Long2IntMap;
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -36,9 +39,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.function.BiConsumer;
 
+@SuppressWarnings("unused")
 public class SporePlantBlock extends BushBlock implements EntityBlock {
 
     public static final MapCodec<SporePlantBlock> CODEC = simpleCodec(SporePlantBlock::new);
@@ -50,6 +57,12 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
     public static final BooleanProperty TRIGGERED = BooleanProperty.create("triggered");
 
     public static final int MAX_AGE = 3;
+
+    private static final int CASCADE_RADIUS = 3;
+
+    private static final int CASCADE_TRACK_LIMIT = 4096;
+
+    private static final Map<ServerLevel, Long2IntMap> CASCADE_DEPTH = new WeakHashMap<>();
 
     private static final VoxelShape[] SHAPES = {
         Block.box(5.0D, 0.0D, 5.0D, 11.0D, 5.0D, 11.0D),
@@ -84,7 +97,10 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
     }
 
     public static boolean isPrimed(BlockState state) {
-        return state.getValue(AGE) == MAX_AGE && state.getValue(READY) && !state.getValue(TRIGGERED);
+        return state.getBlock() instanceof SporePlantBlock
+            && state.getValue(AGE) == MAX_AGE
+            && state.getValue(READY)
+            && !state.getValue(TRIGGERED);
     }
 
     @Override
@@ -108,7 +124,7 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
 
     @Override
     protected boolean isRandomlyTicking(BlockState state) {
-        return state.getValue(AGE) < MAX_AGE || !state.getValue(READY) && !state.getValue(TRIGGERED);
+        return !state.getValue(TRIGGERED);
     }
 
     @Override
@@ -118,7 +134,12 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
         @NotNull BlockPos pos,
         @NotNull RandomSource random
     ) {
-        var rate = Pathogenesis.getConfig().floraConfigs.pathogenPlantGrowthRate;
+        if (isPrimed(state)) {
+            trySpontaneousRelease(level, pos, state, random);
+            return;
+        }
+        var rate = Pathogenesis.getConfig().floraConfigs.pathogenPlantGrowthRate
+            * PathogenClimate.floraGrowthMultiplier(level, pos);
         if (rate <= 0.0D || random.nextDouble() > Math.min(1.0D, 0.25D * rate)) {
             return;
         }
@@ -130,6 +151,20 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
             !state.getValue(READY) && !state.getValue(TRIGGERED) && !level.getBlockTicks().hasScheduledTick(pos, this)
         ) {
             level.setBlock(pos, state.setValue(READY, true), Block.UPDATE_ALL);
+        }
+    }
+
+    private static void trySpontaneousRelease(ServerLevel level, BlockPos pos, BlockState state, RandomSource random) {
+        var climate = Pathogenesis.getConfig().climateConfigs;
+        var chance = climate.drySporulationChance * PathogenClimate.dryness(level, pos);
+        if (climate.weatherEffectsEnabled && climate.thawSporulationChance > chance) {
+            var zone = PathogenZoneManager.findZone(level, pos);
+            if (zone != null && zone.isThawing(level.getGameTime())) {
+                chance = climate.thawSporulationChance;
+            }
+        }
+        if (chance > 0.0D && random.nextDouble() < chance) {
+            trigger(level, pos, state);
         }
     }
 
@@ -190,6 +225,41 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
         return true;
     }
 
+    private static void tryCascade(ServerLevel level, BlockPos pos, RandomSource random) {
+        var config = Pathogenesis.getConfig().sporeConfigs;
+        var depths = CASCADE_DEPTH.get(level);
+        var depth = depths == null ? 0 : depths.remove(pos.asLong());
+        if (depth >= config.podCascadeMaxDepth) {
+            return;
+        }
+        var chance = config.podCascadeChance * PathogenClimate.sporeActivity(level, pos);
+        if (chance <= 0.0D || random.nextDouble() >= chance) {
+            return;
+        }
+        var primed = new ArrayList<BlockPos>();
+        for (
+            var candidate : BlockPos.betweenClosed(
+                pos.offset(-CASCADE_RADIUS, -1, -CASCADE_RADIUS),
+                pos.offset(CASCADE_RADIUS, 1, CASCADE_RADIUS)
+            )
+        ) {
+            if (!candidate.equals(pos) && level.isLoaded(candidate) && isPrimed(level.getBlockState(candidate))) {
+                primed.add(candidate.immutable());
+            }
+        }
+        if (primed.isEmpty()) {
+            return;
+        }
+        var next = primed.get(random.nextInt(primed.size()));
+        if (trigger(level, next, level.getBlockState(next))) {
+            var map = CASCADE_DEPTH.computeIfAbsent(level, key -> new Long2IntOpenHashMap());
+            if (map.size() >= CASCADE_TRACK_LIMIT) {
+                map.clear();
+            }
+            map.put(next.asLong(), depth + 1);
+        }
+    }
+
     public static void disturbNearby(ServerLevel level, BlockPos center, int radius) {
         for (var pos : BlockPos.betweenClosed(center.offset(-radius, -1, -radius), center.offset(radius, 1, radius))) {
             var state = level.getBlockState(pos);
@@ -213,7 +283,9 @@ public class SporePlantBlock extends BushBlock implements EntityBlock {
             }
             level.blockEvent(pos, this, 1, 0);
             level.setBlock(pos, state.setValue(TRIGGERED, false).setValue(READY, false), Block.UPDATE_ALL);
-            level.scheduleTick(pos, this, 1200 + random.nextInt(3600 - 1200 + 1));
+            var recharge = (1200 + random.nextInt(3600 - 1200 + 1)) * PathogenClimate.rechargeMultiplier(level, pos);
+            level.scheduleTick(pos, this, Math.max(200, Math.round(recharge)));
+            tryCascade(level, pos, random);
         } else if (state.getValue(AGE) == MAX_AGE && !state.getValue(READY)) {
             level.setBlock(pos, state.setValue(READY, true), Block.UPDATE_ALL);
         }

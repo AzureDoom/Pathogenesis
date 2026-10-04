@@ -1,5 +1,6 @@
 package com.azure.pathogenesis.exposure;
 
+import com.azure.pathogenesis.contamination.PathogenClimate;
 import com.azure.pathogenesis.fluid.ContaminatedWaterFluid;
 import com.azure.pathogenesis.infection.PathogenHosts;
 import com.azure.pathogenesis.registry.PathogenTags;
@@ -49,6 +50,12 @@ public final class PathogenExposureHelper {
     }
 
     public static void exposeArea(ServerLevel level, Vec3 center, double radius, int amount, ExposureType type) {
+        if (type == ExposureType.DIRECT || type == ExposureType.SPORE) {
+            amount = (int) Math.round(amount * PathogenClimate.airborneMultiplier(level, BlockPos.containing(center)));
+            if (amount <= 0) {
+                return;
+            }
+        }
         var radiusSqr = radius * radius;
         for (var entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(center, center).inflate(radius))) {
             var distanceSqr = entity.distanceToSqr(center);

@@ -74,6 +74,7 @@
   "block.pathogenesis.sterilized_soil": "Sterilized Soil",
   "item.pathogenesis.sealed_pathogen_ampule": "Sealed Pathogen Ampule",
   "item.pathogenesis.sealed_pathogen_ampule.tooltip": "A sealed vial of black Pathogen. Shatters on impact.",
+  "item.pathogenesis.sealed_pathogen_ampule.fragile": "Fragile. Don't drop it from a height. Fire destroys it safely.",
   "item.pathogenesis.bloodburster_spawn_egg": "Bloodburster Spawn Egg",
   "item.pathogenesis.neophyte_spawn_egg": "Neophyte Spawn Egg",
   "item.pathogenesis.neomorph_spawn_egg": "Neomorph Spawn Egg",

@@ -46,15 +46,13 @@ public final class PathogenZoneManager {
 
     public static void tick(ServerLevel level) {
         var config = Pathogenesis.getConfig();
-        if (!config.contaminationConfigs.pathogenSpreadEnabled) {
-            return;
-        }
         var data = PathogenSavedData.get(level);
-        if (data.isEmpty()) {
+        var now = level.getGameTime();
+        CarcassSites.tick(level, data, now);
+        if (!config.contaminationConfigs.pathogenSpreadEnabled || data.zoneList().isEmpty()) {
             return;
         }
         var state = STATES.computeIfAbsent(level.dimension(), key -> new LevelState());
-        var now = level.getGameTime();
         var zones = data.zoneList();
 
         var budget = Math.min(config.contaminationConfigs.zonesProcessedPerTick, zones.size());
@@ -65,9 +63,13 @@ public final class PathogenZoneManager {
                 continue;
             }
             zone.setLastProcessedTick(now);
-            var checks = zone.isSourceActive()
+            if (PathogenClimate.updateZone(level, zone, now)) {
+                data.setDirty();
+            }
+            var baseChecks = zone.isSourceActive()
                 ? config.contaminationConfigs.blockChecksPerZone * 2
                 : config.contaminationConfigs.blockChecksPerZone;
+            var checks = Math.max(1, (int) Math.round(baseChecks * PathogenClimate.zoneActivity(zone, now)));
             var before = zone.stage();
             if (PathogenSpreadController.process(level, zone, checks)) {
                 data.setDirty();
@@ -139,34 +141,13 @@ public final class PathogenZoneManager {
         RuptureStrength strength,
         boolean sourceRemains
     ) {
-        var config = Pathogenesis.getConfig();
         var data = PathogenSavedData.get(level);
-        var zone = findZone(level, pos);
-        if (zone == null) {
-            zone = new PathogenZone(UUID.randomUUID(), pos, level.getGameTime());
-            data.add(zone);
-        }
+        var zone = findOrCreateZone(level, pos);
         if (sourceRemains) {
             zone.setSourceActive(true);
         }
 
-        var random = level.random;
-        var r = strength.burstRadius;
-        for (var target : BlockPos.betweenClosed(pos.offset(-r, -r, -r), pos.offset(r, r, r))) {
-            if (target.distSqr(pos) > r * r || !level.isLoaded(target) || random.nextFloat() > 0.65F) {
-                continue;
-            }
-            var state = level.getBlockState(target);
-            if (
-                ContaminationPalette.canContaminate(state) && ContaminationPalette.contaminate(
-                    level,
-                    target.immutable(),
-                    state
-                )
-            ) {
-                zone.addContamination(1, config.contaminationConfigs.pathogenMaxRadius);
-            }
-        }
+        contaminateSphere(level, zone, pos, strength.burstRadius, 0.65F);
 
         var center = Vec3.atCenterOf(pos);
         PathogenExposureHelper.exposeArea(
@@ -182,6 +163,42 @@ public final class PathogenZoneManager {
         PathogenTriggers.triggerNearby(level, center, WITNESS_RADIUS, PathogenTriggers.RUPTURE_WITNESSED);
         data.setDirty();
         return zone;
+    }
+
+    public static PathogenZone findOrCreateZone(ServerLevel level, BlockPos pos) {
+        var zone = findZone(level, pos);
+        if (zone == null) {
+            zone = new PathogenZone(UUID.randomUUID(), pos, level.getGameTime());
+            PathogenSavedData.get(level).add(zone);
+        }
+        return zone;
+    }
+
+    public static void contaminateSphere(ServerLevel level, PathogenZone zone, BlockPos pos, int radius, float chance) {
+        if (radius <= 0) {
+            return;
+        }
+        var maxRadius = Pathogenesis.getConfig().contaminationConfigs.pathogenMaxRadius;
+        var random = level.random;
+        for (
+            var target : BlockPos.betweenClosed(
+                pos.offset(-radius, -radius, -radius),
+                pos.offset(radius, radius, radius)
+            )
+        ) {
+            if (target.distSqr(pos) > radius * radius || !level.isLoaded(target) || random.nextFloat() > chance) {
+                continue;
+            }
+            contaminate(level, zone, target.immutable(), maxRadius);
+        }
+    }
+
+    public static void contaminate(ServerLevel level, PathogenZone zone, BlockPos pos, int maxRadius) {
+        var state = level.getBlockState(pos);
+        if (ContaminationPalette.canContaminate(state) && ContaminationPalette.contaminate(level, pos, state)) {
+            zone.addContamination(1, maxRadius);
+            PathogenSavedData.get(level).setDirty();
+        }
     }
 
     public static void onSourceInactive(ServerLevel level, @Nullable UUID zoneId) {

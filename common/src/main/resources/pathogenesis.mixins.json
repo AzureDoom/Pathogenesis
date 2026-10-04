@@ -8,7 +8,9 @@
     "BaseFireBlockMixin",
     "BottleItemMixin",
     "FireBlockMixin",
+    "ItemEntityMixin",
     "LivingEntityMixin",
+    "MobAccessor",
     "ServerLevelMixin",
     "ServerPlayerMixin"
   ],

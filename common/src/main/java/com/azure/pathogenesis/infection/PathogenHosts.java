@@ -1,9 +1,11 @@
 package com.azure.pathogenesis.infection;
 
+import com.azure.pathogenesis.entity.ai.fauna.ContaminatedFauna;
 import com.azure.pathogenesis.exposure.PathogenExposureEffects;
 import com.azure.pathogenesis.exposure.PathogenExposureHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -108,6 +110,9 @@ public final class PathogenHosts {
             var infection = state.infection();
             if (infection != null) {
                 NeomorphInfections.tickInfection(level, host, state, infection);
+            }
+            if (host.isAlive() && host instanceof Animal animal && ContaminatedFauna.isAffected(animal)) {
+                ContaminatedFauna.tick(level, animal, state);
             }
             if (state.isEmpty()) {
                 it.remove();

@@ -39,6 +39,7 @@ public final class PathogenTags {
         }
     }
 
+    @SuppressWarnings("unused")
     public static final class Entities {
 
         public static final TagKey<EntityType<?>> VALID_HOSTS = tag("valid_hosts");
@@ -54,6 +55,10 @@ public final class PathogenTags {
         public static final TagKey<EntityType<?>> ALIEN_ORGANISMS = tag("alien_organisms");
 
         public static final TagKey<EntityType<?>> SOURCE_PROJECTILE_IMMUNE = tag("source_projectile_immune");
+
+        public static final TagKey<EntityType<?>> CONTAMINATION_AGGRESSIVE = tag("contamination_aggressive");
+
+        public static final TagKey<EntityType<?>> DRAWN_TO_CONTAMINATION = tag("drawn_to_contamination");
 
         private Entities() {}
 

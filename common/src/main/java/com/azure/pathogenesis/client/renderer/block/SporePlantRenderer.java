@@ -6,10 +6,13 @@ import com.azure.pathogenesis.blockentity.SporePlantBlockEntity;
 import com.azure.pathogenesis.client.PathogenResources;
 import com.azure.pathogenesis.client.animator.SporePlantAnimator;
 import com.azure.pathogenesis.client.renderer.layer.EmitterTrackingLayer;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mod.azure.azurelib.common.render.block.AzBlockEntityRenderer;
 import mod.azure.azurelib.common.render.block.AzBlockEntityRendererConfig;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class SporePlantRenderer extends AzBlockEntityRenderer<SporePlantBlockEntity> {
@@ -26,7 +29,7 @@ public class SporePlantRenderer extends AzBlockEntityRenderer<SporePlantBlockEnt
             )
                 .setAnimatorProvider(SporePlantAnimator::new)
                 .addRenderLayer(emitterLayer)
-                .setRenderEntry(contextPipeline -> {
+                .setPrerenderEntry(contextPipeline -> {
                     var blockEntity = contextPipeline.animatable();
                     var poseStack = contextPipeline.poseStack();
                     var partialTick = contextPipeline.partialTick();
@@ -61,5 +64,25 @@ public class SporePlantRenderer extends AzBlockEntityRenderer<SporePlantBlockEnt
                 })
                 .build()
         );
+    }
+
+    @Override
+    public void render(
+        SporePlantBlockEntity blockEntity,
+        float partialTick,
+        @NotNull PoseStack poseStack,
+        @NotNull MultiBufferSource bufferSource,
+        int packedLight,
+        int packedOverlay
+    ) {
+        var state = blockEntity.getBlockState();
+        if (
+            !(state.getBlock() instanceof SporePlantBlock) || state.getValue(
+                SporePlantBlock.AGE
+            ) != SporePlantBlock.MAX_AGE
+        ) {
+            return;
+        }
+        super.render(blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
     }
 }

@@ -33,7 +33,7 @@ final class ZoneCensus {
 
     ZoneCensus(ServerLevel level, PathogenZone zone) {
         this.zoneId = zone.id();
-        var reach = zone.radius() + 2;
+        var reach = zone.radius() + PathogenZone.EDGE_MARGIN;
         var minCx = SectionPos.blockToSectionCoord(zone.origin().getX() - reach);
         var maxCx = SectionPos.blockToSectionCoord(zone.origin().getX() + reach);
         var minCz = SectionPos.blockToSectionCoord(zone.origin().getZ() - reach);

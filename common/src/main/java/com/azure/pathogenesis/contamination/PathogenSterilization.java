@@ -49,6 +49,7 @@ public final class PathogenSterilization {
                 sterilized++;
             }
         }
+        CarcassSites.clearNear(level, firePos, 1);
         if (sterilized > 0) {
             PathogenTriggers.triggerNearby(level, Vec3.atCenterOf(firePos), NOTIFY_RADIUS, PathogenTriggers.STERILIZED);
         }
@@ -67,6 +68,7 @@ public final class PathogenSterilization {
                 count++;
             }
         }
+        CarcassSites.clearNear(level, center, radius);
         if (count > 0) {
             PathogenTriggers.triggerNearby(
                 level,

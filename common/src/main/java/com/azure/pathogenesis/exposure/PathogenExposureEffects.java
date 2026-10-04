@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Animal;
 
 public final class PathogenExposureEffects {
 
@@ -46,7 +47,10 @@ public final class PathogenExposureEffects {
             return;
         }
         if (remaining == 0) {
-            if (Pathogenesis.getConfig().lifecycleConfigs.extremeExposureKills) {
+            var config = Pathogenesis.getConfig();
+            var kills = config.lifecycleConfigs.extremeExposureKills
+                || entity instanceof Animal && config.faunaConfigs.extremeExposureKillsAnimals;
+            if (kills) {
                 entity.hurt(PathogenDamageTypes.source(entity.level(), PathogenDamageTypes.PATHOGEN), Float.MAX_VALUE);
             }
             return;
