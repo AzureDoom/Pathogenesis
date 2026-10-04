@@ -1,6 +1,7 @@
 package com.azure.pathogenesis.registry;
 
 import com.azure.pathogenesis.item.PathogenAmpuleItem;
+import com.azure.pathogenesis.item.PathogenSourceItem;
 import com.azure.pathogenesis.platform.Services;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
@@ -18,9 +19,12 @@ public final class PathogenItems {
         () -> new PathogenAmpuleItem(new Item.Properties().stacksTo(4).rarity(Rarity.EPIC))
     );
 
-    public static final Supplier<BlockItem> PATHOGEN_SOURCE = register(
+    public static final Supplier<PathogenSourceItem> PATHOGEN_SOURCE = register(
         "pathogen_source",
-        () -> new BlockItem(PathogenBlocks.PATHOGEN_SOURCE.get(), new Item.Properties().stacksTo(1).rarity(Rarity.EPIC))
+        () -> new PathogenSourceItem(
+            PathogenBlocks.PATHOGEN_SOURCE.get(),
+            new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)
+        )
     );
 
     public static final Supplier<BlockItem> CONTAMINATED_DIRT = block(

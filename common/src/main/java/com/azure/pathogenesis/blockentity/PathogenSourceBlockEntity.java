@@ -9,6 +9,8 @@ import com.azure.pathogenesis.exposure.ExposureType;
 import com.azure.pathogenesis.exposure.PathogenExposureHelper;
 import com.azure.pathogenesis.registry.PathogenBlockEntities;
 import com.azure.pathogenesis.registry.PathogenSounds;
+import mod.azure.azurelib.common.animation.dispatch.command.AzCommand;
+import mod.azure.azurelib.common.animation.play_behavior.AzPlayBehaviors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -21,11 +23,26 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class PathogenSourceBlockEntity extends BlockEntity {
 
     public static final int CAPACITY = 2400;
+
+    public static final String CONTROLLER = "base_controller";
+
+    private static final Map<ContainmentState, AzCommand> HOLD_COMMANDS = new EnumMap<>(ContainmentState.class);
+
+    static {
+        for (var state : ContainmentState.values()) {
+            HOLD_COMMANDS.put(
+                state,
+                AzCommand.create(CONTROLLER, state.getSerializedName(), AzPlayBehaviors.HOLD_ON_LAST_FRAME)
+            );
+        }
+    }
 
     private static final int DAMAGE_DELAY = 200;
 
@@ -38,6 +55,9 @@ public class PathogenSourceBlockEntity extends BlockEntity {
     @Nullable
     private UUID zoneId;
 
+    @Nullable
+    private ContainmentState animatedState;
+
     public PathogenSourceBlockEntity(BlockPos pos, BlockState state) {
         super(PathogenBlockEntities.PATHOGEN_SOURCE.get(), pos, state);
     }
@@ -45,6 +65,21 @@ public class PathogenSourceBlockEntity extends BlockEntity {
     @Nullable
     public UUID zoneId() {
         return zoneId;
+    }
+
+    public static AzCommand holdCommand(ContainmentState state) {
+        return HOLD_COMMANDS.get(state);
+    }
+
+    public void syncAnimation() {
+        if (level == null || !level.isClientSide()) {
+            return;
+        }
+        var state = getBlockState().getValue(PathogenSourceBlock.CONTAINMENT);
+        if (state != animatedState) {
+            animatedState = state;
+            holdCommand(state).sendForBlockEntity(this);
+        }
     }
 
     public int pathogen() {

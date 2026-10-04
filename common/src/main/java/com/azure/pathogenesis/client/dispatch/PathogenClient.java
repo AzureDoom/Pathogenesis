@@ -4,8 +4,11 @@ import com.azure.pathogenesis.client.renderer.BloodbursterRenderer;
 import com.azure.pathogenesis.client.renderer.NeomorphRenderer;
 import com.azure.pathogenesis.client.renderer.NeophyteRenderer;
 import com.azure.pathogenesis.client.renderer.NoopRenderer;
+import com.azure.pathogenesis.client.renderer.block.PathogenSourceItemRenderer;
+import com.azure.pathogenesis.client.renderer.block.PathogenSourceRenderer;
 import com.azure.pathogenesis.client.renderer.block.SporePlantItemRenderer;
 import com.azure.pathogenesis.client.renderer.block.SporePlantRenderer;
+import com.azure.pathogenesis.client.renderer.item.SealedAmpuleRenderer;
 import com.azure.pathogenesis.registry.PathogenBlockEntities;
 import com.azure.pathogenesis.registry.PathogenEntities;
 import com.azure.pathogenesis.registry.PathogenItems;
@@ -39,6 +42,7 @@ public final class PathogenClient {
 
     public static void registerBlockEntityRenderers(BlockEntityRendererSink sink) {
         sink.register(PathogenBlockEntities.SPORE_PLANT.get(), SporePlantRenderer::new);
+        sink.register(PathogenBlockEntities.PATHOGEN_SOURCE.get(), PathogenSourceRenderer::new);
     }
 
     public static void registerRenderers(RendererSink sink) {
@@ -51,5 +55,7 @@ public final class PathogenClient {
 
     public static void registerItemRenderers() {
         AzItemRendererRegistry.register(PathogenItems.SPORE_PLANT.get(), SporePlantItemRenderer::new);
+        AzItemRendererRegistry.register(PathogenItems.PATHOGEN_SOURCE.get(), PathogenSourceItemRenderer::new);
+        AzItemRendererRegistry.register(PathogenItems.SEALED_PATHOGEN_AMPULE.get(), SealedAmpuleRenderer::new);
     }
 }

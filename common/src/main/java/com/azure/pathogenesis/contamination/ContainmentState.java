@@ -3,6 +3,8 @@ package com.azure.pathogenesis.contamination;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public enum ContainmentState implements StringRepresentable {
 
     /** Intact and safe. */
@@ -26,6 +28,6 @@ public enum ContainmentState implements StringRepresentable {
 
     @Override
     public @NotNull String getSerializedName() {
-        return name().toLowerCase(java.util.Locale.ROOT);
+        return name().toLowerCase(Locale.ROOT);
     }
 }
