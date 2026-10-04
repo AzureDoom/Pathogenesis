@@ -1,7 +1,7 @@
 {
   "conversions": [
     {
-      "from": "#pathogenesis:contaminatable_soil",
+      "from": "#pathogenesis:contaminated_soil",
       "to": "pathogenesis:sterilized_soil"
     },
     {
