@@ -103,11 +103,11 @@ public class PathogenSourceBlockEntity extends BlockEntity {
         zoneId = zone.id();
         if (Pathogenesis.getConfig().debugLogging)
             Pathogenesis.LOGGER.debug(
-                    "PathogenSourceBlockEntity.beginLeak zoneId={} strength={} forced={} containment={}",
-                    zoneId,
-                    strength,
-                    zone.isForced(),
-                    getBlockState().getValue(PathogenSourceBlock.CONTAINMENT)
+                "PathogenSourceBlockEntity.beginLeak zoneId={} strength={} forced={} containment={}",
+                zoneId,
+                strength,
+                zone.isForced(),
+                getBlockState().getValue(PathogenSourceBlock.CONTAINMENT)
             );
         setChanged();
     }
