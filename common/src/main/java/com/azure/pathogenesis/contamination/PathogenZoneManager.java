@@ -71,8 +71,11 @@ public final class PathogenZoneManager {
                 data.setDirty();
             }
             var contamination = config.contaminationConfigs;
+            var phaseMultiplier = zone.phase() == OutbreakPhase.SOURCE_FED && zone.isForced()
+                ? contamination.forcedSpreadMultiplier
+                : zone.phase().spreadMultiplier(contamination);
             var budget = contamination.blockChecksPerZone
-                * zone.phase().spreadMultiplier(contamination)
+                * phaseMultiplier
                 * PathogenClimate.zoneActivity(zone, now);
             var checks = rollChecks(budget, level.random.nextDouble());
             if (checks <= 0) {
@@ -121,7 +124,8 @@ public final class PathogenZoneManager {
             return;
         }
         zone.reconcile(census.count(), census.flora(), Pathogenesis.getConfig().contaminationConfigs.pathogenMaxRadius);
-        zone.setNextCensusTick(now + CENSUS_INTERVAL);
+        zone.onCensusCompleted(census.startedTick);
+        zone.setNextCensusTick(zone.awaitingAssessment() ? now : now + CENSUS_INTERVAL);
         updatePhase(level, zone);
         data.setDirty();
 
@@ -155,7 +159,7 @@ public final class PathogenZoneManager {
         var data = PathogenSavedData.get(level);
         var zone = findOrCreateZone(level, pos);
         if (sourceRemains) {
-            zone.setSourceActive(true);
+            zone.feedSource(strength != RuptureStrength.CRACK);
             updatePhase(level, zone);
         }
 
@@ -217,7 +221,19 @@ public final class PathogenZoneManager {
         var data = PathogenSavedData.get(level);
         var zone = data.get(zoneId);
         if (zone != null && zone.isSourceActive()) {
-            zone.setSourceActive(false);
+            var contamination = Pathogenesis.getConfig().contaminationConfigs;
+            var grace = zone.isForced() ? contamination.forcedGraceTicks : contamination.establishmentGraceTicks;
+            zone.markSourceInactive(level.getGameTime(), grace);
+            if (Pathogenesis.getConfig().debugLogging)
+                Pathogenesis.LOGGER.debug(
+                    "Pathogen zone {} at {} lost its source (forced={}, grace={}, contamination={}, radius={})",
+                    zone.id(),
+                    zone.origin(),
+                    zone.isForced(),
+                    grace,
+                    zone.contamination(),
+                    zone.radius()
+                );
             updatePhase(level, zone);
             data.setDirty();
         }
@@ -232,18 +248,24 @@ public final class PathogenZoneManager {
     }
 
     private static boolean updatePhase(ServerLevel level, PathogenZone zone) {
-        var previous = zone.updatePhase(Pathogenesis.getConfig().contaminationConfigs.ecologicalFloraThreshold);
+        var wasAwaiting = zone.awaitingAssessment();
+        var previous = zone.updatePhase(
+            Pathogenesis.getConfig().contaminationConfigs.ecologicalFloraThreshold,
+            level.getGameTime()
+        );
         if (previous == null) {
-            return false;
+            return zone.awaitingAssessment() != wasAwaiting;
         }
         if (Pathogenesis.getConfig().debugLogging)
             Pathogenesis.LOGGER.debug(
-                "Pathogen zone {} at {} shifted from {} to {} outbreak (stage={}, flora={})",
+                "Pathogen zone {} at {} shifted from {} to {} outbreak (stage={}, contamination={}, radius={}, flora={})",
                 zone.id(),
                 zone.origin(),
                 previous.id(),
                 zone.phase().id(),
                 zone.stage().id(),
+                zone.contamination(),
+                zone.radius(),
                 zone.flora()
             );
         OutbreakCues.onPhaseChange(level, zone, previous);

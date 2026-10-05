@@ -133,6 +133,48 @@ public class PathogenesisConfig {
         @Configurable
         @Configurable.Synchronized
         @Configurable.Comment(
+            "Ticks a zone keeps its source-fed spread after its source empties, giving it time to establish before a "
+                + "fresh census decides between ecological and collapsing. 0 disables the grace period."
+        )
+        @Configurable.Range(min = 0, max = 72000)
+        public int establishmentGraceTicks = 1600;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment(
+            "Grace ticks for a zone fed by a forced (opened or blown) canister once it empties. Replaces "
+                + "establishmentGraceTicks for forced outbreaks."
+        )
+        @Configurable.Range(min = 0, max = 72000)
+        public int forcedGraceTicks = 2400;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment(
+            "Spread budget multiplier while a forced (opened or blown) canister feeds the outbreak. Replaces "
+                + "sourceFedSpreadMultiplier for forced outbreaks."
+        )
+        @Configurable.DecimalRange(min = 0.0D, max = 10.0D)
+        public double forcedSpreadMultiplier = 3.0D;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment("Ticks per unit of pathogen a leaking canister loses. Capacity is 2400 units.")
+        @Configurable.Range(min = 1, max = 100)
+        public int leakDrainInterval = 1;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment(
+            "Ticks per unit of pathogen an opened canister loses. Higher than leakDrainInterval makes a forced "
+                + "outbreak last longer than a slow leak."
+        )
+        @Configurable.Range(min = 1, max = 100)
+        public int openDrainInterval = 2;
+
+        @Configurable
+        @Configurable.Synchronized
+        @Configurable.Comment(
             "Chance per spread check that a collapsing outbreak loses a contaminated block on its frontier."
         )
         @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
@@ -933,5 +975,6 @@ public class PathogenesisConfig {
             @Configurable.Comment("Poppers allowed within 16 blocks before disturbance stops releasing more.")
             @Configurable.Range(min = 0, max = 16)
             public int popperMaxNearby = 3;
+        }
     }
 }

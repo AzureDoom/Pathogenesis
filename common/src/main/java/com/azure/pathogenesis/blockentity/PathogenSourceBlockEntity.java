@@ -1,5 +1,6 @@
 package com.azure.pathogenesis.blockentity;
 
+import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.block.PathogenSourceBlock;
 import com.azure.pathogenesis.contamination.ContainmentState;
 import com.azure.pathogenesis.contamination.PathogenSavedData;
@@ -50,6 +51,8 @@ public class PathogenSourceBlockEntity extends BlockEntity {
 
     private int damageTimer = DAMAGE_DELAY;
 
+    private int drainTicks;
+
     private boolean openWarned;
 
     @Nullable
@@ -98,6 +101,14 @@ public class PathogenSourceBlockEntity extends BlockEntity {
     public void beginLeak(ServerLevel level, RuptureStrength strength) {
         var zone = PathogenZoneManager.onRupture(level, worldPosition, strength, true);
         zoneId = zone.id();
+        if (Pathogenesis.getConfig().debugLogging)
+            Pathogenesis.LOGGER.debug(
+                    "PathogenSourceBlockEntity.beginLeak zoneId={} strength={} forced={} containment={}",
+                    zoneId,
+                    strength,
+                    zone.isForced(),
+                    getBlockState().getValue(PathogenSourceBlock.CONTAINMENT)
+            );
         setChanged();
     }
 
@@ -127,9 +138,14 @@ public class PathogenSourceBlockEntity extends BlockEntity {
 
     private void tickLeak(ServerLevel level, BlockPos pos, BlockState state, boolean open, long time) {
         if (zoneId == null || PathogenSavedData.get(level).get(zoneId) == null) {
-            beginLeak(level, RuptureStrength.CRACK);
+            beginLeak(level, open ? RuptureStrength.RUPTURE : RuptureStrength.CRACK);
         }
-        pathogen -= open ? 3 : 1;
+        var config = Pathogenesis.getConfig().contaminationConfigs;
+        var drainInterval = open ? config.openDrainInterval : config.leakDrainInterval;
+        if (++drainTicks >= drainInterval) {
+            drainTicks = 0;
+            pathogen--;
+        }
         var center = Vec3.atCenterOf(pos);
         if (time % 20 == 0) {
             PathogenExposureHelper.exposeArea(level, center, open ? 3.5D : 2.5D, open ? 8 : 4, ExposureType.DIRECT);
@@ -170,6 +186,7 @@ public class PathogenSourceBlockEntity extends BlockEntity {
         super.saveAdditional(tag, registries);
         tag.putInt("Pathogen", pathogen);
         tag.putInt("DamageTimer", damageTimer);
+        tag.putInt("DrainTicks", drainTicks);
         tag.putBoolean("OpenWarned", openWarned);
         if (zoneId != null) {
             tag.putUUID("Zone", zoneId);
@@ -181,6 +198,7 @@ public class PathogenSourceBlockEntity extends BlockEntity {
         super.loadAdditional(tag, registries);
         pathogen = tag.contains("Pathogen") ? tag.getInt("Pathogen") : CAPACITY;
         damageTimer = tag.contains("DamageTimer") ? tag.getInt("DamageTimer") : DAMAGE_DELAY;
+        drainTicks = tag.getInt("DrainTicks");
         openWarned = tag.getBoolean("OpenWarned");
         zoneId = tag.hasUUID("Zone") ? tag.getUUID("Zone") : null;
     }

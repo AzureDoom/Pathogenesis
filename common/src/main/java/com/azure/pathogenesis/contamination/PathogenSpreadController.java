@@ -58,10 +58,13 @@ public final class PathogenSpreadController {
                 state = aboveState;
             }
 
-            if (dieBack > 0.0D && isActiveMaterial(state)) {
-                if (random.nextDouble() < dieBack && recede(level, zone, candidate, state)) {
-                    changed = true;
-                }
+            if (
+                dieBack > 0.0D
+                    && isActiveMaterial(state)
+                    && random.nextDouble() < dieBack
+                    && recede(level, zone, candidate, state)
+            ) {
+                changed = true;
                 continue;
             }
 

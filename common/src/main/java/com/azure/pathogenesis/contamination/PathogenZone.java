@@ -15,6 +15,8 @@ public final class PathogenZone {
 
     public static final int EDGE_MARGIN = 8;
 
+    private static final long NO_ASSESSMENT = -1L;
+
     private final UUID id;
 
     private final BlockPos origin;
@@ -46,6 +48,18 @@ public final class PathogenZone {
     private int flora = -1;
 
     private OutbreakPhase phase = OutbreakPhase.SOURCE_FED;
+
+    private boolean sourceWithdrawn;
+
+    private long graceUntil;
+
+    private long assessmentRequested = NO_ASSESSMENT;
+
+    private long assessmentDeadline;
+
+    private boolean assessed;
+
+    private boolean forced;
 
     public PathogenZone(UUID id, BlockPos origin, long createdTick) {
         this.id = id;
@@ -84,6 +98,52 @@ public final class PathogenZone {
 
     public void setSourceActive(boolean sourceActive) {
         this.sourceActive = sourceActive;
+        if (sourceActive) {
+            clearSourcelessTransition();
+        }
+    }
+
+    public boolean isForced() {
+        return forced;
+    }
+
+    public void feedSource(boolean forcedSource) {
+        this.forced = forcedSource || (forced && sourceActive);
+        setSourceActive(true);
+    }
+
+    public void markSourceInactive(long now, int graceTicks) {
+        this.sourceActive = false;
+        clearSourcelessTransition();
+        this.sourceWithdrawn = true;
+        this.graceUntil = now + Math.max(0, graceTicks);
+    }
+
+    private void clearSourcelessTransition() {
+        this.sourceWithdrawn = false;
+        this.graceUntil = 0L;
+        this.assessmentRequested = NO_ASSESSMENT;
+        this.assessmentDeadline = 0L;
+        this.assessed = false;
+    }
+
+    public boolean awaitingAssessment() {
+        return assessmentRequested != NO_ASSESSMENT && !assessed;
+    }
+
+    public void onCensusCompleted(long censusStartedTick) {
+        if (awaitingAssessment() && censusStartedTick >= assessmentRequested) {
+            assessed = true;
+        }
+    }
+
+    private void requestAssessment(long now) {
+        this.assessmentRequested = now;
+        this.assessmentDeadline = now + 600;
+        this.assessed = false;
+        if (nextCensusTick > now) {
+            this.nextCensusTick = now;
+        }
     }
 
     public long nextCensusTick() {
@@ -143,7 +203,7 @@ public final class PathogenZone {
     }
 
     public boolean isSelfSustaining(int floraThreshold) {
-        return stage.isEstablished() && (flora < 0 || flora >= floraThreshold);
+        return stage.allowsSpores() && (flora < 0 || flora >= floraThreshold);
     }
 
     public OutbreakPhase phase() {
@@ -151,12 +211,14 @@ public final class PathogenZone {
     }
 
     @Nullable
-    public OutbreakPhase updatePhase(int floraThreshold) {
+    public OutbreakPhase updatePhase(int floraThreshold, long now) {
         OutbreakPhase next;
         if (sourceActive) {
             next = OutbreakPhase.SOURCE_FED;
         } else if (isSelfSustaining(floraThreshold)) {
             next = OutbreakPhase.ECOLOGICAL;
+        } else if (phase == OutbreakPhase.SOURCE_FED && sourceWithdrawn) {
+            next = resolveSourcelessTransition(now);
         } else {
             next = OutbreakPhase.COLLAPSING;
         }
@@ -165,7 +227,25 @@ public final class PathogenZone {
         }
         var previous = phase;
         phase = next;
+        if (next != OutbreakPhase.SOURCE_FED) {
+            clearSourcelessTransition();
+            forced = false;
+        }
         return previous;
+    }
+
+    private OutbreakPhase resolveSourcelessTransition(long now) {
+        if (now < graceUntil) {
+            return OutbreakPhase.SOURCE_FED;
+        }
+        if (assessmentRequested == NO_ASSESSMENT) {
+            requestAssessment(now);
+            return OutbreakPhase.SOURCE_FED;
+        }
+        if (!assessed && now < assessmentDeadline) {
+            return OutbreakPhase.SOURCE_FED;
+        }
+        return OutbreakPhase.COLLAPSING;
     }
 
     public boolean isWithinRadius(BlockPos pos) {
@@ -186,7 +266,7 @@ public final class PathogenZone {
     }
 
     private void recompute(int maxRadius) {
-        this.radius = Mth.clamp(4 + (int) Math.sqrt(contamination * 6.0D), 4, maxRadius);
+        this.radius = Mth.clamp(4 + (int) (1.5D * Math.sqrt(contamination / Math.PI)), 4, maxRadius);
         this.stage = PathogenStage.forContamination(contamination, radius, maxRadius);
     }
 
@@ -212,6 +292,12 @@ public final class PathogenZone {
         tag.putLong("ThawUntil", thawUntil);
         tag.putInt("Flora", flora);
         tag.putString("Phase", phase.id());
+        tag.putBoolean("SourceWithdrawn", sourceWithdrawn);
+        tag.putLong("GraceUntil", graceUntil);
+        tag.putLong("AssessmentRequested", assessmentRequested);
+        tag.putLong("AssessmentDeadline", assessmentDeadline);
+        tag.putBoolean("Assessed", assessed);
+        tag.putBoolean("Forced", forced);
         return tag;
     }
 
@@ -241,6 +327,14 @@ public final class PathogenZone {
         zone.phase = tag.contains("Phase", Tag.TAG_STRING)
             ? OutbreakPhase.byId(tag.getString("Phase"))
             : zone.sourceActive ? OutbreakPhase.SOURCE_FED : OutbreakPhase.COLLAPSING;
+        zone.sourceWithdrawn = tag.getBoolean("SourceWithdrawn");
+        zone.graceUntil = tag.getLong("GraceUntil");
+        zone.assessmentRequested = tag.contains("AssessmentRequested", Tag.TAG_LONG)
+            ? tag.getLong("AssessmentRequested")
+            : NO_ASSESSMENT;
+        zone.assessmentDeadline = tag.getLong("AssessmentDeadline");
+        zone.assessed = tag.getBoolean("Assessed");
+        zone.forced = tag.getBoolean("Forced");
         return zone;
     }
 }
