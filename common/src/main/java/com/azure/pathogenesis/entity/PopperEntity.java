@@ -158,7 +158,7 @@ public class PopperEntity extends Monster {
         }
         if (emergeTicks > 0) {
             if (emergeTicks-- == 20) {
-                animations.playOnce(this, "emerge", 20);
+                animations.playOnce(this, "emerge", 0);
             }
             getNavigation().stop();
             return;

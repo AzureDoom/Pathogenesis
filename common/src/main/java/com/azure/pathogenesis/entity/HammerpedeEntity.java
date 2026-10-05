@@ -289,7 +289,7 @@ public class HammerpedeEntity extends Monster implements SoundListener {
         var level = (ServerLevel) level();
         if (emergeTicks > 0) {
             if (emergeTicks-- == 20) {
-                animations.playOnce(this, "emerge", 20);
+                animations.playOnce(this, "emerge", 0);
             }
             getNavigation().stop();
             return;
