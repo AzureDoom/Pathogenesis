@@ -44,10 +44,6 @@ import java.util.function.BiConsumer;
 
 public class HammerpedeEntity extends Monster implements SoundListener {
 
-    private static final double MOVING_SQR = 1.0E-4D;
-
-    private static final double CLOSE_SQR = 4.0D * 4.0D;
-
     private final CortexRuntime<HammerpedeEntity, HammerpedeGoal> runtime;
 
     private final HammerpedeGoalPlanner planner = new HammerpedeGoalPlanner();
@@ -162,12 +158,12 @@ public class HammerpedeEntity extends Monster implements SoundListener {
         if (!isValidPrey(entity)) {
             return false;
         }
-        if (entity == getLastHurtByMob() || distanceToSqr(entity) <= CLOSE_SQR) {
+        if (entity == getLastHurtByMob() || distanceToSqr(entity) <= 4.0D * 4.0D) {
             return true;
         }
         var dx = entity.getX() - entity.xo;
         var dz = entity.getZ() - entity.zo;
-        return dx * dx + dz * dz > MOVING_SQR && !entity.isSteppingCarefully();
+        return dx * dx + dz * dz > 1.0E-4D && !entity.isSteppingCarefully();
     }
 
     public boolean isRetreating() {
@@ -236,7 +232,7 @@ public class HammerpedeEntity extends Monster implements SoundListener {
             var config = Pathogenesis.getConfig().entityConfigs.hammerpedeConfigs;
             if (amount > 0.0F && acidCooldown <= 0 && random.nextDouble() < config.hammerpedeAcidChance) {
                 acidCooldown = 20;
-                OvomorphosisCompat.spawnAcid(serverLevel, position());
+                OvomorphosisCompat.spawnAcid(this, serverLevel, position());
             }
         }
         return hurt;
@@ -246,13 +242,11 @@ public class HammerpedeEntity extends Monster implements SoundListener {
     public void die(@NotNull DamageSource source) {
         super.die(source);
         if (level() instanceof ServerLevel serverLevel) {
-            var count = Pathogenesis.getConfig().entityConfigs.hammerpedeConfigs.hammerpedeDeathAcid;
-            for (var i = 0; i < count; i++) {
-                OvomorphosisCompat.spawnAcid(
+            OvomorphosisCompat.spawnAcid(
+                    this,
                     serverLevel,
                     position().add((random.nextDouble() - 0.5D) * 1.2D, 0.0D, (random.nextDouble() - 0.5D) * 1.2D)
-                );
-            }
+            );
         }
     }
 

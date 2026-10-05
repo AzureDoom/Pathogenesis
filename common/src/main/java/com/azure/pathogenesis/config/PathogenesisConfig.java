@@ -859,12 +859,6 @@ public class PathogenesisConfig {
 
             @Configurable
             @Configurable.Synchronized
-            @Configurable.Comment("Acid pools spilled on death.")
-            @Configurable.Range(min = 0, max = 8)
-            public int hammerpedeDeathAcid = 3;
-
-            @Configurable
-            @Configurable.Synchronized
             @Configurable.Comment("Chance every 5 seconds to contaminate the ground under it inside an outbreak.")
             @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
             public double hammerpedeTrailChance = 0.04D;

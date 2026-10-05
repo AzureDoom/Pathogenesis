@@ -7,8 +7,9 @@ import com.azure.pathogenesis.platform.Services;
 import mod.azure.ovomorphosis.api.scanner.InfectionScanners;
 import mod.azure.ovomorphosis.api.scanner.ScanReading;
 import mod.azure.ovomorphosis.api.scanner.ScanReading.Severity;
+import mod.azure.ovomorphosis.entities.AcidEntity;
+import mod.azure.ovomorphosis.registry.EntityRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -46,21 +47,11 @@ public final class OvomorphosisCompat {
         return loaded;
     }
 
-    public static boolean spawnAcid(ServerLevel level, Vec3 pos) {
-        var type = BuiltInRegistries.ENTITY_TYPE.getOptional(ACID);
-        if (type.isEmpty()) {
-            if (!acidMissingLogged) {
-                acidMissingLogged = true;
-                Pathogenesis.LOGGER.warn("Ovomorphosis acid entity {} is not registered; acid blood disabled", ACID);
-            }
-            return false;
-        }
-        var acid = type.get().create(level);
-        if (acid == null) {
-            return false;
-        }
-        acid.moveTo(pos.x, pos.y, pos.z, level.random.nextFloat() * 360.0F, 0.0F);
-        return level.addFreshEntity(acid);
+    public static void spawnAcid(LivingEntity entity, ServerLevel level, Vec3 pos) {
+        var acidEntity = new AcidEntity(EntityRegistry.ACID.get(), entity.level());
+        acidEntity.moveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), 0);
+        acidEntity.moveTo(pos.x, pos.y, pos.z, level.random.nextFloat() * 360.0F, 0.0F);
+        level.addFreshEntity(acidEntity);
     }
 
     public static void onFlameImpact(ServerLevel level, BlockPos pos) {

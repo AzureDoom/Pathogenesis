@@ -3,6 +3,8 @@
   "values": [
     "pathogenesis:bloodburster",
     "pathogenesis:neophyte",
-    "pathogenesis:neomorph"
+    "pathogenesis:neomorph",
+    "pathogenesis:hammerpede",
+    "pathogenesis:pathogen_popper"
   ]
 }
