@@ -243,9 +243,9 @@ public class HammerpedeEntity extends Monster implements SoundListener {
         super.die(source);
         if (level() instanceof ServerLevel serverLevel) {
             OvomorphosisCompat.spawnAcid(
-                    this,
-                    serverLevel,
-                    position().add((random.nextDouble() - 0.5D) * 1.2D, 0.0D, (random.nextDouble() - 0.5D) * 1.2D)
+                this,
+                serverLevel,
+                position().add((random.nextDouble() - 0.5D) * 1.2D, 0.0D, (random.nextDouble() - 0.5D) * 1.2D)
             );
         }
     }
