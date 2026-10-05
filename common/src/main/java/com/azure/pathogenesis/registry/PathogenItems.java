@@ -5,6 +5,7 @@ import com.azure.pathogenesis.item.PathogenAmpuleItem;
 import com.azure.pathogenesis.item.PathogenSamplerItem;
 import com.azure.pathogenesis.item.PathogenSourceItem;
 import com.azure.pathogenesis.platform.Services;
+import mod.azure.azurelib.common.animation.cache.AzIdentityRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -122,5 +123,9 @@ public final class PathogenItems {
 
     public static void registerDispenserBehaviors() {
         DispenserBlock.registerProjectileBehavior(SEALED_PATHOGEN_AMPULE.get());
+    }
+
+    public static void registerAzIdentity() {
+        AzIdentityRegistry.register(PATHOGEN_SOURCE.get());
     }
 }

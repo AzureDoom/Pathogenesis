@@ -24,6 +24,7 @@ public final class PathogenesisFabric implements ModInitializer {
         Pathogenesis.init();
         PayloadTypeRegistry.playS2C().register(OutbreakStatePayload.TYPE, OutbreakStatePayload.STREAM_CODEC);
         PathogenItems.registerDispenserBehaviors();
+        PathogenItems.registerAzIdentity();
         PathogenEntities.registerAttributes(FabricDefaultAttributeRegistry::register);
         PathogenBlocks.flammableFlora()
             .forEach(block -> FlammableBlockRegistry.getDefaultInstance().add(block.get(), 60, 100));

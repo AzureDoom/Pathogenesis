@@ -54,7 +54,10 @@ public final class PathogenesisNeoForge {
         );
         modBus.addListener(
             FMLCommonSetupEvent.class,
-            event -> event.enqueueWork(PathogenItems::registerDispenserBehaviors)
+            event -> {
+                event.enqueueWork(PathogenItems::registerDispenserBehaviors);
+                event.enqueueWork(PathogenItems::registerAzIdentity);
+            }
         );
         modBus.addListener(
             BuildCreativeModeTabContentsEvent.class,
