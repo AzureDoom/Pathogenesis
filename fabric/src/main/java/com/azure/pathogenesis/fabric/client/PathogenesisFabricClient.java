@@ -55,7 +55,7 @@ public final class PathogenesisFabricClient implements ClientModInitializer {
                 SimpleFluidRenderHandler.WATER_STILL,
                 SimpleFluidRenderHandler.WATER_FLOWING,
                 SimpleFluidRenderHandler.WATER_OVERLAY,
-                PathogenColors.CONTAMINATED_WATER
+                PathogenColors.contaminatedWater()
             )
         );
         BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), still, flowing);

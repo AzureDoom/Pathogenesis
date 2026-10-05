@@ -8,6 +8,63 @@ import mod.azure.azurelib.common.config.Configurable;
 public class PathogenesisConfig {
 
     @Configurable
+    @Configurable.Comment("Client-side block/item tint colors (#AARRGGBB). Not synced. Restart to apply.")
+    public ColorConfigs colorConfigs = new ColorConfigs();
+
+    public static class ColorConfigs {
+
+        @Configurable
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+        @Configurable.Gui.ColorValue(isARGB = true)
+        public String contaminatedSoil = "#FF4A4048";
+
+        @Configurable
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+        @Configurable.Gui.ColorValue(isARGB = true)
+        public String contaminatedGrass = "#FF3B4636";
+
+        @Configurable
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+        @Configurable.Gui.ColorValue(isARGB = true)
+        public String contaminatedMoss = "#FF3E3E42";
+
+        @Configurable
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+        @Configurable.Gui.ColorValue(isARGB = true)
+        public String sterilizedSoil = "#FF8C8682";
+
+        @Configurable
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+        @Configurable.Gui.ColorValue(isARGB = true)
+        public String contaminatedRoots = "#FF3A3034";
+
+        @Configurable
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+        @Configurable.Gui.ColorValue(isARGB = true)
+        public String pathogenGrowth = "#FF2A2F28";
+
+        @Configurable
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+        @Configurable.Gui.ColorValue(isARGB = true)
+        public String pathogenFungus = "#FF5A5660";
+
+        @Configurable
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+        @Configurable.Gui.ColorValue(isARGB = true)
+        public String contaminatedSnow = "#FF9C95A2";
+
+        @Configurable
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+        @Configurable.Gui.ColorValue(isARGB = true)
+        public String contaminatedWater = "#FF2E2A34";
+
+        @Configurable
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,8}")
+        @Configurable.Gui.ColorValue(isARGB = true)
+        public String contaminatedIce = "#FFB9B3C2";
+    }
+
+    @Configurable
     @Configurable.Synchronized
     public ContaminationConfigs contaminationConfigs = new ContaminationConfigs();
 

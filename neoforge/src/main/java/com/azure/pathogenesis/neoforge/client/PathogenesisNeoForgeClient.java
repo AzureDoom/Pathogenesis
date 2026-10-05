@@ -78,7 +78,7 @@ public final class PathogenesisNeoForgeClient {
 
             @Override
             public int getTintColor() {
-                return PathogenColors.CONTAMINATED_WATER;
+                return PathogenColors.contaminatedWater();
             }
         }, PathogenFluidTypes.CONTAMINATED_WATER.get());
     }
