@@ -740,5 +740,198 @@ public class PathogenesisConfig {
             @Configurable.Range(min = 10, max = 400)
             public int neomorphLeapCooldown = 60;
         }
+
+        @Configurable
+        @Configurable.Synchronized
+        public HammerpedeConfigs hammerpedeConfigs = new HammerpedeConfigs();
+
+        public static class HammerpedeConfigs {
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double hammerpedeHealth = 8.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double hammerpedeArmor = 0.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double hammerpedeAttackDamage = 4.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double hammerpedeMovementSpeed = 0.3D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Range at which it notices moving prey.")
+            @Configurable.DecimalRange(min = 0.0D)
+            public double hammerpedeHostileRange = 14.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Furthest distance it will lunge from.")
+            @Configurable.DecimalRange(min = 2.0D, max = 16.0D)
+            public double hammerpedeLungeRange = 7.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between lunges.")
+            @Configurable.Range(min = 10, max = 400)
+            public int hammerpedeLungeCooldown = 60;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between the bite telegraph and the hit.")
+            @Configurable.Range(min = 1, max = 40)
+            public int hammerpedeBiteWindup = 3;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between bites after a hit. A miss recovers in a third of this.")
+            @Configurable.Range(min = 1, max = 200)
+            public int hammerpedeBiteCooldown = 30;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Chance it breaks off and retreats after landing a hit.")
+            @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
+            public double hammerpedeRetreatChance = 0.75D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("How long a retreat lasts after landing a hit.")
+            @Configurable.Range(min = 0, max = 600)
+            public int hammerpedeRetreatTicks = 80;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Chance a wound spills Ovomorphosis acid.")
+            @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
+            public double hammerpedeAcidChance = 0.5D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Acid pools spilled on death.")
+            @Configurable.Range(min = 0, max = 8)
+            public int hammerpedeDeathAcid = 3;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Chance every 5 seconds to contaminate the ground under it inside an outbreak.")
+            @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
+            public double hammerpedeTrailChance = 0.04D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between emergence attempts in each established outbreak.")
+            @Configurable.Range(min = 100, max = 24000)
+            public int hammerpedeEmergenceInterval = 1200;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Chance an emergence attempt produces a Hammerpede from mature growth.")
+            @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
+            public double hammerpedeEmergenceChance = 0.35D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Hammerpedes an outbreak supports before it stops producing more.")
+            @Configurable.Range(min = 0, max = 32)
+            public int hammerpedeMaxPerZone = 4;
+        }
+
+        @Configurable
+        @Configurable.Synchronized
+        public PopperConfigs popperConfigs = new PopperConfigs();
+
+        public static class PopperConfigs {
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double popperHealth = 6.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.DecimalRange(min = 0.0D)
+            public double popperMovementSpeed = 0.2D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Range at which it notices prey.")
+            @Configurable.DecimalRange(min = 0.0D)
+            public double popperHostileRange = 12.0D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Distance to a target at which it starts to swell.")
+            @Configurable.DecimalRange(min = 1.0D, max = 8.0D)
+            public double popperTriggerRange = 2.5D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks between swelling and bursting.")
+            @Configurable.Range(min = 5, max = 200)
+            public int popperFuseTicks = 30;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Spore cloud size multiplier for a full burst.")
+            @Configurable.DecimalRange(min = 0.1D, max = 4.0D)
+            public double popperFullCloudSize = 1.75D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Contamination radius of a full burst.")
+            @Configurable.Range(min = 0, max = 8)
+            public int popperFullContaminationRadius = 3;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Spore cloud size when killed before bursting. 0 disables the cloud.")
+            @Configurable.DecimalRange(min = 0.0D, max = 4.0D)
+            public double popperPrematureCloudSize = 0.6D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Contamination radius when killed before bursting.")
+            @Configurable.Range(min = 0, max = 8)
+            public int popperPrematureContaminationRadius = 1;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks without a target before it wilts away harmlessly.")
+            @Configurable.Range(min = 200, max = 72000)
+            public int popperLifetime = 6000;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Chance burning pathogen flora releases a Popper.")
+            @Configurable.DecimalRange(min = 0.0D, max = 1.0D)
+            public double popperBurnChance = 0.2D;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Flora broken in an established outbreak, within the window, that releases a Popper.")
+            @Configurable.Range(min = 1, max = 64)
+            public int popperBreakThreshold = 4;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Ticks before accumulated flora disturbance fades.")
+            @Configurable.Range(min = 20, max = 12000)
+            public int popperDisturbanceWindow = 600;
+
+            @Configurable
+            @Configurable.Synchronized
+            @Configurable.Comment("Poppers allowed within 16 blocks before disturbance stops releasing more.")
+            @Configurable.Range(min = 0, max = 16)
+            public int popperMaxNearby = 3;
     }
 }

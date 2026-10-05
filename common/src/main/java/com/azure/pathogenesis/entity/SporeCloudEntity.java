@@ -56,11 +56,18 @@ public class SporeCloudEntity extends Entity {
     }
 
     public static void spawn(ServerLevel level, Vec3 pos, @Nullable UUID zoneId) {
+        spawn(level, pos, zoneId, 1.0F);
+    }
+
+    public static void spawn(ServerLevel level, Vec3 pos, @Nullable UUID zoneId, float size) {
+        if (size <= 0.0F) {
+            return;
+        }
         var cloud = new SporeCloudEntity(PathogenEntities.SPORE_CLOUD.get(), level);
         cloud.moveTo(pos.x, pos.y, pos.z, 0.0F, 0.0F);
         cloud.zoneId = zoneId;
         var activity = PathogenClimate.sporeActivity(level, BlockPos.containing(pos));
-        cloud.radiusScale = Mth.clamp(activity, 0.4F, 1.75F);
+        cloud.radiusScale = Mth.clamp(activity, 0.4F, 1.75F) * size;
         cloud.lifetime = Math.max(20, Math.round(cloud.lifetime * cloud.radiusScale));
         cloud.setRadius(0.5F);
         level.addFreshEntity(cloud);

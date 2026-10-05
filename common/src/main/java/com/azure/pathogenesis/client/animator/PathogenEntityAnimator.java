@@ -3,8 +3,10 @@ package com.azure.pathogenesis.client.animator;
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.client.PathogenResources;
 import com.azure.pathogenesis.entity.BloodbursterEntity;
+import com.azure.pathogenesis.entity.HammerpedeEntity;
 import com.azure.pathogenesis.entity.NeomorphEntity;
 import com.azure.pathogenesis.entity.NeophyteEntity;
+import com.azure.pathogenesis.entity.PopperEntity;
 import com.azure.pathogenesis.entity.anim.PathogenAnimationDispatcher;
 import mod.azure.azurelib.AzureLib;
 import mod.azure.azurelib.common.animation.controller.AzAnimationController;
@@ -31,6 +33,12 @@ public class PathogenEntityAnimator<T extends Entity> extends AzEntityAnimator<T
         }
         if (entity instanceof NeomorphEntity) {
             return PathogenResources.NEOMORPH.animation();
+        }
+        if (entity instanceof HammerpedeEntity) {
+            return PathogenResources.HAMMERPEDE.animation();
+        }
+        if (entity instanceof PopperEntity) {
+            return PathogenResources.PATHOGEN_POPPER.animation();
         }
         Pathogenesis.LOGGER.error("No animation registered for {}", entity.getType());
         return AzureLib.modResource("textures/empty.png");

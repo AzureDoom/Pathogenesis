@@ -1,9 +1,11 @@
 package com.azure.pathogenesis.client.dispatch;
 
 import com.azure.pathogenesis.client.renderer.BloodbursterRenderer;
+import com.azure.pathogenesis.client.renderer.HammerpedeRenderer;
 import com.azure.pathogenesis.client.renderer.NeomorphRenderer;
 import com.azure.pathogenesis.client.renderer.NeophyteRenderer;
 import com.azure.pathogenesis.client.renderer.NoopRenderer;
+import com.azure.pathogenesis.client.renderer.PopperRenderer;
 import com.azure.pathogenesis.client.renderer.block.PathogenSourceItemRenderer;
 import com.azure.pathogenesis.client.renderer.block.PathogenSourceRenderer;
 import com.azure.pathogenesis.client.renderer.block.SporePlantItemRenderer;
@@ -50,6 +52,8 @@ public final class PathogenClient {
         sink.register(PathogenEntities.BLOODBURSTER.get(), BloodbursterRenderer::new);
         sink.register(PathogenEntities.NEOPHYTE.get(), NeophyteRenderer::new);
         sink.register(PathogenEntities.NEOMORPH.get(), NeomorphRenderer::new);
+        sink.register(PathogenEntities.HAMMERPEDE.get(), HammerpedeRenderer::new);
+        sink.register(PathogenEntities.PATHOGEN_POPPER.get(), PopperRenderer::new);
         sink.register(PathogenEntities.THROWN_PATHOGEN_AMPULE.get(), ThrownItemRenderer::new);
     }
 

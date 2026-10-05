@@ -22,6 +22,10 @@ public final class PathogenResources {
 
     public static final ModelAssets NEOMORPH = ModelAssets.of(Folder.ENTITY, "neomorph");
 
+    public static final ModelAssets HAMMERPEDE = ModelAssets.of(Folder.ENTITY, "hammerpede");
+
+    public static final ModelAssets PATHOGEN_POPPER = ModelAssets.of(Folder.ENTITY, "pathogen_popper");
+
     public static final ModelAssets SPOREPODS = ModelAssets.of(Folder.BLOCK, "sporepods");
 
     public static final ModelAssets SEALED_PATHOGEN_AMPULE = ModelAssets.of(Folder.ITEM, "sealed_pathogen_ampule");

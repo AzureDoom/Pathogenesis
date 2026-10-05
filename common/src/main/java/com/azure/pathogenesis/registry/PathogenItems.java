@@ -91,6 +91,19 @@ public final class PathogenItems {
         Services.REGISTRY.registerSpawnEgg("neomorph_spawn_egg", PathogenEntities.NEOMORPH, 0xFFFFFF, 0xFFFFFF)
     );
 
+    public static final Supplier<Item> HAMMERPEDE_SPAWN_EGG = tab(
+        Services.REGISTRY.registerSpawnEgg("hammerpede_spawn_egg", PathogenEntities.HAMMERPEDE, 0xFFFFFF, 0xFFFFFF)
+    );
+
+    public static final Supplier<Item> PATHOGEN_POPPER_SPAWN_EGG = tab(
+        Services.REGISTRY.registerSpawnEgg(
+            "pathogen_popper_spawn_egg",
+            PathogenEntities.PATHOGEN_POPPER,
+            0xFFFFFF,
+            0xFFFFFF
+        )
+    );
+
     private PathogenItems() {}
 
     private static <I extends Item> Supplier<I> register(String name, Supplier<I> factory) {

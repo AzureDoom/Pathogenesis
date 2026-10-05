@@ -1,0 +1,56 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.bloodburster.idle": {
+			"loop": "once"
+		},
+		"animation.bloodburster.walk": {
+			"loop": "once"
+		},
+		"animation.bloodburster.run": {
+			"loop": "once"
+		},
+		"animation.bloodburster.attack": {
+			"loop": "once"
+		},
+		"animation.bloodburster.spawn": {
+			"loop": "once"
+		},
+		"animation.neophyte.idle": {
+			"loop": "once"
+		},
+		"animation.neophyte.walk": {
+			"loop": "once"
+		},
+		"animation.neophyte.run": {
+			"loop": "once"
+		},
+		"animation.neophyte.attack": {
+			"loop": "once"
+		},
+		"animation.neomorph.idle": {
+			"loop": "once"
+		},
+		"animation.neomorph.walk": {
+			"loop": "once"
+		},
+		"animation.neomorph.run": {
+			"loop": "once"
+		},
+		"animation.neomorph.stalk": {
+			"loop": "once"
+		},
+		"animation.neomorph.stalk_idle": {
+			"loop": "once"
+		},
+		"animation.neomorph.attack": {
+			"loop": "once"
+		},
+		"animation.neomorph.leap": {
+			"loop": "once"
+		},
+		"animation.neomorph.screech": {
+			"loop": "once"
+		}
+	}
+}

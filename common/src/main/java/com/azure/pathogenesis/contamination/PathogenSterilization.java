@@ -31,6 +31,7 @@ public final class PathogenSterilization {
             return false;
         }
         level.setBlock(pos, result, Block.UPDATE_ALL);
+        PathogenEmergence.onFloraBurned(level, pos, state);
         var c = Vec3.atCenterOf(pos);
         level.sendParticles(ParticleTypes.LARGE_SMOKE, c.x, c.y + 0.5D, c.z, 4, 0.3D, 0.2D, 0.3D, 0.01D);
         if (level.random.nextInt(4) == 0) {

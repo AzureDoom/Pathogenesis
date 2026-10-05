@@ -31,7 +31,9 @@ public final class PathogenCreativeTabs {
             SPAWN_EGGS,
             item(PathogenItems.BLOODBURSTER_SPAWN_EGG),
             item(PathogenItems.NEOPHYTE_SPAWN_EGG),
-            item(PathogenItems.NEOMORPH_SPAWN_EGG)
+            item(PathogenItems.NEOMORPH_SPAWN_EGG),
+            item(PathogenItems.HAMMERPEDE_SPAWN_EGG),
+            item(PathogenItems.PATHOGEN_POPPER_SPAWN_EGG)
         );
         tab(
             BUILDING_BLOCKS,

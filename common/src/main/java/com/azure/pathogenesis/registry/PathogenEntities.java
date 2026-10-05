@@ -2,8 +2,10 @@ package com.azure.pathogenesis.registry;
 
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.entity.BloodbursterEntity;
+import com.azure.pathogenesis.entity.HammerpedeEntity;
 import com.azure.pathogenesis.entity.NeomorphEntity;
 import com.azure.pathogenesis.entity.NeophyteEntity;
+import com.azure.pathogenesis.entity.PopperEntity;
 import com.azure.pathogenesis.entity.SporeCloudEntity;
 import com.azure.pathogenesis.entity.ThrownPathogenAmpule;
 import com.azure.pathogenesis.platform.Services;
@@ -61,6 +63,22 @@ public final class PathogenEntities {
             .build(Pathogenesis.id("neomorph").toString())
     );
 
+    public static final Supplier<EntityType<HammerpedeEntity>> HAMMERPEDE = register(
+        "hammerpede",
+        () -> EntityType.Builder.of(HammerpedeEntity::new, MobCategory.MONSTER)
+            .sized(0.5F, 0.35F)
+            .clientTrackingRange(8)
+            .build(Pathogenesis.id("hammerpede").toString())
+    );
+
+    public static final Supplier<EntityType<PopperEntity>> PATHOGEN_POPPER = register(
+        "pathogen_popper",
+        () -> EntityType.Builder.of(PopperEntity::new, MobCategory.MONSTER)
+            .sized(0.6F, 0.6F)
+            .clientTrackingRange(8)
+            .build(Pathogenesis.id("pathogen_popper").toString())
+    );
+
     private PathogenEntities() {}
 
     private static <T extends net.minecraft.world.entity.Entity> Supplier<EntityType<T>> register(
@@ -74,6 +92,8 @@ public final class PathogenEntities {
         sink.accept(BLOODBURSTER.get(), BloodbursterEntity.createAttributes().build());
         sink.accept(NEOPHYTE.get(), NeophyteEntity.createAttributes().build());
         sink.accept(NEOMORPH.get(), NeomorphEntity.createAttributes().build());
+        sink.accept(HAMMERPEDE.get(), HammerpedeEntity.createAttributes().build());
+        sink.accept(PATHOGEN_POPPER.get(), PopperEntity.createAttributes().build());
     }
 
     public static void init() {}
