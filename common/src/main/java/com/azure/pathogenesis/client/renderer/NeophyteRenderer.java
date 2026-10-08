@@ -5,6 +5,7 @@ import com.azure.pathogenesis.client.animator.PathogenEntityAnimator;
 import com.azure.pathogenesis.entity.NeophyteEntity;
 import mod.azure.azurelib.common.render.entity.AzEntityRenderer;
 import mod.azure.azurelib.common.render.entity.AzEntityRendererConfig;
+import mod.azure.azurelib.common.render.lod.AzLodConfig;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 
 public class NeophyteRenderer extends AzEntityRenderer<NeophyteEntity> {
@@ -16,6 +17,12 @@ public class NeophyteRenderer extends AzEntityRenderer<NeophyteEntity> {
                 PathogenResources.NEOPHYTE.texture()
             )
                 .setAnimatorProvider(PathogenEntityAnimator::new)
+                .withLodConfig(
+                    AzLodConfig.builder()
+                        .boneLod(32, 3)
+                        .animLod(48, 2)
+                        .build()
+                )
                 .build(),
             context
         );
