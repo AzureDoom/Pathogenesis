@@ -9,20 +9,31 @@ import com.azure.pathogenesis.network.OutbreakStatePayload;
 import com.azure.pathogenesis.registry.PathogenCreativeTabs;
 import com.azure.pathogenesis.registry.PathogenEntities;
 import com.azure.pathogenesis.registry.PathogenItems;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 @Mod(Pathogenesis.MOD_ID)
 public final class PathogenesisNeoForge {
+
+    public static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS =
+        DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Pathogenesis.MOD_ID);
+
+    public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<ReplaceWithItemModifier>> REPLACE_WITH_ITEM =
+        LOOT_MODIFIERS.register("replace_with_item", () -> ReplaceWithItemModifier.CODEC);
 
     public PathogenesisNeoForge(IEventBus modBus) {
         Pathogenesis.init();
