@@ -38,6 +38,7 @@ public final class PathogenesisNeoForge {
     public PathogenesisNeoForge(IEventBus modBus) {
         Pathogenesis.init();
         PathogenFluidTypes.FLUID_TYPES.register(modBus);
+        LOOT_MODIFIERS.register(modBus);
         NeoForgeRegistryHelper.attach(modBus);
         modBus.addListener(
             EntityAttributeCreationEvent.class,
