@@ -10,7 +10,6 @@ import com.azure.pathogenesis.client.renderer.block.PathogenSourceItemRenderer;
 import com.azure.pathogenesis.client.renderer.block.PathogenSourceRenderer;
 import com.azure.pathogenesis.client.renderer.block.SporePlantItemRenderer;
 import com.azure.pathogenesis.client.renderer.block.SporePlantRenderer;
-import com.azure.pathogenesis.client.renderer.item.SealedAmpuleRenderer;
 import com.azure.pathogenesis.registry.PathogenBlockEntities;
 import com.azure.pathogenesis.registry.PathogenEntities;
 import com.azure.pathogenesis.registry.PathogenItems;
@@ -60,6 +59,5 @@ public final class PathogenClient {
     public static void registerItemRenderers() {
         AzItemRendererRegistry.register(PathogenItems.SPORE_PLANT.get(), SporePlantItemRenderer::new);
         AzItemRendererRegistry.register(PathogenItems.PATHOGEN_SOURCE.get(), PathogenSourceItemRenderer::new);
-        AzItemRendererRegistry.register(PathogenItems.SEALED_PATHOGEN_AMPULE.get(), SealedAmpuleRenderer::new);
     }
 }

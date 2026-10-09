@@ -28,8 +28,6 @@ public final class PathogenResources {
 
     public static final ModelAssets SPOREPODS = ModelAssets.of(Folder.BLOCK, "sporepods");
 
-    public static final ModelAssets SEALED_PATHOGEN_AMPULE = ModelAssets.of(Folder.ITEM, "sealed_pathogen_ampule");
-
     private PathogenResources() {}
 
     public static ResourceLocation sourceTexture(ContainmentState state) {
