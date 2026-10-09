@@ -17,12 +17,7 @@ public class PopperRenderer extends AzEntityRenderer<PopperEntity> {
                 PathogenResources.PATHOGEN_POPPER.texture()
             )
                 .setAnimatorProvider(PathogenEntityAnimator::new)
-                .withLodConfig(
-                    AzLodConfig.builder()
-                        .boneLod(32, 3)
-                        .animLod(48, 2)
-                        .build()
-                )
+                .withLodConfig(AzLodConfig.DEFAULT)
                 .build(),
             context
         );

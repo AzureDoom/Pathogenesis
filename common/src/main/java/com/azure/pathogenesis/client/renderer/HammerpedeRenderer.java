@@ -17,12 +17,7 @@ public class HammerpedeRenderer extends AzEntityRenderer<HammerpedeEntity> {
                 PathogenResources.HAMMERPEDE.texture()
             )
                 .setAnimatorProvider(PathogenEntityAnimator::new)
-                .withLodConfig(
-                    AzLodConfig.builder()
-                        .boneLod(32, 3)
-                        .animLod(48, 2)
-                        .build()
-                )
+                .withLodConfig(AzLodConfig.DEFAULT)
                 .build(),
             context
         );
