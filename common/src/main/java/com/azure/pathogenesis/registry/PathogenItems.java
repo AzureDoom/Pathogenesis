@@ -126,6 +126,6 @@ public final class PathogenItems {
     }
 
     public static void registerAzIdentity() {
-        AzIdentityRegistry.register(PATHOGEN_SOURCE.get());
+        AzIdentityRegistry.register(PATHOGEN_SOURCE.get(), SEALED_PATHOGEN_AMPULE.get());
     }
 }
