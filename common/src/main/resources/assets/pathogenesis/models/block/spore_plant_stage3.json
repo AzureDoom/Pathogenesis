@@ -80,6 +80,6 @@
     }
   },
   "textures": {
-    "particle": "spore_pods"
+    "particle": "pathogenesis:block/sporepods"
   }
 }
