@@ -1,8 +1,8 @@
 package com.azure.pathogenesis.entity.ai.neophyte;
 
-import com.azure.azurecortex.api.goal.Goal;
+import com.azure.pathogenesis.entity.ai.common.PathogenGoal;
 
-public enum NeophyteGoal implements Goal {
+public enum NeophyteGoal implements PathogenGoal {
 
     NONE,
     ROAM,
@@ -17,6 +17,7 @@ public enum NeophyteGoal implements Goal {
         return this == NONE;
     }
 
+    @Override
     public boolean isPassive() {
         return this == NONE || this == ROAM || this == INVESTIGATE_SOUND || this == INVESTIGATE_SCENT;
     }

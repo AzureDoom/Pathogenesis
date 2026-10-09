@@ -1,12 +1,11 @@
 package com.azure.pathogenesis.entity;
 
+import com.azure.azurecortex.api.behavior.BehaviorNode;
 import com.azure.azurecortex.api.blackboard.CommonBlackboardKeys;
-import com.azure.azurecortex.goap.EmergencyDetector;
-import com.azure.azurecortex.runtime.CortexRuntime;
+import com.azure.azurecortex.goap.GoalPlanner;
 import com.azure.azurecortex.sensing.TargetSensor;
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
-import com.azure.pathogenesis.entity.ai.common.CortexGlue;
 import com.azure.pathogenesis.entity.ai.popper.PopperGoal;
 import com.azure.pathogenesis.entity.ai.popper.PopperGoalPlanner;
 import com.azure.pathogenesis.entity.ai.popper.PopperTree;
@@ -37,27 +36,14 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-public class PopperEntity extends Monster {
+public class PopperEntity extends PathogenMob<PopperEntity, PopperGoal> {
 
     private static final EntityDataAccessor<Integer> FUSE = SynchedEntityData.defineId(
         PopperEntity.class,
         EntityDataSerializers.INT
     );
 
-    private final CortexRuntime<PopperEntity, PopperGoal> runtime;
-
-    private final PopperGoalPlanner planner = new PopperGoalPlanner();
-
-    private final List<EmergencyDetector.EmergencyProbe<PopperEntity>> probes;
-
     private final AnimationDriver animations = new AnimationDriver("pathogen_popper");
-
-    @Nullable
-    private UUID originZone;
 
     private int idleTicks;
 
@@ -68,7 +54,11 @@ public class PopperEntity extends Monster {
     public PopperEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
         this.xpReward = 2;
-        var sensor = new TargetSensor<PopperEntity>(
+    }
+
+    @Override
+    protected TargetSensor<PopperEntity> createSensor() {
+        return new TargetSensor<>(
             TargetSensor.nearestMatching(
                 Pathogenesis.getConfig().entityConfigs.popperConfigs.popperHostileRange,
                 this::isValidPrey
@@ -76,8 +66,16 @@ public class PopperEntity extends Monster {
             10,
             TargetSensor.lineOfSight()
         );
-        this.runtime = new CortexRuntime<>(this, sensor, PopperTree.create());
-        this.probes = new ArrayList<>(EmergencyDetector.defaultProbes());
+    }
+
+    @Override
+    protected BehaviorNode<PopperEntity, PopperGoal> createTree() {
+        return PopperTree.create();
+    }
+
+    @Override
+    protected GoalPlanner<PopperEntity, PopperGoal> createPlanner() {
+        return new PopperGoalPlanner();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -127,10 +125,6 @@ public class PopperEntity extends Monster {
         playSound(PathogenSounds.SPORE_PLANT_RATTLE.get(), 1.0F, 0.6F);
     }
 
-    public void setOriginZone(@Nullable UUID zone) {
-        this.originZone = zone;
-    }
-
     public void markEmerged() {
         emergeTicks = 20;
     }
@@ -169,17 +163,7 @@ public class PopperEntity extends Monster {
             wilt(level);
             return;
         }
-        if (!isNoAi()) {
-            CortexGlue.tickPlanner(
-                this,
-                runtime,
-                planner,
-                probes,
-                goal -> goal instanceof PopperGoal g && g.isPassive(),
-                runtime.getBlackboard().has(CommonBlackboardKeys.TARGET)
-            );
-            runtime.tick();
-        }
+        tickBrain(() -> runtime.getBlackboard().has(CommonBlackboardKeys.TARGET));
         animations.tickLoop(this, getDeltaMovement().horizontalDistanceSqr() < 1.0E-4D ? "idle" : "walk");
     }
 
@@ -252,11 +236,6 @@ public class PopperEntity extends Monster {
     }
 
     @Override
-    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
-        return false;
-    }
-
-    @Override
     protected @Nullable SoundEvent getAmbientSound() {
         return PathogenSounds.SPORE_PLANT_RATTLE.get();
     }
@@ -276,9 +255,6 @@ public class PopperEntity extends Monster {
         super.addAdditionalSaveData(tag);
         tag.putInt("Fuse", fuse());
         tag.putInt("IdleTicks", idleTicks);
-        if (originZone != null) {
-            tag.putUUID("OriginZone", originZone);
-        }
     }
 
     @Override
@@ -286,6 +262,5 @@ public class PopperEntity extends Monster {
         super.readAdditionalSaveData(tag);
         entityData.set(FUSE, tag.contains("Fuse") ? tag.getInt("Fuse") : -1);
         idleTicks = tag.getInt("IdleTicks");
-        originZone = tag.hasUUID("OriginZone") ? tag.getUUID("OriginZone") : null;
     }
 }

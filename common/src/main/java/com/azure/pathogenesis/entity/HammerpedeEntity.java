@@ -1,18 +1,18 @@
 package com.azure.pathogenesis.entity;
 
+import com.azure.azurecortex.api.behavior.BehaviorNode;
 import com.azure.azurecortex.api.blackboard.CommonBlackboardKeys;
-import com.azure.azurecortex.goap.EmergencyDetector;
-import com.azure.azurecortex.runtime.CortexRuntime;
+import com.azure.azurecortex.goap.GoalPlanner;
 import com.azure.azurecortex.sensing.TargetSensor;
 import com.azure.pathogenesis.Pathogenesis;
 import com.azure.pathogenesis.compat.OvomorphosisCompat;
 import com.azure.pathogenesis.contamination.PathogenZoneManager;
-import com.azure.pathogenesis.entity.ai.common.CortexGlue;
+import com.azure.pathogenesis.entity.ai.common.HearingMob;
+import com.azure.pathogenesis.entity.ai.common.HearingState;
 import com.azure.pathogenesis.entity.ai.common.SoundListener;
 import com.azure.pathogenesis.entity.ai.hammerpede.HammerpedeGoal;
 import com.azure.pathogenesis.entity.ai.hammerpede.HammerpedeGoalPlanner;
 import com.azure.pathogenesis.entity.ai.hammerpede.HammerpedeTree;
-import com.azure.pathogenesis.entity.ai.neomorph.NeomorphHearing;
 import com.azure.pathogenesis.entity.anim.AnimationDriver;
 import com.azure.pathogenesis.registry.PathogenSounds;
 import com.azure.pathogenesis.registry.PathogenTags;
@@ -33,36 +33,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.BushBlock;
-import net.minecraft.world.level.gameevent.DynamicGameEventListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.BiConsumer;
+public class HammerpedeEntity extends PathogenMob<HammerpedeEntity, HammerpedeGoal> implements HearingMob {
 
-public class HammerpedeEntity extends Monster implements SoundListener {
-
-    private final CortexRuntime<HammerpedeEntity, HammerpedeGoal> runtime;
-
-    private final HammerpedeGoalPlanner planner = new HammerpedeGoalPlanner();
-
-    private final List<EmergencyDetector.EmergencyProbe<HammerpedeEntity>> probes;
-
-    private final DynamicGameEventListener<NeomorphHearing<HammerpedeEntity>> hearing;
+    private final HearingState<HammerpedeEntity> hearing = new HearingState<>(this);
 
     private final AnimationDriver animations = new AnimationDriver("hammerpede");
-
-    @Nullable
-    private UUID originZone;
-
-    @Nullable
-    private BlockPos heardPos;
-
-    private long heardTick;
-
-    private boolean heardFresh;
 
     private int retreatTicks;
 
@@ -73,7 +51,15 @@ public class HammerpedeEntity extends Monster implements SoundListener {
     public HammerpedeEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
         this.xpReward = 3;
-        var sensor = new TargetSensor<HammerpedeEntity>(
+        this.probes.add(
+            agent -> agent.isRetreating()
+                && agent.runtime.getBlackboard().get(CommonBlackboardKeys.ACTIVE_GOAL_TYPE) != HammerpedeGoal.RETREAT
+        );
+    }
+
+    @Override
+    protected TargetSensor<HammerpedeEntity> createSensor() {
+        return new TargetSensor<>(
             TargetSensor.nearestMatching(
                 Pathogenesis.getConfig().entityConfigs.hammerpedeConfigs.hammerpedeHostileRange,
                 this::isNoticedPrey
@@ -81,13 +67,16 @@ public class HammerpedeEntity extends Monster implements SoundListener {
             10,
             TargetSensor.lineOfSight()
         );
-        this.runtime = new CortexRuntime<>(this, sensor, HammerpedeTree.create());
-        this.probes = new ArrayList<>(EmergencyDetector.defaultProbes());
-        this.probes.add(
-            agent -> agent.isRetreating()
-                && agent.runtime.getBlackboard().get(CommonBlackboardKeys.ACTIVE_GOAL_TYPE) != HammerpedeGoal.RETREAT
-        );
-        this.hearing = new DynamicGameEventListener<>(new NeomorphHearing<>(this));
+    }
+
+    @Override
+    protected BehaviorNode<HammerpedeEntity, HammerpedeGoal> createTree() {
+        return HammerpedeTree.create();
+    }
+
+    @Override
+    protected GoalPlanner<HammerpedeEntity, HammerpedeGoal> createPlanner() {
+        return new HammerpedeGoalPlanner();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -178,21 +167,6 @@ public class HammerpedeEntity extends Monster implements SoundListener {
         retreatTicks = Math.max(retreatTicks, ticks);
     }
 
-    @Nullable
-    public Entity retreatFrom() {
-        var target = runtime.getBlackboard().get(CommonBlackboardKeys.TARGET);
-        return target != null ? target : getLastHurtByMob();
-    }
-
-    public void setOriginZone(@Nullable UUID zone) {
-        this.originZone = zone;
-    }
-
-    @Nullable
-    public UUID originZone() {
-        return originZone;
-    }
-
     public void markEmerged() {
         emergeTicks = 20;
     }
@@ -251,33 +225,8 @@ public class HammerpedeEntity extends Monster implements SoundListener {
     }
 
     @Override
-    public void onHeard(BlockPos pos, @Nullable Entity cause) {
-        this.heardPos = pos.immutable();
-        this.heardTick = level().getGameTime();
-        this.heardFresh = true;
-    }
-
-    @Override
-    @Nullable
-    public BlockPos heardPos() {
-        return heardPos;
-    }
-
-    @Override
-    public long heardTick() {
-        return heardTick;
-    }
-
-    @Override
-    public void clearHeard() {
-        heardPos = null;
-    }
-
-    @Override
-    public void updateDynamicGameEventListener(@NotNull BiConsumer<DynamicGameEventListener<?>, ServerLevel> consumer) {
-        if (level() instanceof ServerLevel serverLevel) {
-            consumer.accept(hearing, serverLevel);
-        }
+    public HearingState<HammerpedeEntity> hearing() {
+        return hearing;
     }
 
     @Override
@@ -303,19 +252,10 @@ public class HammerpedeEntity extends Monster implements SoundListener {
         if (tickCount % 100 == 0) {
             trailContamination(level);
         }
-        if (!isNoAi()) {
-            var heard = heardFresh;
-            heardFresh = false;
-            CortexGlue.tickPlanner(
-                this,
-                runtime,
-                planner,
-                probes,
-                goal -> goal instanceof HammerpedeGoal g && g.isPassive(),
-                runtime.getBlackboard().has(CommonBlackboardKeys.TARGET) || heard
-            );
-            runtime.tick();
-        }
+        tickBrain(() -> {
+            var heard = hearing.consumeFresh();
+            return runtime.getBlackboard().has(CommonBlackboardKeys.TARGET) || heard;
+        });
         animations.tickLoop(this, locomotionAnimation());
     }
 
@@ -345,11 +285,6 @@ public class HammerpedeEntity extends Monster implements SoundListener {
     }
 
     @Override
-    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
-        return false;
-    }
-
-    @Override
     public float getVoicePitch() {
         return super.getVoicePitch() + 0.5F;
     }
@@ -373,15 +308,11 @@ public class HammerpedeEntity extends Monster implements SoundListener {
     public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("RetreatTicks", retreatTicks);
-        if (originZone != null) {
-            tag.putUUID("OriginZone", originZone);
-        }
     }
 
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         retreatTicks = tag.getInt("RetreatTicks");
-        originZone = tag.hasUUID("OriginZone") ? tag.getUUID("OriginZone") : null;
     }
 }

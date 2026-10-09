@@ -1,8 +1,8 @@
 package com.azure.pathogenesis.entity.ai.popper;
 
-import com.azure.azurecortex.api.goal.Goal;
+import com.azure.pathogenesis.entity.ai.common.PathogenGoal;
 
-public enum PopperGoal implements Goal {
+public enum PopperGoal implements PathogenGoal {
 
     NONE,
     DRIFT,
@@ -13,6 +13,7 @@ public enum PopperGoal implements Goal {
         return this == NONE;
     }
 
+    @Override
     public boolean isPassive() {
         return this != APPROACH;
     }

@@ -1,8 +1,8 @@
 package com.azure.pathogenesis.entity.ai.bloodburster;
 
-import com.azure.azurecortex.api.goal.Goal;
+import com.azure.pathogenesis.entity.ai.common.PathogenGoal;
 
-public enum BloodbursterGoal implements Goal {
+public enum BloodbursterGoal implements PathogenGoal {
 
     NONE,
     WANDER,
@@ -16,6 +16,7 @@ public enum BloodbursterGoal implements Goal {
         return this == NONE;
     }
 
+    @Override
     public boolean isPassive() {
         return this == NONE || this == WANDER || this == INVESTIGATE_SCENT;
     }

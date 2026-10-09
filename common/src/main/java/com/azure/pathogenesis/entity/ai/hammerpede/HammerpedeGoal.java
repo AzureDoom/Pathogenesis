@@ -1,8 +1,8 @@
 package com.azure.pathogenesis.entity.ai.hammerpede;
 
-import com.azure.azurecortex.api.goal.Goal;
+import com.azure.pathogenesis.entity.ai.common.PathogenGoal;
 
-public enum HammerpedeGoal implements Goal {
+public enum HammerpedeGoal implements PathogenGoal {
 
     NONE,
     LURK,
@@ -17,6 +17,7 @@ public enum HammerpedeGoal implements Goal {
         return this == NONE;
     }
 
+    @Override
     public boolean isPassive() {
         return this == NONE || this == LURK || this == HIDE || this == WANDER || this == INVESTIGATE_SOUND;
     }
