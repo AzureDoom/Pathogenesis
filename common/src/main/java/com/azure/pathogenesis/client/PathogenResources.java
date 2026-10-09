@@ -34,9 +34,9 @@ public final class PathogenResources {
 
     public static ResourceLocation sourceTexture(ContainmentState state) {
         return switch (state) {
-            case SEALED, OPEN, EMPTY -> SOURCE_SEALED;
+            case SEALED, EMPTY -> SOURCE_SEALED;
             case DAMAGED -> SOURCE_DAMAGED;
-            case LEAKING -> SOURCE_LEAKING;
+            case LEAKING, OPEN -> SOURCE_LEAKING;
         };
     }
 

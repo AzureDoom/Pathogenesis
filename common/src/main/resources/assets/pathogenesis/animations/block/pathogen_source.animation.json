@@ -1,0 +1,82 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"sealed": {
+			"loop": true
+		},
+		"damaged": {
+			"loop": true,
+			"bones": {
+				"gLid": {
+					"rotation": {
+						"vector": [0, -5, 0]
+					}
+				}
+			}
+		},
+		"leaking": {
+			"loop": true,
+			"bones": {
+				"gLid": {
+					"rotation": {
+						"vector": [0, -20, 0]
+					}
+				}
+			}
+		},
+		"open": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 0.5,
+			"bones": {
+				"gLid": {
+					"position": {
+						"0": {
+							"vector": [0, 0, 0]
+						},
+						"0.5": {
+							"vector": [8, -11, 0],
+							"easing": "easeInOutBack"
+						}
+					},
+					"rotation": {
+						"0": {
+							"vector": [0, 0, 0]
+						},
+						"0.5": {
+							"vector": [0, 0, 180],
+							"easing": "easeInOutBack"
+						}
+					}
+				},
+				"gFluidNoAmpules": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"empty": {
+			"loop": "hold_on_last_frame",
+			"bones": {
+				"gAmpuleSuspender": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"gLid": {
+					"position": {
+						"vector": [8, -11, 0]
+					},
+					"rotation": {
+						"vector": [0, 0, 180]
+					}
+				},
+				"gFluidFull": {
+					"scale": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		}
+	}
+}

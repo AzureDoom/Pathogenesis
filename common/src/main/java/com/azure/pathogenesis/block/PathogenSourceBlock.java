@@ -75,7 +75,7 @@ public class PathogenSourceBlock extends BaseEntityBlock {
 
     public static final int AMPULE_COUNT = 4;
 
-    private static final VoxelShape SHAPE = Block.box(3.0D, 0.0D, 3.0D, 13.0D, 14.0D, 13.0D);
+    private static final VoxelShape SHAPE = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 17.0D, 12.0D);
 
     public PathogenSourceBlock(Properties properties) {
         super(properties);
