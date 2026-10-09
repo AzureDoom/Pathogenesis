@@ -25,12 +25,6 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 
-/**
- * Shared base for every Pathogenesis mob: AzureCortex wiring, origin zone tracking and persistence.
- *
- * @param <SELF> the concrete entity class
- * @param <G>    that entity's goal enum
- */
 public abstract class PathogenMob<SELF extends PathogenMob<SELF, G>, G extends PathogenGoal> extends Monster {
 
     protected final CortexRuntime<SELF, G> runtime;
@@ -45,7 +39,7 @@ public abstract class PathogenMob<SELF extends PathogenMob<SELF, G>, G extends P
     protected PathogenMob(EntityType<? extends Monster> type, Level level) {
         super(type, level);
         this.planner = createPlanner();
-        this.runtime = new CortexRuntime<>(self(), createSensor(), createTree());
+        this.runtime = new CortexRuntime<>(asSelf(), createSensor(), createTree());
         this.probes = new ArrayList<>(EmergencyDetector.defaultProbes());
     }
 
@@ -56,7 +50,7 @@ public abstract class PathogenMob<SELF extends PathogenMob<SELF, G>, G extends P
     protected abstract GoalPlanner<SELF, G> createPlanner();
 
     @SuppressWarnings("unchecked")
-    protected final SELF self() {
+    protected final SELF asSelf() {
         return (SELF) this;
     }
 
@@ -65,7 +59,7 @@ public abstract class PathogenMob<SELF extends PathogenMob<SELF, G>, G extends P
             return;
         }
         CortexGlue.tickPlanner(
-            self(),
+            asSelf(),
             runtime,
             planner,
             probes,
